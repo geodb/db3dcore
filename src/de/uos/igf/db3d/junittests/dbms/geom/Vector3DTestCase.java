@@ -456,5 +456,34 @@ public class Vector3DTestCase extends TestCase {
 		assertTrue(cosine == 0.8574929257125442);
 
 	}
+	
+	public void testScalarProduct1() {
+		
+		ScalarOperator sop = new ScalarOperator();
+
+		// two segments, 77° angle:
+
+		Segment3D segment1 = new Segment3D(new Point3D(10.0, 10.0, 0.0),
+				new Point3D(10.0, 15.0, 0.0), sop);
+		Segment3D segment2 = new Segment3D(new Point3D(5.0, 5.0, 0.0),
+				new Point3D(7.0, 3.0, 0.0), sop);
+
+		// get line of segment 1:
+		Line3D line1 = segment1.getLine(sop);
+		// get vector of line 1:
+		Vector3D vector1 = line1.getDVector();
+		// get line of segment 2:
+		Line3D line2 = segment2.getLine(sop);
+		// get vector of line 2:
+		Vector3D vector2 = line2.getDVector();
+		// calculate co-sinus between segment 1 and segment 2:
+		double scalarProduct = vector1.scalarproduct(vector2);
+		
+		System.out.println(scalarProduct);
+
+		// co-sinus has to be ~ 0.86:
+		assertTrue(scalarProduct == 0.8574929257125442);
+		
+	}
 
 }
