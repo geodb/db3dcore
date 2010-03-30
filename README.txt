@@ -1,6 +1,5 @@
 DB4GeO/DB3D Core API README
 ---------------------------
-
 Welcome stranger to the DB4GeO/DB3D Core API!
 
 The DB3D Core API is a completely in Java written library of
@@ -24,3 +23,11 @@ suggestions or a bug report then have a look at the project
 website for more information on this.
 
 Enjoy yourself and: Don't Panic! :)
+
+
+
+CREDITS
+-------
+The concrete concept and implementation of the DB3D Core API
+has mainly been developed by Martin Breunig, Andreas Thomsen
+and Wolfgang Bär, with the irreplaceable help of many others.
