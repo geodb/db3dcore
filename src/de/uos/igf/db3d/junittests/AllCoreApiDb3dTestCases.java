@@ -20,6 +20,7 @@ import de.uos.igf.db3d.junittests.dbms.geom.SegmentTestCase;
 import de.uos.igf.db3d.junittests.dbms.geom.Tetrahedron3DTestCase;
 import de.uos.igf.db3d.junittests.dbms.geom.TetrahedronTriangle3DTestCase;
 import de.uos.igf.db3d.junittests.dbms.geom.Triangle3DTestCase;
+import de.uos.igf.db3d.junittests.dbms.geom.Vector3DTestCase;
 import de.uos.igf.db3d.junittests.dbms.geom.Wireframe3DTestCase;
 import de.uos.igf.db3d.junittests.dbms.model3d.SegmentElt3DTestCase;
 import de.uos.igf.db3d.junittests.dbms.model3d.SegmentNet3DCompTestCase;
@@ -63,6 +64,7 @@ public class AllCoreApiDb3dTestCases {
 		suite.addTestSuite(Tetrahedron3DTestCase.class);
 		suite.addTestSuite(TetrahedronTriangle3DTestCase.class);
 		suite.addTestSuite(Triangle3DTestCase.class);
+		suite.addTestSuite(Vector3DTestCase.class);
 		suite.addTestSuite(Wireframe3DTestCase.class);
 		suite.addTestSuite(SegmentElt3DTestCase.class);
 		suite.addTestSuite(SegmentNet3DCompTestCase.class);

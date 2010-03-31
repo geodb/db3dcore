@@ -2,7 +2,7 @@
  * University of Osnabrueck
  * Department for Geoinformatics and Remote Sensing
  *
- * Copyright (C) 2008 Researchgroup Prof. Dr. Martin Breunig
+ * Copyright (C) Prof. Dr. Martin Breunig
  *
  */
 package de.uos.igf.db3d.junittests.dbms.geom;
