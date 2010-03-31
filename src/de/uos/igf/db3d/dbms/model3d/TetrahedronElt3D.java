@@ -67,6 +67,16 @@ public class TetrahedronElt3D extends Tetrahedron3D implements NetElement3D {
 	 *            occur.
 	 * @throws IllegalArgumentException
 	 *             - signals inappropriate parameters.
+	 * @throws IllegalArgumentException
+	 *             - if an attempt is made to construct a Tetrahedron3D from an
+	 *             empty Point3D array whose length is not 4 or if the
+	 *             validation of the Tetrahedron3D fails. The exception
+	 *             originates in the constructor Tetrahedron3D(Point3D[],
+	 *             ScalarOperator).
+	 * @throws ArithmeticException
+	 *             - if norm equals zero in epsilon range. This exception
+	 *             originates in the method normalize(ScalarOperator) of the
+	 *             class Vector3D.
 	 */
 	public TetrahedronElt3D(Point3D[] points, ScalarOperator sop)
 			throws IllegalArgumentException {
@@ -93,6 +103,16 @@ public class TetrahedronElt3D extends Tetrahedron3D implements NetElement3D {
 	 *            ScalarOperator needed for validation.<br>
 	 *            If ScalarOperator is <code>null</code>, no validation will
 	 *            occur.
+	 * @throws IllegalArgumentException
+	 *             - if an attempt is made to construct a Tetrahedron3D from an
+	 *             empty Point3D array whose length is not 4 or if the
+	 *             validation of the Tetrahedron3D fails. The exception
+	 *             originates in the constructor Tetrahedron3D(Point3D[],
+	 *             ScalarOperator).
+	 * @throws ArithmeticException
+	 *             - if norm equals zero in epsilon range. This exception
+	 *             originates in the method normalize(ScalarOperator) of the
+	 *             class Vector3D.
 	 */
 	public TetrahedronElt3D(Point3D point1, Point3D point2, Point3D point3,
 			Point3D point4, ScalarOperator sop) {
@@ -112,6 +132,20 @@ public class TetrahedronElt3D extends Tetrahedron3D implements NetElement3D {
 	 *            occur.
 	 * @throws IllegalArgumentException
 	 *             - signals inappropriate parameters.
+	 * @throws IllegalArgumentException
+	 *             - if an attempt is made to construct a Tetrahedron3D from an
+	 *             empty Point3D array whose length is not 4 or if the
+	 *             validation of the Tetrahedron3D fails. The exception
+	 *             originates in the constructor Tetrahedron3D(Point3D[],
+	 *             ScalarOperator).
+	 * @throws IllegalArgumentException
+	 *             - if index of a triangle point is not 0, 1 or 2. The
+	 *             exception originates in the method getPoint(int) of the class
+	 *             Triangle3D.
+	 * @throws ArithmeticException
+	 *             - if norm equals zero in epsilon range. This exception
+	 *             originates in the method normalize(ScalarOperator) of the
+	 *             class Vector3D.
 	 */
 	public TetrahedronElt3D(Point3D point, Triangle3D triangle,
 			ScalarOperator sop) {
@@ -132,6 +166,16 @@ public class TetrahedronElt3D extends Tetrahedron3D implements NetElement3D {
 	 *            occur.
 	 * @throws IllegalArgumentException
 	 *             - signals inappropriate parameters.
+	 * @throws IllegalArgumentException
+	 *             - if an attempt is made to construct a Tetrahedron3D from an
+	 *             empty Point3D array whose length is not 4 or if the
+	 *             validation of the Tetrahedron3D fails. The exception
+	 *             originates in the constructor Tetrahedron3D(Point3D[],
+	 *             ScalarOperator).
+	 * @throws ArithmeticException
+	 *             - if norm equals zero in epsilon range. This exception
+	 *             originates in the method normalize(ScalarOperator) of the
+	 *             class Vector3D.
 	 */
 	public TetrahedronElt3D(Segment3D seg1, Segment3D seg2, ScalarOperator sop) {
 		this(new Point3D[] { seg1.getPoint(0), seg1.getPoint(1),
@@ -143,6 +187,18 @@ public class TetrahedronElt3D extends Tetrahedron3D implements NetElement3D {
 	 * 
 	 * @param tetra
 	 *            Tetrahedron3D
+	 * @throws IllegalArgumentException
+	 *             - if the validation of a tetrahedron fails. The exception
+	 *             originates in the constructor Tetrahedroin3D(Point3D,
+	 *             Point3D, Point3D, Point3D, ScalarOperator).
+	 * @throws IllegalArgumentException
+	 *             if the index of the point of the tetrahedron is not in the
+	 *             interval [0;3]. The exception originates in the method
+	 *             getPoint(int) of the class Tetrahedron3D.
+	 * @throws ArithmeticException
+	 *             - if norm equals zero in epsilon range. This exception
+	 *             originates in the method normalize(ScalarOperator) of the
+	 *             class Vector3D.
 	 */
 	public TetrahedronElt3D(Tetrahedron3D tetra) {
 		super(tetra);

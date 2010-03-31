@@ -169,6 +169,10 @@ public final class FlagMap {
 	 * 
 	 * @param obj
 	 *            Object to be removed
+	 * @throws IllegalArgumentException
+	 *             if the index of the point of the tetrahedron is not in the
+	 *             interval [0;3]. The exception originates in the method
+	 *             getPoint(int) of the class Tetrahedron3D.
 	 */
 	public void remove(Object obj) {
 		this.map.remove(obj);

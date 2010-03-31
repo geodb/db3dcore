@@ -169,6 +169,10 @@ public abstract class AbstractHashSet extends AbstractCollection implements
 	 * @param o
 	 *            object to be removed from this set, if present
 	 * @return <code>true</code> if the set contained the specified element.
+	 * @throws IllegalArgumentException
+	 *             if the index of the point of the tetrahedron is not in the
+	 *             interval [0;3]. The exception originates in the method
+	 *             getPoint(int) of the class Tetrahedron3D.
 	 */
 	public boolean remove(Object o) {
 		return map.remove(o) == PRESENT;
@@ -252,6 +256,10 @@ public abstract class AbstractHashSet extends AbstractCollection implements
 		 * @param key2
 		 *            Object 2
 		 * @return boolean - true if equal, false otherwise.
+		 * @throws IllegalArgumentException
+		 *             if the index of the point of the tetrahedron is not in
+		 *             the interval [0;3]. The exception originates in the
+		 *             method getPoint(int) of the class Tetrahedron3D.
 		 * @see db3d.dbms.util.AbstractHashMap#equalityTest(java.lang.Object,
 		 *      java.lang.Object)
 		 */

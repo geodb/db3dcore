@@ -66,6 +66,8 @@ public class Rectangle3D {
 	 * @param index
 	 *            int index of the point
 	 * @return Point3D at the given index.
+	 * @throws IllegalStateException
+	 *             - if index is not 0, 1, 2 or 3.
 	 */
 	public Point3D getPoint(int index) {
 		switch (index) {
@@ -102,6 +104,9 @@ public class Rectangle3D {
 	 * @param index
 	 *            int index of the point
 	 * @return Segment3D.
+	 * @throws IllegalStateException
+	 *             - if the index of a Point3D in a Rectangle3D is not in the
+	 *             interval [0, 3].
 	 */
 	public Segment3D getSegment(int index) {
 		if (this.getPoint(index).equals(this.getPoint((index + 1) % 4)))
@@ -115,6 +120,9 @@ public class Rectangle3D {
 	 * rectangle is a point.
 	 * 
 	 * @return Segment3D[] of this.
+	 * @throws IllegalStateException
+	 *             - if the index of a Point3D in a Rectangle3D is not in the
+	 *             interval [0, 3].
 	 */
 	public Segment3D[] getSegments() {
 
@@ -141,6 +149,8 @@ public class Rectangle3D {
 	 *            int index of the point
 	 * @param point
 	 *            Point3D to be set
+	 * @throws IllegalStateException
+	 *             if index is not 0, 1, 2 or 3.
 	 */
 	public void setPoint(int index, Point3D point) {
 		switch (index) {
@@ -171,6 +181,15 @@ public class Rectangle3D {
 	 * @param sop
 	 *            ScalarOperator
 	 * @return SimpleGeoObj - result of intersection.
+	 * @throws IllegalStateException
+	 *             - if the intersectsInt(Line3D line, ScalarOperator sop)
+	 *             method of the class Line3D (which computes the intersection
+	 *             of two lines) called by this method returns a value that is
+	 *             not -2, -1, 0 or 1.
+	 * @throws ArithmeticException
+	 *             - if norm equals zero in epsilon range. This exception
+	 *             originates in the method normalize(ScalarOperator) of the
+	 *             class Vector3D.
 	 */
 	public SimpleGeoObj intersectionInPlane(Line3D line, ScalarOperator sop) {
 
@@ -212,6 +231,15 @@ public class Rectangle3D {
 	 * @param sop
 	 *            ScalarOperator
 	 * @return SimpleGeoObj - result of intersection.
+	 * @throws IllegalStateException
+	 *             - if the index of a Point3D in a Rectangle3D is not in the
+	 *             interval [0, 3].
+	 * @throws IllegalStateException
+	 *             - signals Problems with the dimension of the wireframe.
+	 * @throws ArithmeticException
+	 *             - if norm equals zero in epsilon range. This exception
+	 *             originates in the method normalize(ScalarOperator) of the
+	 *             class Vector3D.
 	 */
 	public SimpleGeoObj intersection(Plane3D plane, ScalarOperator sop) {
 

@@ -163,6 +163,7 @@ public class LA {
 	 * @param d
 	 * @return
 	 * @throws IllegalArgumentException
+	 *             - if the given double is Infinity or NaN.
 	 */
 	public static int digits(final double d) throws IllegalArgumentException {
 		if (Double.isInfinite(d) || Double.isNaN(d)) {
@@ -726,7 +727,7 @@ public class LA {
 	}
 
 	/**
-	 * computes the generalized cross products of n-1 vectors in an
+	 * Computes the generalized cross products of n-1 vectors in an
 	 * n-dimensional vector space. The dimension of the result is solely
 	 * determined by the number of the specified vectors, which are padded with
 	 * zeros or truncated if they do not fit into the dimension.
@@ -744,6 +745,9 @@ public class LA {
 	 * @param vecs
 	 *            an arbitrary number of n vectors
 	 * @return the generalized n+1-dimensional cross product of these vectors.
+	 * 
+	 * @throws UnsupportedOperationException
+	 *             - always. This method should be corrected.
 	 */
 	public static double[] cross(double[]... vecs) {
 

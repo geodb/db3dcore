@@ -120,14 +120,23 @@ public class SegmentNet3DComp implements PersistentObject, ComplexGeoObj,
 	 *            ScalarOperator
 	 * @param elements
 	 *            SegmentElt3D[]
+	 * @throws IllegalArgumentException
+	 *             - if an attempt is made to construct a MBB3D whose maximum
+	 *             point is not greater than its minimum point.
+	 * @throws IllegalArgumentException
+	 *             if the index of the point of the tetrahedron is not in the
+	 *             interval [0;3]. The exception originates in the method
+	 *             getPoint(int) of the class Tetrahedron3D.
 	 */
 	public SegmentNet3DComp(ScalarOperator sop, SegmentElt3D[] elements) {
 		this.id = -1;
 		this.sop = sop;
 		this.sam = new RStar(MAX_SAM, sop);
 		loadSAM(elements);
+		// Here an IllegalArgumentException can be thrown.
 
 		this.mbb = this.sam.getMBB();
+		// Here an IllegalArgumentException can be thrown.
 		this.buildNetTopology(elements);
 		this.connected = true;
 		this.makeOrientationConsistent();
@@ -146,11 +155,40 @@ public class SegmentNet3DComp implements PersistentObject, ComplexGeoObj,
 	 *             - if the type if the <code>SimpleGeoObj</code> resulting from
 	 *             the intersection of this and the given <code>Plane3D</code>
 	 *             cannot be identified.
+	 * @throws IllegalArgumentException
+	 *             - if an attempt is made to construct a MBB3D whose maximum
+	 *             point is not greater than its minimum point.
+	 * @throws IllegalStateException
+	 *             - if the index of a Point3D in a Rectangle3D is not in the
+	 *             interval [0, 3]. This exception originates in the getPoint
+	 *             (int index) method of the class Rectangle3D called by this
+	 *             method.
+	 * @throws IllegalStateException
+	 *             - signals Problems with the dimension of the wireframe.
+	 * @throws IllegalStateException
+	 *             - if the index of the point coordinate is not 0 , 1 or 2
+	 *             (that stands for the x-, y- and z-coordinate).
+	 * @throws IllegalArgumentException
+	 *             - if validation of a Triangle3D fails. The exception
+	 *             originates in the constructor Triangle3D(Point3D, Point3D,
+	 *             Point3D, ScalarOperator).
+	 * @throws ArithmeticException
+	 *             - if norm equals zero in epsilon range. This exception
+	 *             originates in the method normalize(ScalarOperator) of the
+	 *             class Vector3D.
 	 */
 	public boolean intersects(Plane3D plane) throws DB3DException { // Dag
 
 		SimpleGeoObj obj = this.getMBB().intersection(plane,
 				this.getScalarOperator());
+		// Here an IllegalStateException can be thrown. This exception
+		// originates in the getPoint(int) method of the class Rectangle3D.
+
+		// Here an IllegalStateException can be thrown signaling problems with
+		// the dimension of the wireframe.
+
+		// Here an IllegalStateException can be thrown signaling problems with
+		// the index of a point coordinate.
 		if (obj == null)
 			return false;
 
@@ -168,6 +206,7 @@ public class SegmentNet3DComp implements PersistentObject, ComplexGeoObj,
 			break;
 		case SimpleGeoObj.WIREFRAME3D:
 			intMbb = ((Wireframe3D) obj).getMBB();
+			// Here an IllegalArgumentException can be thrown.
 			break;
 		default:
 			throw new DB3DException(ResourceBundle.getBundle(
@@ -195,6 +234,18 @@ public class SegmentNet3DComp implements PersistentObject, ComplexGeoObj,
 	 * @param line
 	 *            Line3D to be tested
 	 * @return boolean - true if intersects, false otherwise.
+	 * @throws IllegalStateException
+	 *             - if the intersectsInt(Line3D line, ScalarOperator sop)
+	 *             method of the class Line3D (which computes the intersection
+	 *             of two lines) called by this method returns a value that is
+	 *             not -2, -1, 0 or 1.
+	 * @throws IllegalStateException
+	 *             - if the index of the point coordinate is not 0 , 1 or 2
+	 *             (that stands for the x-, y- and z-coordinate).
+	 * @throws ArithmeticException
+	 *             - if norm equals zero in epsilon range. This exception
+	 *             originates in the method normalize(ScalarOperator) of the
+	 *             class Vector3D.
 	 */
 	public boolean intersects(Line3D line) { // Dag
 
@@ -226,6 +277,18 @@ public class SegmentNet3DComp implements PersistentObject, ComplexGeoObj,
 	 * @param mbb
 	 *            MBB3D to be tested
 	 * @return boolean - true if intersects, false otherwise.
+	 * @throws IllegalStateException
+	 *             - if the intersectsInt(Line3D line, ScalarOperator sop)
+	 *             method of the class Line3D (which computes the intersection
+	 *             of two lines) called by this method returns a value that is
+	 *             not -2, -1, 0 or 1.
+	 * @throws IllegalStateException
+	 *             - if the index of the point coordinate is not 0 , 1 or 2
+	 *             (that stands for the x-, y- and z-coordinate).
+	 * @throws ArithmeticException
+	 *             - if norm equals zero in epsilon range. This exception
+	 *             originates in the method normalize(ScalarOperator) of the
+	 *             class Vector3D.
 	 */
 	public boolean intersects(MBB3D mbb) { // Dag
 
@@ -248,6 +311,13 @@ public class SegmentNet3DComp implements PersistentObject, ComplexGeoObj,
 	 * @param point
 	 *            Point3D to be tested
 	 * @return boolean - true if contained, false otherwise.
+	 * @throws IllegalArgumentException
+	 *             if an attempt is made to construct a MBB3D whose maximum
+	 *             point is not greater than its minimum point.
+	 * @throws ArithmeticException
+	 *             - if norm equals zero in epsilon range. This exception
+	 *             originates in the method normalize(ScalarOperator) of the
+	 *             class Vector3D.
 	 */
 	public boolean contains(Point3D point) {
 		Set set = this.getSAM().contains(point);
@@ -266,6 +336,10 @@ public class SegmentNet3DComp implements PersistentObject, ComplexGeoObj,
 	 * @param seg
 	 *            Segment3D to be tested
 	 * @return boolean - true if contained, false otherwise.
+	 * @throws ArithmeticException
+	 *             - if norm equals zero in epsilon range. This exception
+	 *             originates in the method normalize(ScalarOperator) of the
+	 *             class Vector3D.
 	 */
 	public boolean contains(Segment3D seg) {
 		Set set = this.getSAM().intersects(seg.getMBB());
@@ -305,6 +379,18 @@ public class SegmentNet3DComp implements PersistentObject, ComplexGeoObj,
 	 * @return SegmentElt3D - the inserted instance.
 	 * @throws UpdateException
 	 *             - or subclass of it, signals an Update problem.
+	 * @throws IllegalStateException
+	 *             - if the intersectsInt(Line3D line, ScalarOperator sop)
+	 *             method of the class Line3D (which computes the intersection
+	 *             of two lines) called by this method returns a value that is
+	 *             not -2, -1, 0 or 1.
+	 * @throws IllegalArgumentException
+	 *             - if an attempt is made to construct a MBB3D whose maximum
+	 *             point is not greater than its minimum point.
+	 * @throws ArithmeticException
+	 *             - if norm equals zero in epsilon range. This exception
+	 *             originates in the method normalize(ScalarOperator) of the
+	 *             class Vector3D.
 	 */
 	public SegmentElt3D addElt(Segment3D elt) throws UpdateException { // Dag
 		if (this.containsElt(elt))
@@ -325,6 +411,17 @@ public class SegmentNet3DComp implements PersistentObject, ComplexGeoObj,
 	 * @return SegmentElt3D - inserted element.
 	 * @throws UpdateException
 	 *             - or subclass of it, signals an Update problem.
+	 * @throws IllegalArgumentException
+	 *             - if an attempt is made to construct a MBB3D whose maximum
+	 *             point is not greater than its minimum point.
+	 * @throws IllegalArgumentException
+	 *             - if index of a triangle point is not 0, 1 or 2. The
+	 *             exception originates in the method getPoint(int) of the class
+	 *             Triangle3D.
+	 * @throws ArithmeticException
+	 *             - if norm equals zero in epsilon range. This exception
+	 *             originates in the method normalize(ScalarOperator) of the
+	 *             class Vector3D.
 	 */
 	public SegmentElt3D addElt(Point3D p1, Point3D p2) throws UpdateException { // Dag
 		// if the netcomp is empty
@@ -333,6 +430,7 @@ public class SegmentNet3DComp implements PersistentObject, ComplexGeoObj,
 					new Point3D(p2), sop);
 			this.setEntryElement(newElt);
 			this.getSAM().insert(newElt);
+			// Here an IllegalArgumentException can be thrown.
 			this.setOriented(true);
 			this.setConnected(true);
 			newElt.setID(getNet().nextElementID()); // set id
@@ -444,6 +542,9 @@ public class SegmentNet3DComp implements PersistentObject, ComplexGeoObj,
 	 * @return SegmentElt3D - removed element.
 	 * @throws UpdateException
 	 *             - or subclass of it, signals an Update problem.
+	 * @throws IllegalArgumentException
+	 *             - if an attempt is made to construct a MBB3D whose maximum
+	 *             point is not greater than its minimum point.
 	 */
 	public SegmentElt3D removeElt(Segment3D elt) throws UpdateException { // Dag
 
@@ -461,6 +562,7 @@ public class SegmentNet3DComp implements PersistentObject, ComplexGeoObj,
 			if (removable != null) {
 				this.setEntryElement(removable.getNeighbour(0));
 				this.getSAM().remove(removable);
+				// Here an IllegalArgumentException can be thrown.
 				return removable;
 			}
 			// else
@@ -945,6 +1047,9 @@ public class SegmentNet3DComp implements PersistentObject, ComplexGeoObj,
 	 * Loads the sam at construction time and counts the vertices.
 	 * 
 	 * @param element SegmentElt3D to be inserted into the sam
+	 * 
+	 * @throws IllegalArgumentException if an attempt is made to construct a
+	 * MBB3D whose maximum point is not greater than its minimum point.
 	 */
 	private void loadSAM(SegmentElt3D[] elements) {
 		for (int i = 0; i < elements.length; i++)
@@ -956,6 +1061,10 @@ public class SegmentNet3DComp implements PersistentObject, ComplexGeoObj,
 	 * 
 	 * @param elts
 	 *            SegmentElt3D[]
+	 * @throws IllegalArgumentException
+	 *             if the index of the point of the tetrahedron is not in the
+	 *             interval [0;3]. The exception originates in the method
+	 *             getPoint(int) of the class Tetrahedron3D.
 	 */
 	public void buildNetTopology(SegmentElt3D[] elts) {
 		ScalarOperator so = getScalarOperator();
@@ -1071,6 +1180,10 @@ public class SegmentNet3DComp implements PersistentObject, ComplexGeoObj,
 
 	/**
 	 * Updates the MBB after changes in the net component.
+	 * 
+	 * @throws IllegalArgumentException
+	 *             - if an attempt is made to construct a MBB3D whose maximum
+	 *             point is not greater than its minimum point.
 	 */
 	protected void updateMBB() {
 		setMBB(this.getSAM().getMBB());

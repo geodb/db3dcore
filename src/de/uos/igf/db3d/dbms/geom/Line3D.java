@@ -48,7 +48,11 @@ public class Line3D implements SimpleGeoObj, Serializable {
 	 * @param p2
 	 *            Point3D point2
 	 * @param sop
-	 *            ScalarOperator for normalization.
+	 *            ScalarOperator for normalization
+	 * @throws ArithmeticException
+	 *             - if norm equals zero in epsilon range. This exception
+	 *             originates in the method normalize(ScalarOperator) of the
+	 *             class Vector3D.
 	 */
 	public Line3D(Point3D p1, Point3D p2, ScalarOperator sop) {
 		this.origin = p1;
@@ -67,7 +71,11 @@ public class Line3D implements SimpleGeoObj, Serializable {
 	 * @param dvec
 	 *            direction vector as Vector3D
 	 * @param sop
-	 *            ScalarOperator for normalization.
+	 *            ScalarOperator for normalization
+	 * @throws ArithmeticException
+	 *             - if norm equals zero in epsilon range. This exception
+	 *             originates in the method normalize(ScalarOperator) of the
+	 *             class Vector3D.
 	 */
 	public Line3D(Point3D p, Vector3D dvec, ScalarOperator sop) {
 		this.origin = p;
@@ -85,6 +93,10 @@ public class Line3D implements SimpleGeoObj, Serializable {
 	 *            Segment3D object
 	 * @param sop
 	 *            ScalarOperator
+	 * @throws ArithmeticException
+	 *             - if norm equals zero in epsilon range. This exception
+	 *             originates in the method normalize(ScalarOperator) of the
+	 *             class Vector3D.
 	 */
 	public Line3D(Segment3D line, ScalarOperator sop) {
 		this(line.getPoint(0), line.getPoint(1), sop);
@@ -315,6 +327,13 @@ public class Line3D implements SimpleGeoObj, Serializable {
 	 *            ScalarOperator
 	 * @return SimpleGeoObj - result SimpleGeoObj object (null, Line3D,
 	 *         Point3D).
+	 * @throws IllegalStateException
+	 *             - if the intersectsInt(Line3D line, ScalarOperator sop)
+	 *             method returns a value that is not -2, -1, 0 or 1.
+	 * @throws ArithmeticException
+	 *             - if norm equals zero in epsilon range. This exception
+	 *             originates in the method normalize(ScalarOperator) of the
+	 *             class Vector3D.
 	 */
 	public SimpleGeoObj intersection(Line3D line, ScalarOperator sop) {
 		// test for intersection
@@ -347,6 +366,10 @@ public class Line3D implements SimpleGeoObj, Serializable {
 	 * @param sop
 	 *            ScalarOperator
 	 * @return Point3D - result intersection point.
+	 * @throws ArithmeticException
+	 *             - if norm equals zero in epsilon range. This exception
+	 *             originates in the method normalize(ScalarOperator) of the
+	 *             class Vector3D.
 	 */
 	protected Point3D intersectionOPT(Line3D line, ScalarOperator sop) { // Dag
 
@@ -391,6 +414,14 @@ public class Line3D implements SimpleGeoObj, Serializable {
 	 *            ScalarOperator
 	 * @return SimpleGeoObj - result SimpleGeoObj object (null, Segment3D,
 	 *         Point3D).
+	 * @throws IllegalStateException
+	 *             - if the intersectsInt(Line3D line, ScalarOperator sop)
+	 *             method of the class Line3D returns a value that is not -2,
+	 *             -1, 0 or 1.
+	 * @throws ArithmeticException
+	 *             - if norm equals zero in epsilon range. This exception
+	 *             originates in the method normalize(ScalarOperator) of the
+	 *             class Vector3D.
 	 */
 	public SimpleGeoObj intersection(Segment3D segment, ScalarOperator sop) {
 		Line3D line = new Line3D(segment, sop);
@@ -443,9 +474,11 @@ public class Line3D implements SimpleGeoObj, Serializable {
 	}
 
 	/**
-	 * Returns a MBB from NEGATIV_INFINITY to POSITIVE_INFINITY
+	 * Returns a MBB from NEGATIV_INFINITY to POSITIVE_INFINITY.
 	 * 
-	 * 
+	 * @throws IllegalArgumentException
+	 *             if an attempt is made to construct a MBB3D whose maximum
+	 *             point is not greater than its minimum point.
 	 */
 	public MBB3D getMBB() {
 		return new MBB3D(new Point3D(Double.NEGATIVE_INFINITY,

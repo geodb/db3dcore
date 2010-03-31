@@ -58,6 +58,10 @@ public class Matrix4x4 implements Serializable {
 	 * Returns a copy of <code>this</code> as new Martix4x4 object.
 	 * 
 	 * @return Matrix4x4 - copy of <code>this</code>.
+	 * @throws IllegalArgumentException
+	 *             if length of array is != 16. This exception is not thrown in
+	 *             this implementation because the length of the array is always
+	 *             16.
 	 */
 	public Matrix4x4 copy() {
 
@@ -141,6 +145,10 @@ public class Matrix4x4 implements Serializable {
 	 * @param matrix
 	 *            Matrix4x4 object
 	 * @return Matrix4x4 - new matrix from multiplication.
+	 * @throws IllegalArgumentException
+	 *             if an attempt is made to construct a Matrix4x4 from an array
+	 *             whose length != 16. This exception is not thrown in this
+	 *             implementation.
 	 */
 	public Matrix4x4 mult(Matrix4x4 matrix, double scalar) {
 		Matrix4x4 newMatrix = matrix.copy();
@@ -171,6 +179,10 @@ public class Matrix4x4 implements Serializable {
 	 * @param matrix2
 	 *            second matrix
 	 * @return Matrix4x4 - new matrix form multiplication.
+	 * @throws IllegalArgumentException
+	 *             if an attempt is made to construct a Matrix4x4 from an array
+	 *             whose length != 16. This exception is not thrown in this
+	 *             implementation because the length of the array is always 16.
 	 */
 	public Matrix4x4 mult(Matrix4x4 matrix1, Matrix4x4 matrix2) {
 
@@ -253,6 +265,9 @@ public class Matrix4x4 implements Serializable {
 	 * 
 	 * @return Matrix4x4 - inverse matrix, <code>null</code> if det=0
 	 *         (invertation not simple).
+	 * @throws IllegalArgumentException
+	 *             if an attempt is made to construct a Matrix4x4 from an array
+	 *             whose length != 16.
 	 */
 	public Matrix4x4 getInverseMatrix() {
 		/*
@@ -314,6 +329,10 @@ public class Matrix4x4 implements Serializable {
 	 * @param z
 	 *            value for translation in Z-direction
 	 * @return Matrix4x4 - translation matrix.
+	 * @throws IllegalArgumentException
+	 *             if an attempt is made to construct a Matrix4x4 from an array
+	 *             whose length != 16. This exception is not thrown in this
+	 *             implementation because the length of the array is always 16.
 	 */
 	public static Matrix4x4 getSimpleTranslationMatrix(double x, double y,
 			double z) {
@@ -332,6 +351,14 @@ public class Matrix4x4 implements Serializable {
 	 * @param sop
 	 *            ScalarOperator
 	 * @return Matrix4x4 - transformation matrix.
+	 * @throws IllegalArgumentException
+	 *             - if an attempt is made to construct a Matrix4x4 from an
+	 *             array whose length != 16. This exception is not thrown in
+	 *             this implementation because the length of the array is always
+	 *             16.
+	 * @throws IllegalArgumentException
+	 *             - if the parameter index of the method getScalar(int index)
+	 *             of the class Vector3D is not 0, 1 or 2.
 	 */
 	public static Matrix4x4 getTransformationMatrix(Plane3D plane,
 			ScalarOperator sop) {

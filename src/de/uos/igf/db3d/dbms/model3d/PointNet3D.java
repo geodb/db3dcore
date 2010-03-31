@@ -56,12 +56,16 @@ public class PointNet3D extends SpatialObject3D implements Sample3D,
 	 *            PointNet3DComp[]
 	 * @param sop
 	 *            ScalarOperator
+	 * @throws IllegalArgumentException
+	 *             if an attempt is made to construct a MBB3D whose maximum
+	 *             point is not greater than its minimum point.
 	 */
 	protected PointNet3D(PointNet3DComp[] components, ScalarOperator sop) {
 		super();
 		this.components = components;
 		this.setScalarOperator(sop);
 		updateMBB();
+		// Here an IllegalArgumentException can be thrown.
 	}
 
 	/**
@@ -72,6 +76,9 @@ public class PointNet3D extends SpatialObject3D implements Sample3D,
 	 * 
 	 * @param net
 	 *            PointNet3D
+	 * @throws IllegalArgumentException
+	 *             if an attempt is made to construct a MBB3D whose maximum
+	 *             point is not greater than its minimum point.
 	 */
 	public PointNet3D(PointNet3D net) {
 		super();
@@ -83,6 +90,7 @@ public class PointNet3D extends SpatialObject3D implements Sample3D,
 		}
 		this.setScalarOperator(net.getScalarOperator().copy());
 		updateMBB();
+		// Here an IllegalArgumentException can be thrown.
 	}
 
 	/**
@@ -197,6 +205,9 @@ public class PointNet3D extends SpatialObject3D implements Sample3D,
 	 * @param indexes
 	 *            int[]
 	 * @return PointNet3D - new PointNet3D.
+	 * @throws IllegalArgumentException
+	 *             if an attempt is made to construct a MBB3D whose maximum
+	 *             point is not greater than its minimum point.
 	 */
 	public PointNet3D splitPointNet(int[] indexes) { // Dag
 		PointNet3DComp[] newPointNetComps = new PointNet3DComp[indexes.length];
@@ -206,6 +217,7 @@ public class PointNet3D extends SpatialObject3D implements Sample3D,
 			this.removeComponent(getComponent(i));
 		}
 		return new PointNet3D(newPointNetComps, getScalarOperator());
+		// Here an IllegalArgumentException can be thrown.
 	}
 
 	/**
@@ -321,6 +333,10 @@ public class PointNet3D extends SpatialObject3D implements Sample3D,
 	/**
 	 * Marks the end of an update.<br>
 	 * Resets the update flag and begins updating the net.
+	 * 
+	 * @throws IllegalArgumentException
+	 *             if an attempt is made to construct a MBB3D whose maximum
+	 *             point is not greater than its minimum point.
 	 */
 	public void endUpdate() {
 		setUpdate(false);
@@ -331,9 +347,11 @@ public class PointNet3D extends SpatialObject3D implements Sample3D,
 				comps[i].updateEulerStatistics();
 				comps[i].updateEntryElement();
 				comps[i].updateMBB();
+				// Here an IllegalArgumentException can be thrown.
 			}
 		}
 		this.updateMBB();
+		// Here an IllegalArgumentException can be thrown.
 	}
 
 	/**
@@ -352,6 +370,10 @@ public class PointNet3D extends SpatialObject3D implements Sample3D,
 	 * Iterates over all components updating and union their mbbs.<br>
 	 * Sets the updated MBB in the abstract SpatialObject.<br>
 	 * Updates the index in which the net is.
+	 * 
+	 * @throws IllegalArgumentException
+	 *             if an attempt is made to construct a MBB3D whose maximum
+	 *             point is not greater than its minimum point.
 	 */
 	protected void updateMBB() {
 		MBB3D neu = null;
@@ -371,8 +393,10 @@ public class PointNet3D extends SpatialObject3D implements Sample3D,
 		if (sam != null) { // must be first removed and afterward the new mbb
 			// must be
 			sam.remove(this); // set before reinsertion
+			// Here an IllegalArgumentException can be thrown.
 			setMBB(neu);
 			sam.insert(this);
+			// Here an IllegalArgumentException can be thrown.
 		} else {
 			// set the SpatialObject mbb
 			setMBB(neu);

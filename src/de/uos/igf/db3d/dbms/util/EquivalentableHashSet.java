@@ -130,6 +130,14 @@ public final class EquivalentableHashSet extends AbstractHashSet {
 	 * @param key2
 	 *            Object 2
 	 * @return boolean - true if equal, false otherwise.
+	 * @throws IllegalArgumentException
+	 *             if the index of the point of the tetrahedron is not in the
+	 *             interval [0;3]. The exception originates in the method
+	 *             getPoint(int) of the class Tetrahedron3D.
+	 * @throws IllegalArgumentException
+	 *             - if index of a triangle point is not 0, 1 or 2. The
+	 *             exception originates in the method getPoint(int) of the class
+	 *             Triangle3D.
 	 * @see db3d.dbms.util.AbstractHashMap#equalityTest(java.lang.Object,
 	 *      java.lang.Object)
 	 */

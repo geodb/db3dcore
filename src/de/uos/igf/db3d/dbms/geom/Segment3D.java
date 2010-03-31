@@ -194,6 +194,9 @@ public class Segment3D implements PersistentObject, SimpleGeoObj,
 	 * Returns (computes) the MBB3D of this.
 	 * 
 	 * @return MBB3D - mbb of this.
+	 * @throws IllegalArgumentException
+	 *             if an attempt is made to construct a MBB3D whose maximum
+	 *             point is not greater than its minimum point.
 	 */
 	public MBB3D getMBB() {
 		return new MBB3D(
@@ -222,6 +225,10 @@ public class Segment3D implements PersistentObject, SimpleGeoObj,
 	 * @param sop
 	 *            ScalarOperator
 	 * @return Vector3D - the normalized direction vector for this.
+	 * @throws ArithmeticException
+	 *             - if norm equals zero in epsilon range. This exception
+	 *             originates in the method normalize(ScalarOperator) of the
+	 *             class Vector3D.
 	 */
 	public Vector3D getDirectionVector(ScalarOperator sop) {
 		Vector3D v = new Vector3D(this.end, this.start);
@@ -235,6 +242,10 @@ public class Segment3D implements PersistentObject, SimpleGeoObj,
 	 * @param sop
 	 *            ScalarOperator
 	 * @return Line3D - the line through this.
+	 * @throws ArithmeticException
+	 *             - if norm equals zero in epsilon range. This exception
+	 *             originates in the method normalize(ScalarOperator) of the
+	 *             class Vector3D.
 	 */
 	public Line3D getLine(ScalarOperator sop) {
 		return new Line3D(this, sop);
@@ -246,6 +257,18 @@ public class Segment3D implements PersistentObject, SimpleGeoObj,
 	 * @param mbb
 	 *            MBB3D for test
 	 * @return boolean - true if this intersects with mbb.
+	 * @throws IllegalStateException
+	 *             - if the intersectsInt(Line3D line, ScalarOperator sop)
+	 *             method of the class Line3D (which computes the intersection
+	 *             of two lines) called by this method returns a value that is
+	 *             not -2, -1, 0 or 1.
+	 * @throws IllegalStateException
+	 *             - if the index of the point coordinate is not 0 , 1 or 2
+	 *             (that stands for the x-, y- and z-coordinate).
+	 * @throws ArithmeticException
+	 *             - if norm equals zero in epsilon range. This exception
+	 *             originates in the method normalize(ScalarOperator) of the
+	 *             class Vector3D.
 	 */
 	public boolean intersects(MBB3D mbb, ScalarOperator sop) { // Dag
 
@@ -278,6 +301,18 @@ public class Segment3D implements PersistentObject, SimpleGeoObj,
 	 * @param mbb
 	 *            MBB3D for test
 	 * @return boolean - true if inner of this intersects with mbb.
+	 * @throws IllegalStateException
+	 *             - if the intersectsInt(Line3D line, ScalarOperator sop)
+	 *             method of the class Line3D (which computes the intersection
+	 *             of two lines) called by this method returns a value that is
+	 *             not -2, -1, 0 or 1.
+	 * @throws IllegalStateException
+	 *             - if the index of the point coordinate is not 0 , 1 or 2
+	 *             (that stands for the x-, y- and z-coordinate).
+	 * @throws ArithmeticException
+	 *             - if norm equals zero in epsilon range. This exception
+	 *             originates in the method normalize(ScalarOperator) of the
+	 *             class Vector3D.
 	 */
 	public boolean intersectsStrict(MBB3D mbb, ScalarOperator sop) { // Dag
 
@@ -307,6 +342,10 @@ public class Segment3D implements PersistentObject, SimpleGeoObj,
 	 * @param sop
 	 *            ScalarOperator
 	 * @return boolean - true if intersects, false otherwise.
+	 * @throws ArithmeticException
+	 *             - if norm equals zero in epsilon range. This exception
+	 *             originates in the method normalize(ScalarOperator) of the
+	 *             class Vector3D.
 	 */
 	public boolean intersects(Plane3D plane, ScalarOperator sop) {
 		return plane.intersects(this, sop);
@@ -320,6 +359,15 @@ public class Segment3D implements PersistentObject, SimpleGeoObj,
 	 * @param sop
 	 *            ScalarOperator
 	 * @return boolean - true if intersects, false otherwise.
+	 * @throws IllegalStateException
+	 *             - if the intersectsInt(Line3D line, ScalarOperator sop)
+	 *             method of the class Line3D (which computes the intersection
+	 *             of two lines) called by this method returns a value that is
+	 *             not -2, -1, 0 or 1.
+	 * @throws ArithmeticException
+	 *             - if norm equals zero in epsilon range. This exception
+	 *             originates in the method normalize(ScalarOperator) of the
+	 *             class Vector3D.
 	 */
 	public boolean intersects(Line3D line, ScalarOperator sop) {
 		int flag = this.intersectsInt(line, sop);
@@ -335,6 +383,15 @@ public class Segment3D implements PersistentObject, SimpleGeoObj,
 	 * @param segment
 	 *            Segment3D for intersection
 	 * @return boolean - true if intersects, false otherwise.
+	 * @throws IllegalStateException
+	 *             - if the intersectsInt(Line3D line, ScalarOperator sop)
+	 *             method of the class Line3D (which computes the intersection
+	 *             of two lines) called by this method returns a value that is
+	 *             not -2, -1, 0 or 1.
+	 * @throws ArithmeticException
+	 *             - if norm equals zero in epsilon range. This exception
+	 *             originates in the method normalize(ScalarOperator) of the
+	 *             class Vector3D.
 	 */
 	public boolean intersects(Segment3D segment, ScalarOperator sop) {
 
@@ -379,6 +436,10 @@ public class Segment3D implements PersistentObject, SimpleGeoObj,
 	 * @param sop
 	 *            ScalarOperator
 	 * @return int - dimension of result.
+	 * @throws ArithmeticException
+	 *             - if norm equals zero in epsilon range. This exception
+	 *             originates in the method normalize(ScalarOperator) of the
+	 *             class Vector3D.
 	 */
 	public int intersectsInt(Plane3D plane, ScalarOperator sop) {
 		return plane.intersectsInt(this, sop);
@@ -393,6 +454,15 @@ public class Segment3D implements PersistentObject, SimpleGeoObj,
 	 * @param sop
 	 *            ScalarOperator
 	 * @return int - dimension of result.
+	 * @throws IllegalStateException
+	 *             - if the intersectsInt(Line3D line, ScalarOperator sop)
+	 *             method of the class Line3D (which computes the intersection
+	 *             of two lines) called by this method returns a value that is
+	 *             not -2, -1, 0 or 1.
+	 * @throws ArithmeticException
+	 *             - if norm equals zero in epsilon range. This exception
+	 *             originates in the method normalize(ScalarOperator) of the
+	 *             class Vector3D.
 	 */
 	public int intersectsInt(Line3D line, ScalarOperator sop) {
 		SimpleGeoObj result = this.intersection(line, sop);
@@ -412,6 +482,15 @@ public class Segment3D implements PersistentObject, SimpleGeoObj,
 	 * @param sop
 	 *            ScalarOperator
 	 * @return int - dimension of result.
+	 * @throws IllegalStateException
+	 *             - if the intersectsInt(Line3D line, ScalarOperator sop)
+	 *             method of the class Line3D (which computes the intersection
+	 *             of two lines) called by this method returns a value that is
+	 *             nots -2, -1, 0 or 1.
+	 * @throws ArithmeticException
+	 *             - if norm equals zero in epsilon range. This exception
+	 *             originates in the method normalize(ScalarOperator) of the
+	 *             class Vector3D.
 	 */
 	public int intersectsInt(Segment3D segment, ScalarOperator sop) {
 		SimpleGeoObj result = this.intersection(segment, sop);
@@ -428,6 +507,10 @@ public class Segment3D implements PersistentObject, SimpleGeoObj,
 	 * @param plane
 	 *            Plane3D for test
 	 * @return boolean - true if intersects, false otherwise.
+	 * @throws ArithmeticException
+	 *             - if norm equals zero in epsilon range. This exception
+	 *             originates in the method normalize(ScalarOperator) of the
+	 *             class Vector3D.
 	 */
 	public boolean intersectsRegular(Plane3D plane, ScalarOperator sop) {
 		if (this.intersectsInt(plane, sop) == 0)
@@ -444,6 +527,15 @@ public class Segment3D implements PersistentObject, SimpleGeoObj,
 	 * @param sop
 	 *            ScalarOperator
 	 * @return boolean - true if intersects, false otherwise.
+	 * @throws IllegalStateException
+	 *             - if the intersectsInt(Line3D line, ScalarOperator sop)
+	 *             method of the class Line3D (which computes the intersection
+	 *             of two lines) called by this method returns a value that is
+	 *             not -2, -1, 0 or 1.
+	 * @throws ArithmeticException
+	 *             - if norm equals zero in epsilon range. This exception
+	 *             originates in the method normalize(ScalarOperator) of the
+	 *             class Vector3D.
 	 */
 	public boolean intersectsRegular(Line3D line, ScalarOperator sop) {
 		if (this.intersectsInt(line, sop) == 0)
@@ -460,6 +552,15 @@ public class Segment3D implements PersistentObject, SimpleGeoObj,
 	 * @param sop
 	 *            ScalarOperator
 	 * @return boolean - true if intersects, false otherwise.
+	 * @throws Illegal
+	 *             StateException - if the intersectsInt(Line3D line,
+	 *             ScalarOperator sop) method of the class Line3D (which
+	 *             computes the intersection of two lines) called by this method
+	 *             returns a value that is not -2, -1, 0 or 1.
+	 * @throws ArithmeticException
+	 *             - if norm equals zero in epsilon range. This exception
+	 *             originates in the method normalize(ScalarOperator) of the
+	 *             class Vector3D.
 	 */
 	public boolean intersectsRegular(Segment3D segment, ScalarOperator sop) {
 		if (this.intersectsInt(segment, sop) == 0)
@@ -490,6 +591,10 @@ public class Segment3D implements PersistentObject, SimpleGeoObj,
 	 * @param point
 	 *            Point3D to test
 	 * @return boolean - true if contained, false otherwise.
+	 * @throws ArithmeticException
+	 *             - if norm equals zero in epsilon range. This exception
+	 *             originates in the method normalize(ScalarOperator) of the
+	 *             class Vector3D.
 	 * @see #containsOnLine(Point3D, ScalarOperator)
 	 */
 	public boolean contains(Point3D point, ScalarOperator sop) {
@@ -508,6 +613,10 @@ public class Segment3D implements PersistentObject, SimpleGeoObj,
 	 * @param sop
 	 *            ScalarOperator
 	 * @return boolean - true if contained, false otherwise.
+	 * @throws ArithmeticException
+	 *             - if norm equals zero in epsilon range. This exception
+	 *             originates in the method normalize(ScalarOperator) of the
+	 *             class Vector3D.
 	 */
 	public boolean contains(Segment3D seg, ScalarOperator sop) {
 		Point3D[] points = seg.getPoints();
@@ -531,6 +640,14 @@ public class Segment3D implements PersistentObject, SimpleGeoObj,
 	 *            ScalarOperator
 	 * @return SimpleGeoObj - result SimpleGeoObj object (null, Segment3D,
 	 *         Point3D).
+	 * @throws IllegalStateException
+	 *             - if the intersectsInt(Line3D line, ScalarOperator sop)
+	 *             method (which computes the intersection of two lines) of the
+	 *             class Line3D returns a value that is not -2, -1, 0 or 1.
+	 * @throws ArithmeticException
+	 *             - if norm equals zero in epsilon range. This exception
+	 *             originates in the method normalize(ScalarOperator) of the
+	 *             class Vector3D.
 	 */
 	public SimpleGeoObj intersection(Line3D line, ScalarOperator sop) {
 		return line.intersection(this, sop);
@@ -642,6 +759,15 @@ public class Segment3D implements PersistentObject, SimpleGeoObj,
 	 *            Segment3D for intersection
 	 * @return SimpleGeoObj - result SimpleGeoObj object (null, Segment3D,
 	 *         Point3D).
+	 * @throws IllegalStateException
+	 *             - if the intersectsInt(Line3D line, ScalarOperator sop)
+	 *             method of the class Line3D (which computes the intersection
+	 *             of two lines) called by this method returns a value that is
+	 *             not -2, -1, 0 or 1.
+	 * @throws ArithmeticException
+	 *             - if norm equals zero in epsilon range. This exception
+	 *             originates in the method normalize(ScalarOperator) of the
+	 *             class Vector3D.
 	 */
 	public SimpleGeoObj intersection(Segment3D segment, ScalarOperator sop) {
 
@@ -678,6 +804,10 @@ public class Segment3D implements PersistentObject, SimpleGeoObj,
 	 *            ScalarOperator
 	 * @return SimpleGeoObj - result SimpleGeoObj object (null, Segment3D,
 	 *         Point3D).
+	 * @throws ArithmeticException
+	 *             - if norm equals zero in epsilon range. This exception
+	 *             originates in the method normalize(ScalarOperator) of the
+	 *             class Vector3D.
 	 */
 	public SimpleGeoObj intersection(Plane3D plane, ScalarOperator sop) {
 		return plane.intersection(this, sop);
@@ -782,6 +912,10 @@ public class Segment3D implements PersistentObject, SimpleGeoObj,
 	 *            Vector3D with the given orientation
 	 * @param sop
 	 *            ScalarOperator
+	 * @throws ArithmeticException
+	 *             - if norm equals zero in epsilon range. This exception
+	 *             originates in the method normalize(ScalarOperator) of the
+	 *             class Vector3D.
 	 */
 	public void setOrientation(Vector3D vec, ScalarOperator sop) {
 		double scalarpd = this.getDirectionVector(sop).scalarproduct(vec);

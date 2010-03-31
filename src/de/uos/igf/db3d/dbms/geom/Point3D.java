@@ -83,6 +83,9 @@ public class Point3D implements PersistentObject, SimpleGeoObj, Equivalentable,
 	 * No copy constructor used - this is referenced in MBB3D.
 	 * 
 	 * @return MBB3D of this.
+	 * @throws IllegalArgumentException
+	 *             if an attempt is made to construct a MBB3D whose maximum
+	 *             point is not greater than its minimum point.
 	 */
 	public MBB3D getMBB() {
 		return new MBB3D(this, this);
@@ -126,6 +129,8 @@ public class Point3D implements PersistentObject, SimpleGeoObj, Equivalentable,
 	 *            [0;2]
 	 * @param value
 	 *            double value
+	 * @throws IllegalStateException
+	 *             - if the index of the point coordinate is not 0, 1 or 2.
 	 */
 	public void setCoord(int index, double value) {
 		switch (index) {
@@ -152,6 +157,8 @@ public class Point3D implements PersistentObject, SimpleGeoObj, Equivalentable,
 	 * @param index
 	 *            int
 	 * @return Point3D for the given index.
+	 * @throws IllegalStateException
+	 *             - if the index is not 0.
 	 */
 	public Point3D getPoint(int index) {
 		switch (index) {
@@ -370,6 +377,10 @@ public class Point3D implements PersistentObject, SimpleGeoObj, Equivalentable,
 	 * @param sop
 	 *            ScalarOperator
 	 * @return SimpleGeoObj - result of projection.
+	 * @throws ArithmeticException
+	 *             - if norm equals zero in epsilon range. This exception
+	 *             originates in the method normalize(ScalarOperator) of the
+	 *             class Vector3D.
 	 */
 	public SimpleGeoObj projection(Segment3D seg, ScalarOperator sop) { // Dag
 

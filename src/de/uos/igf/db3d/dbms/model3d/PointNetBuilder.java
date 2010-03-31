@@ -111,9 +111,13 @@ public class PointNetBuilder {
 	 *            be defined.<br>
 	 *            It is assumed that there are NO ! redundant Point3D used in
 	 *            this point array.
+	 * @throws IllegalArgumentException
+	 *             - if an attempt is made to construct a MBB3D whose maximum
+	 *             point is not greater than its minimum point.
 	 */
 	public void addComponent(PointElt3D[] elements) {
 		PointNet3DComp comp = new PointNet3DComp(elements, getScalarOperator());
+		// Here an IllegalArgumentException can be thrown.
 
 		for (int i = 0; i < elements.length; i++) {
 			elements[i].setID(counter++);
@@ -135,9 +139,13 @@ public class PointNetBuilder {
 	 *            defined.<br>
 	 *            It is assumed that there are NO ! redundant Point3D used in
 	 *            this point array.
+	 * @throws IllegalArgumentException
+	 *             - if an attempt is made to construct a MBB3D whose maximum
+	 *             point is not greater than its minimum point.
 	 */
 	public void addComponent(PointElt3D[] elements, int id) {
 		PointNet3DComp comp = new PointNet3DComp(elements, getScalarOperator());
+		// Here an IllegalArgumentException can be thrown.
 		comp.setComponentID(id);
 
 		for (int i = 0; i < elements.length; i++) {
@@ -154,6 +162,9 @@ public class PointNetBuilder {
 	 * The method returns null if no component was added.
 	 * 
 	 * @return PointNet3D - the built point net.
+	 * @throws IllegalArgumentException
+	 *             if an attempt is made to construct a MBB3D whose maximum
+	 *             point is not greater than its minimum point.
 	 */
 	public PointNet3D getPointNet() {
 		if (components.size() <= 0)
@@ -164,6 +175,7 @@ public class PointNetBuilder {
 			compnet[i] = (PointNet3DComp) components.get(i);
 
 		PointNet3D net = new PointNet3D(compnet, getScalarOperator());
+		// Here an IllegalArgumentException can be thrown.
 
 		// set component counter
 		net.setComponentID(this.compIDCounter);

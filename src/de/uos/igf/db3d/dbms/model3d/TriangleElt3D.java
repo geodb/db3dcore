@@ -57,7 +57,14 @@ public class TriangleElt3D extends Triangle3D implements NetElement3D {
 	 *            If ScalarOperator is <code>null</code>, no validation will
 	 *            occur.
 	 * @throws IllegalArgumentException
-	 *             - signals inappropriate parameters.
+	 *             - if an attempt is made to construct a Triangle3D from a
+	 *             point array whose length is not 3 or the validation of the
+	 *             constructed Triangle3D fails. The exception originates in the
+	 *             constructor Triangle3D(Point3D[], ScalarOperator).
+	 * @throws ArithmeticException
+	 *             - if norm equals zero in epsilon range. This exception
+	 *             originates in the method normalize(ScalarOperator) of the
+	 *             class Vector3D.
 	 */
 	public TriangleElt3D(Point3D[] points, ScalarOperator sop)
 			throws IllegalArgumentException {
@@ -81,6 +88,15 @@ public class TriangleElt3D extends Triangle3D implements NetElement3D {
 	 *            ScalarOperator needed for validation.<br>
 	 *            If ScalarOperator is <code>null</code>, no validation will
 	 *            occur.
+	 * @throws IllegalArgumentException
+	 *             - if an attempt is made to construct a Triangle3D from a
+	 *             point array whose length is not 3 or the validation of the
+	 *             constructed Triangle3D fails. The exception originates in the
+	 *             constructor Triangle3D(Point3D[], ScalarOperator).
+	 * @throws ArithmeticException
+	 *             - if norm equals zero in epsilon range. This exception
+	 *             originates in the method normalize(ScalarOperator) of the
+	 *             class Vector3D.
 	 */
 	public TriangleElt3D(Point3D point1, Point3D point2, Point3D point3,
 			ScalarOperator sop) {
@@ -99,6 +115,15 @@ public class TriangleElt3D extends Triangle3D implements NetElement3D {
 	 *            ScalarOperator needed for validation.<br>
 	 *            If ScalarOperator is <code>null</code>, no validation will
 	 *            occur.
+	 * @throws IllegalArgumentException
+	 *             - if an attempt is made to construct a Triangle3D from a
+	 *             point array whose length is not 3 or the validation of the
+	 *             constructed Triangle3D fails. The exception originates in the
+	 *             constructor Triangle3D(Point3D[], ScalarOperator).
+	 * @throws ArithmeticException
+	 *             - if norm equals zero in epsilon range. This exception
+	 *             originates in the method normalize(ScalarOperator) of the
+	 *             class Vector3D.
 	 */
 	public TriangleElt3D(Point3D point, Segment3D seg, ScalarOperator sop) {
 		this(new Point3D[] { point, seg.getPoint(0), seg.getPoint(1) }, sop);
@@ -109,6 +134,18 @@ public class TriangleElt3D extends Triangle3D implements NetElement3D {
 	 * 
 	 * @param triangle
 	 *            Triangle3D
+	 * @throws IllegalArgumentException
+	 *             - if validation of a Triangle3D fails. The exception
+	 *             originates in the constructor Triangle3D(Point3D, Point3D,
+	 *             Point3D, ScalarOperator).
+	 * @throws IllegalArgumentException
+	 *             - if index of a triangle point is not 0, 1 or 2. The
+	 *             exception originates in the method getPoint(int) of the class
+	 *             Triangle3D.
+	 * @throws ArithmeticException
+	 *             - if norm equals zero in epsilon range. This exception
+	 *             originates in the method normalize(ScalarOperator) of the
+	 *             class Vector3D.
 	 */
 	public TriangleElt3D(Triangle3D triangle) {
 		super(triangle);
@@ -354,6 +391,10 @@ public class TriangleElt3D extends Triangle3D implements NetElement3D {
 	 *            FlagMap to store the visited neighbours
 	 * @author Dag<br>
 	 *         Revision: Edgar Butwilowski
+	 * @throws IllegalArgumentException
+	 *             - if index of a triangle point is not 0, 1 or 2. The
+	 *             exception originates in the method getPoint(int) of the class
+	 *             Triangle3D.
 	 */
 	public void makeNeighboursOrientationConsistent(ScalarOperator sop,
 			FlagMap flags) {
@@ -419,6 +460,11 @@ public class TriangleElt3D extends Triangle3D implements NetElement3D {
 	 * Inverts the orientation of the vertices. Overrides invertOrientation
 	 * method of Triangle3D - in addition to the orientation inversion it
 	 * inverts the neighbours.
+	 * 
+	 * @throws IllegalArgumentException
+	 *             - if index of a triangle point is not 0, 1 or 2. The
+	 *             exception originates in the method getPoint(int) of the class
+	 *             Triangle3D.
 	 * 
 	 * @see db3d.dbms.geom.Triangle3D#invertOrientation()
 	 */

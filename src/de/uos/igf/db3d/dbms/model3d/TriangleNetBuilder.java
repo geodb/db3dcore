@@ -111,10 +111,18 @@ public class TriangleNetBuilder {
 	 *            be defined.<br>
 	 *            It is assumed that there are NO ! redundant Point3D used in
 	 *            this triangle array.
+	 * @throws IllegalArgumentException
+	 *             if an attempt is made to construct a MBB3D whose maximum
+	 *             point is not greater than its minimum point.
+	 * @throws IllegalArgumentException
+	 *             - if index of a triangle point is not 0, 1 or 2. The
+	 *             exception originates in the method getPoint(int) of the class
+	 *             Triangle3D.
 	 */
 	public void addComponent(TriangleElt3D[] elements) {
 		TriangleNet3DComp comp = new TriangleNet3DComp(getScalarOperator(),
 				elements);
+		// Here an IllegalArgumentException can be thrown.
 
 		for (int i = 0; i < elements.length; i++) {
 			// set ID
@@ -136,10 +144,18 @@ public class TriangleNetBuilder {
 	 *            has not to be defined.<br>
 	 *            It is assumed that there are NO ! redundant Point3D used in
 	 *            this triangle array.
+	 * @throws IllegalArgumentException
+	 *             if an attempt is made to construct a MBB3D whose maximum
+	 *             point is not greater than its minimum point.
+	 * @throws IllegalArgumentException
+	 *             - if index of a triangle point is not 0, 1 or 2. The
+	 *             exception originates in the method getPoint(int) of the class
+	 *             Triangle3D.
 	 */
 	public void addComponent(TriangleElt3D[] elements, int id) {
 		TriangleNet3DComp comp = new TriangleNet3DComp(getScalarOperator(),
 				elements);
+		// Here an IllegalArgumentException can be thrown.
 		comp.setComponentID(id);
 
 		for (int i = 0; i < elements.length; i++) {
@@ -158,6 +174,9 @@ public class TriangleNetBuilder {
 	 * 
 	 * @return TriangleNet3D if a component was added, <code>null</code>
 	 *         otherwise.
+	 * @throws IllegalArgumentException
+	 *             if an attempt is made to construct a MBB3D whose maximum
+	 *             point is not greater than its minimum point.
 	 */
 	public TriangleNet3D getTriangleNet() {
 		if (components.size() <= 0)
@@ -171,6 +190,7 @@ public class TriangleNetBuilder {
 
 		// instantiation of the net
 		TriangleNet3D net = new TriangleNet3D(compnet, getScalarOperator());
+		// Here an IllegalArgumentException can be thrown.
 
 		// set component counter
 		net.setComponentID(this.compIDCounter);

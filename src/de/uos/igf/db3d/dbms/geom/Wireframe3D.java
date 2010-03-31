@@ -81,6 +81,12 @@ public class Wireframe3D implements SimpleGeoObj, PersistentObject {
 	 * Returns a deep copy of this.
 	 * 
 	 * @return Wireframe3D - new object.
+	 * @throws IllegalStateException
+	 *             - signals Problems with the dimension of the wireframe.
+	 * @throws ArithmeticException
+	 *             - if norm equals zero in epsilon range. This exception
+	 *             originates in the method normalize(ScalarOperator) of the
+	 *             class Vector3D.
 	 */
 	public Wireframe3D copy() {
 		Wireframe3D newWF = new Wireframe3D(this.getSOP());
@@ -100,6 +106,12 @@ public class Wireframe3D implements SimpleGeoObj, PersistentObject {
 	 * 
 	 * @param point
 	 *            Point3D to be added
+	 * @throws IllegalStateException
+	 *             - signals Problems with the dimension of the wireframe.
+	 * @throws ArithmeticException
+	 *             - if norm equals zero in epsilon range. This exception
+	 *             originates in the method normalize(ScalarOperator) of the
+	 *             class Vector3D.
 	 */
 	public void add(Point3D point) {
 		addNode(point);
@@ -112,6 +124,12 @@ public class Wireframe3D implements SimpleGeoObj, PersistentObject {
 	 * 
 	 * @param points
 	 *            Point3D[] to be added
+	 * @throws IllegalStateException
+	 *             - signals Problems with the dimension of the wireframe.
+	 * @throws ArithmeticException
+	 *             - if norm equals zero in epsilon range. This exception
+	 *             originates in the method normalize(ScalarOperator) of the
+	 *             class Vector3D.
 	 */
 	public void add(Point3D[] points) {
 		int length = points.length;
@@ -126,6 +144,12 @@ public class Wireframe3D implements SimpleGeoObj, PersistentObject {
 	 * 
 	 * @param segment
 	 *            Segment3D to be added
+	 * @throws IllegalStateException
+	 *             - signals Problems with the dimension of the wireframe.
+	 * @throws ArithmeticException
+	 *             - if norm equals zero in epsilon range. This exception
+	 *             originates in the method normalize(ScalarOperator) of the
+	 *             class Vector3D.
 	 */
 	public void add(Segment3D segment) {
 		Point3D[] points = segment.getPoints();
@@ -141,6 +165,12 @@ public class Wireframe3D implements SimpleGeoObj, PersistentObject {
 	 * 
 	 * @param segments
 	 *            Segment3D[] to be added
+	 * @throws IllegalStateException
+	 *             - signals Problems with the dimension of the wireframe.
+	 * @throws ArithmeticException
+	 *             - if norm equals zero in epsilon range. This exception
+	 *             originates in the method normalize(ScalarOperator) of the
+	 *             class Vector3D.
 	 */
 	public void add(Segment3D[] segments) {
 		int length = segments.length;
@@ -155,11 +185,18 @@ public class Wireframe3D implements SimpleGeoObj, PersistentObject {
 	 * 
 	 * @param triangle
 	 *            Triangle3D to be added
+	 * @throws IllegalStateException
+	 *             - signals Problems with the dimension of the wireframe.
+	 * @throws ArithmeticException
+	 *             - if norm equals zero in epsilon range. This exception
+	 *             originates in the method normalize(ScalarOperator) of the
+	 *             class Vector3D.
 	 */
 	public void add(Triangle3D triangle) {
 		Point3D[] points = triangle.getPoints();
 		Wireframe3DNode[] nodes = addNodes(points);
 		// make connections
+		// Here an IllegalStateException can be thrown.
 		makeConnection(nodes[0], nodes[1]);
 		makeConnection(nodes[1], nodes[2]);
 		makeConnection(nodes[2], nodes[0]);
@@ -172,6 +209,12 @@ public class Wireframe3D implements SimpleGeoObj, PersistentObject {
 	 * 
 	 * @param triangles
 	 *            Triangle3D[] to be added
+	 * @throws IllegalStateException
+	 *             - signals Problems with the dimension of the wireframe.
+	 * @throws ArithmeticException
+	 *             - if norm equals zero in epsilon range. This exception
+	 *             originates in the method normalize(ScalarOperator) of the
+	 *             class Vector3D.
 	 */
 	public void add(Triangle3D[] triangles) {
 		int length = triangles.length;
@@ -186,11 +229,18 @@ public class Wireframe3D implements SimpleGeoObj, PersistentObject {
 	 * 
 	 * @param tetra
 	 *            Tetrahedron3D to be added
+	 * @throws IllegalStateException
+	 *             - signals Problems with the dimension of the wireframe.
+	 * @throws ArithmeticException
+	 *             - if norm equals zero in epsilon range. This exception
+	 *             originates in the method normalize(ScalarOperator) of the
+	 *             class Vector3D.
 	 */
 	public void add(Tetrahedron3D tetra) {
 		Point3D[] points = tetra.getPoints();
 		Wireframe3DNode[] nodes = addNodes(points);
 		// make connections
+		// Here an IllegalStateException can be thrown.
 		makeConnection(nodes[0], nodes[1]);
 		makeConnection(nodes[1], nodes[2]);
 		makeConnection(nodes[2], nodes[0]);
@@ -206,6 +256,12 @@ public class Wireframe3D implements SimpleGeoObj, PersistentObject {
 	 * 
 	 * @param tetras
 	 *            Tetrahedron3D[] to be added
+	 * @throws IllegalStateException
+	 *             - signals Problems with the dimension of the wireframe.
+	 * @throws ArithmeticException
+	 *             - if norm equals zero in epsilon range. This exception
+	 *             originates in the method normalize(ScalarOperator) of the
+	 *             class Vector3D.
 	 */
 	public void add(Tetrahedron3D[] tetras) {
 		int length = tetras.length;
@@ -218,6 +274,12 @@ public class Wireframe3D implements SimpleGeoObj, PersistentObject {
 	 * 
 	 * @param wireframe
 	 *            Wireframe3D to be added
+	 * @throws IllegalStateException
+	 *             - signals Problems with the dimension of the wireframe.
+	 * @throws ArithmeticException
+	 *             - if norm equals zero in epsilon range. This exception
+	 *             originates in the method normalize(ScalarOperator) of the
+	 *             class Vector3D.
 	 */
 	public void add(Wireframe3D wireframe) {
 		// All connections + isolated nodes
@@ -282,6 +344,12 @@ public class Wireframe3D implements SimpleGeoObj, PersistentObject {
 	 *            Plane3D onto which this should be projected
 	 * 
 	 * @return SimpleGeoObj - intersection result (wireframe).
+	 * @throws IllegalStateException
+	 *             - signals Problems with the dimension of the wireframe.
+	 * @throws ArithmeticException
+	 *             - if norm equals zero in epsilon range. This exception
+	 *             originates in the method normalize(ScalarOperator) of the
+	 *             class Vector3D.
 	 */
 	public SimpleGeoObj projection(Plane3D plane) { // Dag
 		Wireframe3D newWF = this.copy();
@@ -302,6 +370,12 @@ public class Wireframe3D implements SimpleGeoObj, PersistentObject {
 	 * 
 	 * @return SimpleGeoObj - intersection result (wireframe), or
 	 *         <code>null</code>.
+	 * @throws IllegalStateException
+	 *             - signals Problems with the dimension of the wireframe.
+	 * @throws ArithmeticException
+	 *             - if norm equals zero in epsilon range. This exception
+	 *             originates in the method normalize(ScalarOperator) of the
+	 *             class Vector3D.
 	 */
 	public SimpleGeoObj intersection(Plane3D plane) { // Dag
 
@@ -402,6 +476,9 @@ public class Wireframe3D implements SimpleGeoObj, PersistentObject {
 	 * Returns the mbb for all nodes of this.
 	 * 
 	 * @return MBB3D - or null if no nodes in wireframe.
+	 * @throws IllegalArgumentException
+	 *             if an attempt is made to construct a MBB3D whose maximum
+	 *             point is not greater than its minimum point.
 	 */
 	public MBB3D getMBB() {
 		if (this.mapPointsNodes.size() > 0) {
@@ -477,8 +554,23 @@ public class Wireframe3D implements SimpleGeoObj, PersistentObject {
 	 * @return array with two or three adjacent triangles or an empty array if
 	 *         the assumptions made by this method are not fulfilled. Never
 	 *         returns <code>null</code>.
-	 * 
-	 * 
+	 * @throws IllegalStateException
+	 *             - if the intersectsInt(Line3D line, ScalarOperator sop)
+	 *             method of the class Line3D (which computes the intersection
+	 *             of two lines) called by this method returns a value that is
+	 *             not -2, -1, 0 or 1.
+	 * @throws IllegalArgumentException
+	 *             - if validation of a Triangle3D fails. The exception
+	 *             originates in the constructor Triangle3D(Point3D, Point3D,
+	 *             Point3D, ScalarOperator).
+	 * @throws IllegalArgumentException
+	 *             - if index of a triangle point is not 0, 1 or 2. The
+	 *             exception originates in the method getPoint(int) of the class
+	 *             Triangle3D.
+	 * @throws ArithmeticException
+	 *             - if norm equals zero in epsilon range. This exception
+	 *             originates in the method normalize(ScalarOperator) of the
+	 *             class Vector3D.
 	 */
 	public Triangle3D[] getTriangulated() {
 		/*
@@ -588,6 +680,13 @@ public class Wireframe3D implements SimpleGeoObj, PersistentObject {
 	 * Maintains the dimension flag.
 	 * 
 	 * @param point Point3D added to the Wireframe3D
+	 * 
+	 * @throws IllegalStateException - signals Problems with the dimension of
+	 * the wireframe.
+	 * 
+	 * @throws ArithmeticException - if norm equals zero in epsilon range. This
+	 * exception originates in the method normalize(ScalarOperator) of the class
+	 * Vector3D.
 	 */
 	private void maintainDimension(Point3D point) {
 		Point3D[] points;
@@ -646,6 +745,13 @@ public class Wireframe3D implements SimpleGeoObj, PersistentObject {
 	 * @param point Point3D to be added
 	 * 
 	 * @return Wireframe3DNode - node.
+	 * 
+	 * @throws IllegalStateException - signals Problems with the dimension of a
+	 * wireframe.
+	 * 
+	 * @throws ArithmeticException - if norm equals zero in epsilon range. This
+	 * exception originates in the method normalize(ScalarOperator) of the class
+	 * Vector3D.
 	 */
 	private Wireframe3DNode addNode(Point3D point) {
 
@@ -682,6 +788,13 @@ public class Wireframe3D implements SimpleGeoObj, PersistentObject {
 	 * @param points Point3D[] to be added
 	 * 
 	 * @return Wireframe3DNode[] - nodes.
+	 * 
+	 * @throws IllegalStateException - signals Problems with the dimension of
+	 * the wireframe.
+	 * 
+	 * @throws ArithmeticException - if norm equals zero in epsilon range. This
+	 * exception originates in the method normalize(ScalarOperator) of the class
+	 * Vector3D.
 	 */
 	private Wireframe3DNode[] addNodes(Point3D[] points) {
 		int length = points.length;

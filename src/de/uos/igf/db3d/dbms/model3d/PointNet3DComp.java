@@ -92,13 +92,18 @@ public class PointNet3DComp implements PersistentObject, ComplexGeoObj,
 	 *            ScalarOperator
 	 * @param elements
 	 *            PointElt3D[]
+	 * @throws IllegalArgumentException
+	 *             - if an attempt is made to construct a MBB3D whose maximum
+	 *             point is not greater than its minimum point.
 	 */
 	protected PointNet3DComp(PointElt3D[] elements, ScalarOperator sop) {
 		this.id = -1;
 		this.sop = sop;
 		this.sam = new RStar(MAX_SAM, sop);
 		loadSAM(elements);
+		// Here an IllegalArgumentException can be thrown.
 		this.mbb = sam.getMBB();
+		// Here an IllegalArgumentException can be thrown.
 	}
 
 	/**
@@ -174,6 +179,9 @@ public class PointNet3DComp implements PersistentObject, ComplexGeoObj,
 	 * @return PointElt3D - the inserted instance.
 	 * @throws UpdateException
 	 *             - or subclass of it, signals an Update problem.
+	 * @throws IllegalArgumentException
+	 *             - if an attempt is made to construct a MBB3D whose maximum
+	 *             point is not greater than its minimum point.
 	 */
 	public PointElt3D addElt(Point3D point) throws UpdateException {
 		PointElt3D elt = new PointElt3D(point);
@@ -181,6 +189,7 @@ public class PointNet3DComp implements PersistentObject, ComplexGeoObj,
 			throw new ContainmentException("Element already contained !");
 
 		this.getSAM().insert(elt);
+		// Here an IllegalArgumentException can be thrown.
 		elt.setID(getNet().nextElementID()); // set id
 		return elt;
 	}
@@ -193,6 +202,9 @@ public class PointNet3DComp implements PersistentObject, ComplexGeoObj,
 	 * @return PointElt3D - the removed element.
 	 * @throws UpdateException
 	 *             - or subclass of it, signals an Update problem.
+	 * @throws IllegalArgumentException
+	 *             - if an attempt is made to construct a MBB3D whose maximum
+	 *             point is not greater than its minimum point.
 	 */
 	public PointElt3D removeElt(Point3D elt) throws UpdateException {
 		// find element
@@ -214,6 +226,7 @@ public class PointNet3DComp implements PersistentObject, ComplexGeoObj,
 			 * removes the element correctly.
 			 */
 			this.getSAM().remove(removable);
+			// Here an IllegalArgumentException can be thrown.
 			return removable;
 		}
 		// else
@@ -407,6 +420,10 @@ public class PointNet3DComp implements PersistentObject, ComplexGeoObj,
 
 	/**
 	 * Updates the MBB after changes in the net component.
+	 * 
+	 * @throws IllegalArgumentException
+	 *             - if an attempt is made to construct a MBB3D whose maximum
+	 *             point is not greater than its minimum point.
 	 */
 	protected void updateMBB() {
 		setMBB(getSAM().getMBB());
@@ -424,6 +441,9 @@ public class PointNet3DComp implements PersistentObject, ComplexGeoObj,
 	 * of this.
 	 * 
 	 * @param elements PointElt3D elements to be inserted
+	 * 
+	 * @throws IllegalArgumentException if an attempt is made to construct a
+	 * MBB3D whose maximum point is not greater than its minimum point.
 	 */
 	private void loadSAM(PointElt3D[] elements) {
 		for (int i = 0; i < elements.length; i++)

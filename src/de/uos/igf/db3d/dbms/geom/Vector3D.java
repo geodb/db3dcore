@@ -18,7 +18,7 @@ import java.io.ObjectOutput;
 import de.uos.igf.db3d.dbms.structure.PersistentObject;
 
 /**
- * Class Vector3D modells a vector in 3 dimensional space.
+ * Class Vector3D models a vector in 3 dimensional space.
  * 
  * @author Wolfgang Baer / University of Osnabrueck
  */
@@ -293,7 +293,7 @@ public class Vector3D implements PersistentObject, SimpleGeoObj, Externalizable 
 	 * @param sop
 	 *            ScalarOperator
 	 * @throws ArithmeticException
-	 *             if norm is equal zero in epsilon range.
+	 *             if norm equals zero in epsilon range.
 	 */
 	public void normalize(ScalarOperator sop) {
 		double norm = this.getNorm();
@@ -505,6 +505,9 @@ public class Vector3D implements PersistentObject, SimpleGeoObj, Externalizable 
 	 * 
 	 * @return MBB3D - a minimum bounding box for this vector, which is modeled
 	 *         as a point.
+	 * @throws IllegalArgumentException
+	 *             if an attempt is made to construct a MBB3D whose maximum
+	 *             point is not greater than its minimum point.
 	 * @see db3d.dbms.structure.GeoObj#getMBB()
 	 */
 	public MBB3D getMBB() {

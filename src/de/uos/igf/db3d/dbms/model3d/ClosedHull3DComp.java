@@ -73,6 +73,26 @@ public class ClosedHull3DComp implements PersistentObject, ComplexGeoObj,
 	 * @return TriangleElt3D - the inserted instance.
 	 * @throws UpdateException
 	 *             - or subclass of it, signals an Update problem.
+	 * @throws IllegalStateException
+	 *             - if the intersectsInt(Line3D line, ScalarOperator sop)
+	 *             method of the class Line3D (which computes the intersection
+	 *             of two lines) called by this method returns a value that is
+	 *             not -2, -1, 0 or 1.
+	 * @throws IllegalArgumentException
+	 *             -if an attempt is made to construct a MBB3D whose maximum
+	 *             point is not greater than its minimum point.
+	 * @throws IllegalArgumentException
+	 *             - if validation of a Triangle3D fails. The exception
+	 *             originates in the constructor Triangle3D(Point3D, Point3D,
+	 *             Point3D, ScalarOperator).
+	 * @throws IllegalArgumentException
+	 *             - if index of a triangle point is not 0, 1 or 2. The
+	 *             exception originates in the method getPoint(int) of the class
+	 *             Triangle3D.
+	 * @throws ArithmeticException
+	 *             - if norm equals zero in epsilon range. This exception
+	 *             originates in the method normalize(ScalarOperator) of the
+	 *             class Vector3D.
 	 */
 	public TriangleElt3D addElt(Triangle3D elt) throws UpdateException {
 		return getTNetComp().addElt(elt);
@@ -87,6 +107,9 @@ public class ClosedHull3DComp implements PersistentObject, ComplexGeoObj,
 	 * @return TriangleElt3D - removed element.
 	 * @throws UpdateException
 	 *             - or subclass of it, signals an Update problem.
+	 * @throws IllegalArgumentException
+	 *             - if an attempt is made to construct a MBB3D whose maximum
+	 *             point is not greater than its minimum point.
 	 */
 	public TriangleElt3D removeElt(Triangle3D elt) throws UpdateException {
 		return getTNetComp().removeElt(elt);
@@ -100,6 +123,10 @@ public class ClosedHull3DComp implements PersistentObject, ComplexGeoObj,
 	 * @param point
 	 *            Point3D that is tested
 	 * @return boolean - true if contained.
+	 * @throws IllegalArgumentException
+	 *             - if index of a triangle point is not 0, 1 or 2. The
+	 *             exception originates in the method getPoint(int) of the class
+	 *             Triangle3D.
 	 */
 	public boolean containsElt(Point3D point) {
 		return getTNetComp().containsElt(point);
@@ -137,6 +164,23 @@ public class ClosedHull3DComp implements PersistentObject, ComplexGeoObj,
 	 * @param point
 	 *            Point3D to be tested
 	 * @return boolean - true if is strictly contained, false otherwise.
+	 * @throws IllegalStateException
+	 *             - if the intersectsInt(Line3D line, ScalarOperator sop)
+	 *             method of the class Line3D (which computes the intersection
+	 *             of two lines) called by this method returns a value that is
+	 *             not -2, -1, 0 or 1.
+	 * @throws IllegalArgumentException
+	 *             if the index of the point of the tetrahedron is not in the
+	 *             interval [0;3]. The exception originates in the method
+	 *             getPoint(int) of the class Tetrahedron3D.
+	 * @throws IllegalArgumentException
+	 *             - if index of a triangle point is not 0, 1 or 2. The
+	 *             exception originates in the method getPoint(int) of the class
+	 *             Triangle3D.
+	 * @throws ArithmeticException
+	 *             - if norm equals zero in epsilon range. This exception
+	 *             originates in the method normalize(ScalarOperator) of the
+	 *             class Vector3D.
 	 */
 	public boolean containsStrictInside(Point3D point) {
 
@@ -166,6 +210,23 @@ public class ClosedHull3DComp implements PersistentObject, ComplexGeoObj,
 	 *            Point3D to be tested
 	 * 
 	 * @return boolean - true if is contained, false otherwise.
+	 * @throws IllegalStateException
+	 *             - if the intersectsInt(Line3D line, ScalarOperator sop)
+	 *             method of the class Line3D (which computes the intersection
+	 *             of two lines) called by this method returns a value that is
+	 *             not -2, -1, 0 or 1.
+	 * @throws IllegalArgumentException
+	 *             if the index of the point of the tetrahedron is not in the
+	 *             interval [0;3]. The exception originates in the method
+	 *             getPoint(int) of the class Tetrahedron3D.
+	 * @throws IllegalArgumentException
+	 *             - if index of a triangle point is not 0, 1 or 2. The
+	 *             exception originates in the method getPoint(int) of the class
+	 *             Triangle3D.
+	 * @throws ArithmeticException
+	 *             - if norm equals zero in epsilon range. This exception
+	 *             originates in the method normalize(ScalarOperator) of the
+	 *             class Vector3D.
 	 * @see db3d.dbms.model3d.Volume3D#containsInside(db3d.dbms.geom.Point3D)
 	 */
 	public boolean containsInside(Point3D point) {
@@ -197,6 +258,23 @@ public class ClosedHull3DComp implements PersistentObject, ComplexGeoObj,
 	 * 
 	 * @return boolean - true if the point is inside the border, false
 	 * otherwise.
+	 * 
+	 * @throws IllegalStateException - if the intersectsInt(Line3D line,
+	 * ScalarOperator sop) method of the class Line3D (which computes the
+	 * intersection of two lines) called by this method returns a value that is
+	 * not -2, -1, 0 or 1.
+	 * 
+	 * @throws IllegalArgumentException if the index of the point of the
+	 * tetrahedron is not in the interval [0;3]. The exception originates in the
+	 * method getPoint(int) of the class Tetrahedron3D.
+	 * 
+	 * @throws IllegalArgumentException - if index of a triangle point is not 0,
+	 * 1 or 2. The exception originates in the method getPoint(int) of the class
+	 * Triangle3D.
+	 * 
+	 * @throws ArithmeticException - if norm equals zero in epsilon range. This
+	 * exception originates in the method normalize(ScalarOperator) of the class
+	 * Vector3D.
 	 */
 	private boolean isInside(Point3D point) {
 
@@ -273,6 +351,23 @@ public class ClosedHull3DComp implements PersistentObject, ComplexGeoObj,
 	 * @param tri TriangleElt3D to be tested
 	 * 
 	 * @return boolean - inside/outside.
+	 * 
+	 * @throws IllegalStateException - if the intersectsInt(Line3D line,
+	 * ScalarOperator sop) method of the class Line3D (which computes the
+	 * intersection of two lines) called by this method returns a value that is
+	 * not -2, -1, 0 or 1.
+	 * 
+	 * @throws IllegalArgumentException if the index of the point of the
+	 * tetrahedron is not in the interval [0;3]. The exception originates in the
+	 * method getPoint(int) of the class Tetrahedron3D.
+	 * 
+	 * @throws IllegalArgumentException - if index of a triangle point is not 0,
+	 * 1 or 2. The exception originates in the method getPoint(int) of the class
+	 * Triangle3D.
+	 * 
+	 * @throws ArithmeticException - if norm equals zero in epsilon range. This
+	 * exception originates in the method normalize(ScalarOperator) of the class
+	 * Vector3D.
 	 */
 	private boolean isInside(Point3D point, TriangleElt3D tri) {
 
@@ -312,6 +407,14 @@ public class ClosedHull3DComp implements PersistentObject, ComplexGeoObj,
 	 * @param tri TriangleElt3D to be compared
 	 * 
 	 * @return boolean - inside/outside.
+	 * 
+	 * @throws IllegalArgumentException - if index of a triangle point is not 0,
+	 * 1 or 2. The exception originates in the method getPoint(int) of the class
+	 * Triangle3D.
+	 * 
+	 * @throws ArithmeticException - if norm equals zero in epsilon range. This
+	 * exception originates in the method normalize(ScalarOperator) of the class
+	 * Vector3D.
 	 */
 	private boolean isInside(Point3D from, Point3D to, TriangleElt3D tri) {
 
@@ -328,6 +431,23 @@ public class ClosedHull3DComp implements PersistentObject, ComplexGeoObj,
 	 *            Segment3D to be tested
 	 * 
 	 * @return boolean - true if is contained, false otherwise.
+	 * @throws IllegalStateException
+	 *             - if the intersectsInt(Line3D line, ScalarOperator sop)
+	 *             method of the class Line3D (which computes the intersection
+	 *             of two lines) called by this method returns a value that is
+	 *             not -2, -1, 0 or 1.
+	 * @throws IllegalArgumentException
+	 *             if the index of the point of the tetrahedron is not in the
+	 *             interval [0;3]. The exception originates in the method
+	 *             getPoint(int) of the class Tetrahedron3D.
+	 * @throws IllegalArgumentException
+	 *             - if index of a triangle point is not 0, 1 or 2. The
+	 *             exception originates in the method getPoint(int) of the class
+	 *             Triangle3D.
+	 * @throws ArithmeticException
+	 *             - if norm equals zero in epsilon range. This exception
+	 *             originates in the method normalize(ScalarOperator) of the
+	 *             class Vector3D.
 	 * @see db3d.dbms.model3d.Volume3D#containsInside(db3d.dbms.geom.Segment3D)
 	 */
 	public boolean containsInside(Segment3D seg) {
@@ -371,6 +491,23 @@ public class ClosedHull3DComp implements PersistentObject, ComplexGeoObj,
 	 * @param triangle
 	 *            Triangle3D to be tested
 	 * @return boolean - true if is contained, false otherwise.
+	 * @throws IllegalStateException
+	 *             - if the intersectsInt(Line3D line, ScalarOperator sop)
+	 *             method of the class Line3D (which computes the intersection
+	 *             of two lines) called by this method returns a value that is
+	 *             not -2, -1, 0 or 1.
+	 * @throws IllegalArgumentException
+	 *             if the index of the point of the tetrahedron is not in the
+	 *             interval [0;3]. The exception originates in the method
+	 *             getPoint(int) of the class Tetrahedron3D.
+	 * @throws IllegalArgumentException
+	 *             - if index of a triangle point is not 0, 1 or 2. The
+	 *             exception originates in the method getPoint(int) of the class
+	 *             Triangle3D.
+	 * @throws ArithmeticException
+	 *             - if norm equals zero in epsilon range. This exception
+	 *             originates in the method normalize(ScalarOperator) of the
+	 *             class Vector3D.
 	 * @see db3d.dbms.model3d.Volume3D#containsInside(db3d.dbms.geom.Triangle3D)
 	 */
 	public boolean containsInside(Triangle3D triangle) {
@@ -389,6 +526,23 @@ public class ClosedHull3DComp implements PersistentObject, ComplexGeoObj,
 	 * @param tetra
 	 *            Tetrahedron3D to be tested
 	 * @return boolean - true if is contained, false otherwise.
+	 * @throws IllegalStateException
+	 *             - if the intersectsInt(Line3D line, ScalarOperator sop)
+	 *             method of the class Line3D (which computes the intersection
+	 *             of two lines) called by this method returns a value that is
+	 *             not -2, -1, 0 or 1.
+	 * @throws IllegalArgumentException
+	 *             if the index of the point of the tetrahedron is not in the
+	 *             interval [0;3]. The exception originates in the method
+	 *             getPoint(int) of the class Tetrahedron3D.
+	 * @throws IllegalArgumentException
+	 *             - if index of a triangle point is not 0, 1 or 2. The
+	 *             exception originates in the method getPoint(int) of the class
+	 *             Triangle3D.
+	 * @throws ArithmeticException
+	 *             - if norm equals zero in epsilon range. This exception
+	 *             originates in the method normalize(ScalarOperator) of the
+	 *             class Vector3D.
 	 * @see db3d.dbms.model3d.Volume3D#containsInside(db3d.dbms.geom.Tetrahedron3D)
 	 */
 	public boolean containsInside(Tetrahedron3D tetra) {
@@ -406,6 +560,10 @@ public class ClosedHull3DComp implements PersistentObject, ComplexGeoObj,
 	 * 
 	 * @param elts
 	 *            TriangleElt3D[] triangle elements used to build topology
+	 * @throws IllegalArgumentException
+	 *             - if index of a triangle point is not 0, 1 or 2. The
+	 *             exception originates in the method getPoint(int) of the class
+	 *             Triangle3D.
 	 */
 	public void buildNetTopology(TriangleElt3D[] elts) {
 		getTNetComp().buildNetTopology(elts);
@@ -417,6 +575,17 @@ public class ClosedHull3DComp implements PersistentObject, ComplexGeoObj,
 	 * @param point
 	 *            Point3D to be tested
 	 * @return boolean - true if is contained, false otherwise.
+	 * @throws IllegalArgumentException
+	 *             if an attempt is made to construct a MBB3D whose maximum
+	 *             point is not greater than its minimum point.
+	 * @throws IllegalArgumentException
+	 *             - if index of a triangle point is not 0, 1 or 2. The
+	 *             exception originates in the method getPoint(int) of the class
+	 *             Triangle3D.
+	 * @throws ArithmeticException
+	 *             - if norm equals zero in epsilon range. This exception
+	 *             originates in the method normalize(ScalarOperator) of the
+	 *             class Vector3D.
 	 */
 	public boolean contains(Point3D point) {
 		return getTNetComp().contains(point);
@@ -430,6 +599,19 @@ public class ClosedHull3DComp implements PersistentObject, ComplexGeoObj,
 	 * @param seg
 	 *            Segment3D to be tested
 	 * @return boolean - true if is contained, false otherwise.
+	 * @throws IllegalStateException
+	 *             - if the intersectsInt(Line3D line, ScalarOperator sop)
+	 *             method of the class Line3D (which computes the intersection
+	 *             of two lines) called by this method returns a value that is
+	 *             not -2, -1, 0 or 1.
+	 * @throws IllegalArgumentException
+	 *             - if index of a triangle point is not 0, 1 or 2. The
+	 *             exception originates in the method getPoint(int) of the class
+	 *             Triangle3D.
+	 * @throws ArithmeticException
+	 *             - if norm equals zero in epsilon range. This exception
+	 *             originates in the method normalize(ScalarOperator) of the
+	 *             class Vector3D.
 	 */
 	public boolean contains(Segment3D seg) {
 		return getTNetComp().contains(seg);
@@ -443,6 +625,25 @@ public class ClosedHull3DComp implements PersistentObject, ComplexGeoObj,
 	 * @param triangle
 	 *            Triangle3D to be tested
 	 * @return boolean - true if is contained, false otherwise.
+	 * @throws IllegalStateExceptoin
+	 *             - if the intersectsInt(Line3D line, ScalarOperator sop)
+	 *             method of the class Line3D (which computes the intersection
+	 *             of two lines) called by this method returns a value that is
+	 *             not -2, -1, 0 or 1.
+	 * @throws IllegalStateException
+	 *             - signals Problems with the dimension of the wireframe.
+	 * @throws IllegalArgumentException
+	 *             - if validation of a Triangle3D fails. The exception
+	 *             originates in the constructor Triangle3D(Point3D, Point3D,
+	 *             Point3D, ScalarOperator).
+	 * @throws IllegalArgumentException
+	 *             - if index of a triangle point is not 0, 1 or 2. The
+	 *             exception originates in the method getPoint(int) of the class
+	 *             Triangle3D.
+	 * @throws ArithmeticException
+	 *             - if norm equals zero in epsilon range. This exception
+	 *             originates in the method normalize(ScalarOperator) of the
+	 *             class Vector3D.
 	 */
 	public boolean contains(Triangle3D triangle) {
 		return getTNetComp().contains(triangle);
@@ -561,6 +762,10 @@ public class ClosedHull3DComp implements PersistentObject, ComplexGeoObj,
 	 * Returns all Point3D objects of this in a Set.
 	 * 
 	 * @return Set of all Point3D objects of this.
+	 * @throws IllegalArgumentException
+	 *             - if index of a triangle point is not 0, 1 or 2. The
+	 *             exception originates in the method getPoint(int) of the class
+	 *             Triangle3D.
 	 */
 	public Set getPoints() {
 		return getTNetComp().getPoints();
@@ -610,6 +815,29 @@ public class ClosedHull3DComp implements PersistentObject, ComplexGeoObj,
 	 * @param line
 	 *            Line3D to be tested
 	 * @return boolean - true if intersects, false otherwise.
+	 * @throws IllegalStateException
+	 *             - if the intersectsInt(Line3D line, ScalarOperator sop)
+	 *             method of the class Line3D (which computes the intersection
+	 *             of two lines) called by this method returns a value that is
+	 *             not -2, -1, 0 or 1.
+	 * @throws IllegalArgumentException
+	 *             - if an attempt is made to construct a MBB3D whose maximum
+	 *             point is not greater than its minimum point.
+	 * @throws IllegalStateException
+	 *             - if the index of the point coordinate is not 0 , 1 or 2
+	 *             (that stands for the x-, y- and z-coordinate).
+	 * @throws IllegalArgumentException
+	 *             if the index of the point of the tetrahedron is not in the
+	 *             interval [0;3]. The exception originates in the method
+	 *             getPoint(int) of the class Tetrahedron3D.
+	 * @throws IllegalArgumentException
+	 *             - if index of a triangle point is not 0, 1 or 2. The
+	 *             exception originates in the method getPoint(int) of the class
+	 *             Triangle3D.
+	 * @throws ArithmeticException
+	 *             - if norm equals zero in epsilon range. This exception
+	 *             originates in the method normalize(ScalarOperator) of the
+	 *             class Vector3D.
 	 */
 	public boolean intersects(Line3D line) {
 		return getTNetComp().intersects(line);
@@ -620,7 +848,39 @@ public class ClosedHull3DComp implements PersistentObject, ComplexGeoObj,
 	 * 
 	 * @param mbb
 	 *            MBB3D to be tested
-	 * @return boolean - true if interesects, false otherwise.
+	 * @return boolean - true if intersects, false otherwise.
+	 * @throws IllegalStateException
+	 *             - if the intersectsInt(Line3D line, ScalarOperator sop)
+	 *             method of the class Line3D (which computes the intersection
+	 *             of two lines) called by this method returns a value that is
+	 *             not -2, -1, 0 or 1.
+	 * @throws IllegalStateException
+	 *             - if the index of a Point3D in a Rectangle3D is not in the
+	 *             interval [0, 3]. This exception originates in the getPoint
+	 *             (int index) method of the class Rectangle3D called by this
+	 *             method.
+	 * @throws IllegalStateException
+	 *             - signals Problems with the dimension of the wireframe.
+	 * @throws IllegalStateException
+	 *             - if the index of the point coordinate is not 0 , 1 or 2
+	 *             (that stands for the x-, y- and z-coordinate).
+	 * @throws IllegalArgumentException
+	 *             - if validation of a Triangle3D fails. The exception
+	 *             originates in the constructor Triangle3D(Point3D, Point3D,
+	 *             Point3D, ScalarOperator).
+	 * @throws IllegalArgumentException
+	 *             - if index of a triangle point is not 0, 1 or 2. The
+	 *             exception originates in the method getPoint(int) of the class
+	 *             Triangle3D.
+	 * @throws IllegalStateException
+	 *             - if the result of the intersection of a Triangle3D and a
+	 *             MBB3D is not a simplex. The exception originates in the
+	 *             method intersection(MBB3D, ScalarOperator) of the class
+	 *             Triangle3D.
+	 * @throws ArithmeticException
+	 *             - if norm equals zero in epsilon range. This exception
+	 *             originates in the method normalize(ScalarOperator) of the
+	 *             class Vector3D.
 	 */
 	public boolean intersects(MBB3D mbb) {
 		return getTNetComp().intersects(mbb);
@@ -632,6 +892,35 @@ public class ClosedHull3DComp implements PersistentObject, ComplexGeoObj,
 	 * @param plane
 	 *            Plane3D to be tested
 	 * @return boolean - true if intersects, false otherwise.
+	 * @throws IllegalArgumentException
+	 *             - if an attempt is made to construct a MBB3D whose maximum
+	 *             point is not greater than its minimum point.
+	 * @throws IllegalStateException
+	 *             - if the index of a Point3D in a Rectangle3D is not in the
+	 *             interval [0, 3]. This exception originates in the getPoint
+	 *             (int index) method of the class Rectangle3D called by this
+	 *             method.
+	 * @throws IllegalStateException
+	 *             - signals Problems with the dimension of the wireframe.
+	 * @throws IllegalStateException
+	 *             - if the index of the point coordinate is not 0 , 1 or 2
+	 *             (that stands for the x-, y- and z-coordinate).
+	 * @throws IllegalArgumentException
+	 *             if the index of the point of the tetrahedron is not in the
+	 *             interval [0;3]. The exception originates in the method
+	 *             getPoint(int) of the class Tetrahedron3D.
+	 * @throws IllegalArgumentException
+	 *             - if validation of a Triangle3D fails. The exception
+	 *             originates in the constructor Triangle3D(Point3D, Point3D,
+	 *             Point3D, ScalarOperator).
+	 * @throws IllegalArgumentException
+	 *             - if index of a triangle point is not 0, 1 or 2. The
+	 *             exception originates in the method getPoint(int) of the class
+	 *             Triangle3D.
+	 * @throws ArithmeticException
+	 *             - if norm equals zero in epsilon range. This exception
+	 *             originates in the method normalize(ScalarOperator) of the
+	 *             class Vector3D.
 	 */
 	public boolean intersects(Plane3D plane) {
 		return getTNetComp().intersects(plane);
@@ -716,6 +1005,10 @@ public class ClosedHull3DComp implements PersistentObject, ComplexGeoObj,
 	 * 
 	 * @param sop
 	 *            ScalarOperator of this
+	 * @throws IllegalArgumentException
+	 *             - if index of a triangle point is not 0, 1 or 2. The
+	 *             exception originates in the method getPoint(int) of the class
+	 *             Triangle3D.
 	 */
 	public void makeOrientationConsistent(ScalarOperator sop) {
 		if (!getTNetComp().isOrientationConsistent())
@@ -756,6 +1049,11 @@ public class ClosedHull3DComp implements PersistentObject, ComplexGeoObj,
 	/**
 	 * Updates the vertices, edges, faces statistics after changes in the net
 	 * component.
+	 * 
+	 * @throws IllegalArgumentException
+	 *             - if index of a triangle point is not 0, 1 or 2. The
+	 *             exception originates in the method getPoint(int) of the class
+	 *             Triangle3D.
 	 */
 	protected void updateEulerStatistics() {
 		getTNetComp().updateEulerStatistics();
@@ -763,6 +1061,10 @@ public class ClosedHull3DComp implements PersistentObject, ComplexGeoObj,
 
 	/**
 	 * Updates the MBB after changes in the net component.
+	 * 
+	 * @throws IllegalArgumentException
+	 *             - if an attempt is made to construct a MBB3D whose maximum
+	 *             point is not greater than its minimum point.
 	 */
 	protected void updateMBB() {
 		getTNetComp().updateMBB();
@@ -810,6 +1112,10 @@ public class ClosedHull3DComp implements PersistentObject, ComplexGeoObj,
 	 * Calculates volume of this.
 	 * 
 	 * @return double - volume of this.
+	 * @throws IllegalArgumentException
+	 *             - if index of a triangle point is not 0, 1 or 2. The
+	 *             exception originates in the method getPoint(int) of the class
+	 *             Triangle3D.
 	 */
 	public double getVolume() {
 

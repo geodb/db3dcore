@@ -87,6 +87,8 @@ public final class GeomUtils {
 	 *            another non-NaN- double value which may also be infinite
 	 * @return the numeric order of the specified arguments in the same fashion
 	 *         as a comparator does.
+	 * @throws IllegalArgumentException
+	 *             - if the given doubles are NaN values and cannot be compared.
 	 */
 	public static int doubleCompare(double d1, double d2) {
 
@@ -1122,6 +1124,9 @@ public final class GeomUtils {
 	 * @param psi
 	 *            double buffer
 	 * @return MBB3D.
+	 * @throws IllegalArgumentException
+	 *             if an attempt is made to construct a MBB3D whose maximum
+	 *             point is not greater than its minimum point.
 	 */
 	public final static MBB3D getExtendedMBB(Tetrahedron3D tetra, double psi) {
 		Point3D[] points = tetra.getPoints();
@@ -1150,6 +1155,9 @@ public final class GeomUtils {
 	 * @param psi
 	 *            double buffer
 	 * @return MBB3D.
+	 * @throws IllegalArgumentException
+	 *             if an attempt is made to construct a MBB3D whose maximum
+	 *             point is not greater than its minimum point.
 	 */
 	public final static MBB3D getExtendedMBB(Triangle3D tri, double psi) {
 		Point3D[] points = tri.getPoints();
@@ -1178,6 +1186,9 @@ public final class GeomUtils {
 	 * @param psi
 	 *            double buffer
 	 * @return MBB3D.
+	 * @throws IllegalArgumentException
+	 *             if an attempt is made to construct a MBB3D whose maximum
+	 *             point is not greater than its minimum point.
 	 */
 	public final static MBB3D getExtendedMBB(Segment3D se, double psi) {
 		Point3D[] point = se.getPoints();
@@ -1202,6 +1213,9 @@ public final class GeomUtils {
 	 * @param psi
 	 *            double buffer
 	 * @return MBB3D.
+	 * @throws IllegalArgumentException
+	 *             if an attempt is made to construct a MBB3D whose maximum
+	 *             point is not greater than its minimum point.
 	 */
 	public final static MBB3D getExtendedMBB(Point3D point, double psi) {
 		return new MBB3D(new Point3D(point.getX() - psi, point.getY() - psi,
@@ -1267,6 +1281,14 @@ public final class GeomUtils {
 	 * @param sop
 	 *            ScalarOperator
 	 * @return boolean - true if equivalent, false otherwise.
+	 * @throws IllegalArgumentException
+	 *             - if index of a triangle point is not 0, 1 or 2. The
+	 *             exception originates in the method getPoint(int) of the class
+	 *             Triangle3D.
+	 * @throws ArithmeticException
+	 *             - if norm equals zero in epsilon range. This exception
+	 *             originates in the method normalize(ScalarOperator) of the
+	 *             class Vector3D.
 	 */
 	public final static boolean isOrientationEquivalentTriangle(Triangle3D tr1,
 			Triangle3D tr2, ScalarOperator sop) {
@@ -1292,6 +1314,9 @@ public final class GeomUtils {
 		 * 
 		 * @param 02 second Object
 		 * 
+		 * @throws IllegalArgumentException - if the x-coordinates of the given
+		 * points are NaN doubles and cannot be compared.
+		 * 
 		 * @see java.util.Comparator#compare(java.lang.Object, java.lang.Object)
 		 */
 		public int compare(Object o1, Object o2) {
@@ -1311,6 +1336,9 @@ public final class GeomUtils {
 		 * @param o1 first Object
 		 * 
 		 * @param 02 second Object
+		 * 
+		 * @throws IllegalArgumentException - if the y-coordinates of the given
+		 * points are NaN doubles and cannot be compared.
 		 * 
 		 * @see java.util.Comparator#compare(java.lang.Object, java.lang.Object)
 		 */
@@ -1332,6 +1360,9 @@ public final class GeomUtils {
 		 * 
 		 * @param 02 second Object
 		 * 
+		 * @throws IllegalArgumentException - if the z-coordinates of the given
+		 * points are NaN doubles and cannot be compared.
+		 * 
 		 * @see java.util.Comparator#compare(java.lang.Object, java.lang.Object)
 		 */
 		public int compare(Object o1, Object o2) {
@@ -1352,6 +1383,9 @@ public final class GeomUtils {
 		 * @param o1 first Object
 		 * 
 		 * @param 02 second Object
+		 * 
+		 * @throws IllegalArgumentException - if the coordinates of the given
+		 * points are NaN doubles and cannot be compared.
 		 * 
 		 * @see java.util.Comparator#compare(java.lang.Object, java.lang.Object)
 		 */

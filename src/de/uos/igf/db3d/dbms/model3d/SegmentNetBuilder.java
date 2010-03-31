@@ -111,9 +111,17 @@ public class SegmentNetBuilder {
 	 *            be defined.<br>
 	 *            It is assumed that there are NO ! redundant Point3D used in
 	 *            this segment array.
+	 * @throws IllegalArgumentException
+	 *             - if an attempt is made to construct a MBB3D whose maximum
+	 *             point is not greater than its minimum point.
+	 * @throws IllegalArgumentException
+	 *             if the index of the point of the tetrahedron is not in the
+	 *             interval [0;3]. The exception originates in the method
+	 *             getPoint(int) of the class Tetrahedron3D.
 	 */
 	public void addComponent(SegmentElt3D[] elements) {
 		SegmentNet3DComp comp = new SegmentNet3DComp(wsSOP.copy(), elements);
+		// Here an IllegalArgumentException can be thrown.
 
 		for (int i = 0; i < elements.length; i++) {
 			elements[i].setID(counter++);
@@ -135,10 +143,18 @@ public class SegmentNetBuilder {
 	 *            defined.<br>
 	 *            It is assumed that there are NO ! redundant Point3D used in
 	 *            this segment array.
+	 * @throws IllegalArgumentException
+	 *             - if an attempt is made to construct a MBB3D whose maximum
+	 *             point is not greater than its minimum point.
+	 * @throws IllegalArgumentException
+	 *             if the index of the point of the tetrahedron is not in the
+	 *             interval [0;3]. The exception originates in the method
+	 *             getPoint(int) of the class Tetrahedron3D.
 	 */
 	public void addComponent(SegmentElt3D[] elements, int id) {
 		SegmentNet3DComp comp = new SegmentNet3DComp(space.getScalarOperator()
 				.copy(), elements);
+		// Here an IllegalArgumentException can be thrown.
 		comp.setComponentID(id);
 
 		for (int i = 0; i < elements.length; i++) {
@@ -155,6 +171,9 @@ public class SegmentNetBuilder {
 	 * The method returns <code>null</code> if no component was added.
 	 * 
 	 * @return SegmentNet3D if one was built, <code>null</code> otherwise.
+	 * @throws IllegalArgumentException
+	 *             if an attempt is made to construct a MBB3D whose maximum
+	 *             point is not greater than its minimum point.
 	 */
 	public SegmentNet3D getSegmentNet() {
 		if (components.size() <= 0)
@@ -165,6 +184,7 @@ public class SegmentNetBuilder {
 			compnet[i] = (SegmentNet3DComp) components.get(i);
 
 		SegmentNet3D net = new SegmentNet3D(compnet, getScalarOperator());
+		// Here an IllegalArgumentException can be thrown.
 
 		// set component counter
 		net.setComponentID(this.compIDCounter);

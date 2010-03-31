@@ -32,6 +32,11 @@ public class SegmentElt3DTestCase extends TestCase {
 	private SegmentElt3D segmentB;
 	private SegmentElt3D segmentC;
 
+	/**
+	 * @throws IllegalArgumentException
+	 *             - if an attempt is made to construct a MBB3D whose maximum
+	 *             point is not greater than its minimum point.
+	 */
 	public void setUp() throws Exception {
 
 		ScalarOperator sop = new ScalarOperator();
@@ -42,6 +47,7 @@ public class SegmentElt3DTestCase extends TestCase {
 		SegmentNetBuilder netBuilder = new SegmentNetBuilder(sop);
 		netBuilder.addComponent(new SegmentElt3D[] { segmentA, segmentB,
 				segmentC });
+		// Here an IllegalArgumentException can be thrown.
 
 	}
 

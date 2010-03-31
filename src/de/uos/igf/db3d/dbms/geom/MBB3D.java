@@ -54,6 +54,9 @@ public class MBB3D implements PersistentObject, SimpleGeoObj, Externalizable {
 	 *            minimum point of bounding box
 	 * @param pMax
 	 *            maximum point of bounding box
+	 * @throws IllegalArgumentException
+	 *             if the maximum point of the bounding box is not greater than
+	 *             its minimum point.
 	 */
 	public MBB3D(Point3D pMin, Point3D pMax) {
 		this.pMin = pMin;
@@ -157,6 +160,9 @@ public class MBB3D implements PersistentObject, SimpleGeoObj, Externalizable {
 	 * Copies the MBB3D.
 	 * 
 	 * @return MBB3D - deep copy of this.
+	 * @throws IllegalArgumentException
+	 *             if an attempt is made to construct a MBB3D whose maximum
+	 *             point is not greater than its minimum point.
 	 */
 	public MBB3D copy() {
 		return new MBB3D(new Point3D(getPMin()), new Point3D(getPMax()));
@@ -183,6 +189,8 @@ public class MBB3D implements PersistentObject, SimpleGeoObj, Externalizable {
 	 * Returns array of segments of this.
 	 * 
 	 * @return Segment3D[] - segments of this.
+	 * @throws IllegalStateException
+	 *             - if the index of the point coordinate is not 0, 1 or 2.
 	 */
 	public Set<Segment3D> getSegments(ScalarOperator sop) { // Dag
 
@@ -226,6 +234,8 @@ public class MBB3D implements PersistentObject, SimpleGeoObj, Externalizable {
 	 * flat.
 	 * 
 	 * @return Rectangle3D[] - faces of this.
+	 * @throws IllegalStateException
+	 *             - if the index of the point coordinate is not 0, 1 or 2.
 	 */
 	public Rectangle3D[] getFaces(ScalarOperator sop) { // Dag
 
@@ -457,6 +467,9 @@ public class MBB3D implements PersistentObject, SimpleGeoObj, Externalizable {
 	 * @param mbb
 	 *            MBB3D for intersection computation
 	 * @return MBB3D - intersection MBB3D (null if no intersection).
+	 * @throws IllegalArgumentException
+	 *             if an attempt is made to construct a MBB3D whose maximum
+	 *             point is not greater than its minimum point.
 	 */
 	public MBB3D intersection(MBB3D mbb, ScalarOperator sop) {
 		if (!this.intersectsStrict(mbb, sop))
@@ -488,6 +501,17 @@ public class MBB3D implements PersistentObject, SimpleGeoObj, Externalizable {
 	 * @param line
 	 *            Line3D for intersection computation
 	 * @return SimpleGeoObj - resulting intersection object.
+	 * @throws IllegalStateException
+	 *             - if the intersectsInt(Line3D line, ScalarOperator sop)
+	 *             method of the class Line3D (which computes the intersection
+	 *             of two lines) called by this method returns a value that is
+	 *             not -2, -1, 0 or 1.
+	 * @throws IllegalStateException
+	 *             - if the index of the point coordinate is not 0, 1 or 2.
+	 * @throws ArithmeticException
+	 *             - if norm equals zero in epsilon range. This exception
+	 *             originates in the method normalize(ScalarOperator) of the
+	 *             class Vector3D.
 	 */
 	public SimpleGeoObj intersection(Line3D line, ScalarOperator sop) { // Dag
 
@@ -562,6 +586,24 @@ public class MBB3D implements PersistentObject, SimpleGeoObj, Externalizable {
 	 * @param plane
 	 *            Plane3D for intersection computation
 	 * @return SimpleGeoObj - result of intersection.
+	 * @throws IllegalStateException
+	 *             - if the index of a Point3D in a Rectangle3D is not in the
+	 *             interval [0, 3]. This exception originates in the getPoint
+	 *             (int index) method of the class Rectangle3D called by this
+	 *             method.
+	 * @throws IllegalStateException
+	 *             - signals Problems with the dimension of the wireframe.
+	 * @throws IllegalStateException
+	 *             - if the index of the point coordinate is not 0 , 1 or 2
+	 *             (that stands for the x-, y- and z-coordinate).
+	 * @throws IllegalArgumentException
+	 *             - if validation of a Triangle3D fails. The exception
+	 *             originates in the constructor Triangle3D(Point3D, Point3D,
+	 *             Point3D, ScalarOperator).
+	 * @throws ArithmeticException
+	 *             - if norm equals zero in epsilon range. This exception
+	 *             originates in the method normalize(ScalarOperator) of the
+	 *             class Vector3D.
 	 */
 	public SimpleGeoObj intersection(Plane3D plane, ScalarOperator sop) { // Dag
 
@@ -574,6 +616,7 @@ public class MBB3D implements PersistentObject, SimpleGeoObj, Externalizable {
 		for (int i = 0; i < length; i++) {
 
 			SimpleGeoObj obj = face[i].intersection(plane, sop);
+			// Here IllegalStateExceptions can be thrown.
 			if (obj != null) {
 				switch (obj.getType()) {
 				case SimpleGeoObj.POINT3D:
@@ -581,6 +624,8 @@ public class MBB3D implements PersistentObject, SimpleGeoObj, Externalizable {
 					break;
 				case SimpleGeoObj.SEGMENT3D:
 					resultWF.add(((Segment3D) obj));
+					// Here an IllegalStateException can be thrown signaling
+					// problems with the dimensions of the wireframe.
 					break;
 				case SimpleGeoObj.WIREFRAME3D:
 					return ((Wireframe3D) obj);
@@ -693,6 +738,9 @@ public class MBB3D implements PersistentObject, SimpleGeoObj, Externalizable {
 	 * @param mbb
 	 *            MBB3D for union
 	 * @return MBB3D - union MBB3D.
+	 * @throws IllegalArgumentException
+	 *             if an attempt is made to construct a MBB3D whose maximum
+	 *             point is not greater than its minimum point.
 	 */
 	public MBB3D union(MBB3D mbb, ScalarOperator sop) {
 		double[] min = new double[3];
@@ -768,6 +816,9 @@ public class MBB3D implements PersistentObject, SimpleGeoObj, Externalizable {
 	 * 
 	 * @return MBB3D - the bounding box of the given boxes if <code>boxes</code>
 	 *         is not empty, <code>null</code> otherwise.
+	 * @throws IllegalArgumentException
+	 *             if an attempt is made to construct a MBB3D whose maximum
+	 *             point is not greater than its minimum point.
 	 */
 
 	public static MBB3D getMBB(List<MBB3D> boxes) {

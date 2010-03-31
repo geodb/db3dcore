@@ -132,6 +132,21 @@ public class TetrahedronNet3DComp implements PersistentObject, ComplexGeoObj,
 	 *             - during building net topology and registering neighbours, a
 	 *             DB3DException is thrown if the neighbour index is not 0, 1, 2
 	 *             or 3.
+	 * @throws IllegalArgumentException
+	 *             - if an attempt is made to construct a MBB3D whose maximum
+	 *             point is not greater than its minimum point.
+	 * @throws IllegalArgumentException
+	 *             if the index of the point of the tetrahedron is not in the
+	 *             interval [0;3]. The exception originates in the method
+	 *             getPoint(int) of the class Tetrahedron3D.
+	 * @throws IllegalArgumentException
+	 *             if the index of the point of the tetrahedron is not in the
+	 *             interval [0;3]. The exception originates in the method
+	 *             getPoint(int) of the class Tetrahedron3D.
+	 * @throws ArithmeticException
+	 *             - if norm equals zero in epsilon range. This exception
+	 *             originates in the method normalize(ScalarOperator) of the
+	 *             class Vector3D.
 	 */
 	protected TetrahedronNet3DComp(ScalarOperator sop,
 			TetrahedronElt3D[] elements) throws DB3DException {
@@ -139,8 +154,10 @@ public class TetrahedronNet3DComp implements PersistentObject, ComplexGeoObj,
 		this.sop = sop;
 		this.sam = new RStar(MAX_SAM, sop);
 		loadSAM(elements);
+		// Here an IllegalArgumentException can be thrown.
 
 		this.mbb = this.sam.getMBB();
+		// Here an IllegalArgumentException can be thrown.
 		this.buildNetTopology(elements);
 		this.connected = true;
 		updateEntryElement();
@@ -158,16 +175,57 @@ public class TetrahedronNet3DComp implements PersistentObject, ComplexGeoObj,
 	 * @throws DB3DException
 	 *             - during setting the neighbourhood relations, a DB3DException
 	 *             is thrown if the neighbour index is not 0, 1, 2 or 3.
+	 * @throws IllegalStateException
+	 *             - if the intersectsInt(Line3D line, ScalarOperator sop)
+	 *             method of the class Line3D (which computes the intersection
+	 *             of two lines) called by this method returns a value that is
+	 *             not -2, -1, 0 or 1.
+	 * @throws IllegalArgumentException
+	 *             - if an attempt is made to construct a MBB3D whose maximum
+	 *             point is not greater than its minimum point.
+	 * @throws IllegalStateException
+	 *             - signals Problems with the dimension of a wireframe.
+	 * @throws IllegalArgumentException
+	 *             - if the validation of a tetrahedron fails. The exception
+	 *             originates in the constructor Tetrahedroin3D(Point3D,
+	 *             Point3D, Point3D, Point3D, ScalarOperator).
+	 * @throws IllegalArgumentException
+	 *             if the index of the point of the tetrahedron is not in the
+	 *             interval [0;3]. The exception originates in the method
+	 *             getPoint(int) of the class Tetrahedron3D.
+	 * @throws IllegalStateException
+	 *             - if the result of the intersection of a Tetrahedron3D and a
+	 *             Plane3D is not a 3D simplex. The exception originates in the
+	 *             method intersection(Plane3D, ScalarOperator) of the class
+	 *             Tetrahedron3D.
+	 * @throws IllegalStateException
+	 *             - if the result of the intersection of a Triangle3D and a
+	 *             Wireframe3D is not a 3D simplex. The exception originates in
+	 *             the method intersectionInPlane(Triangle3D, Wireframe3D,
+	 *             ScalarOperator3D) of the class Tetrahedron3D.
+	 * @throws IllegalArgumentException
+	 *             - if validation of a Triangle3D fails. The exception
+	 *             originates in the constructor Triangle3D(Point3D, Point3D,
+	 *             Point3D, ScalarOperator).
+	 * @throws IllegalArgumentException
+	 *             - if index of a triangle point is not 0, 1 or 2. The
+	 *             exception originates in the method getPoint(int) of the class
+	 *             Triangle3D.
+	 * @throws ArithmeticException
+	 *             - if norm equals zero in epsilon range. This exception
+	 *             originates in the method normalize(ScalarOperator) of the
+	 *             class Vector3D.
 	 */
 	public TetrahedronElt3D addElt(Tetrahedron3D elt) throws DB3DException {
 
 		TetrahedronElt3D element = new TetrahedronElt3D(elt);
 
-		// check first if component is emty
+		// check first if component is empty
 		if (this.isEmpty()) {
 			this.setEntryElement(element);
 			this.setMBB(element.getMBB());
 			this.getSAM().insert(element);
+			// Here an IllegalArgumentException can be thrown.
 			return element;
 		}
 
@@ -191,6 +249,8 @@ public class TetrahedronNet3DComp implements PersistentObject, ComplexGeoObj,
 			TetrahedronElt3D tetraElt = (TetrahedronElt3D) it.next();
 			SimpleGeoObj sgo = element.intersection(tetraElt, this
 					.getScalarOperator());
+			// Here an IllegalStateException can be thrown signaling problems
+			// with the dimensions of the wireframe.
 			if (sgo != null) {
 
 				switch (sgo.getType()) {
@@ -263,6 +323,9 @@ public class TetrahedronNet3DComp implements PersistentObject, ComplexGeoObj,
 	 *             - during re-registering neighbours in the net, a
 	 *             DB3DException is thrown if the neighbour index is not 0, 1, 2
 	 *             or 3.
+	 * @throws IllegalArgumentException
+	 *             - if an attempt is made to construct a MBB3D whose maximum
+	 *             point is not greater than its minimum point.
 	 */
 	public TetrahedronElt3D removeElt(Tetrahedron3D elt) throws DB3DException { // Dag
 
@@ -363,6 +426,7 @@ public class TetrahedronNet3DComp implements PersistentObject, ComplexGeoObj,
 					this.setEntryElement(neighbour[0]);
 			}
 			this.getSAM().remove(removable);
+			// Here an IllegalArgumentException can be thrown
 			return removable;
 		}
 		return null; // not removable
@@ -442,6 +506,10 @@ public class TetrahedronNet3DComp implements PersistentObject, ComplexGeoObj,
 	 * @param tri
 	 *            Triangle3D
 	 * @return boolean - true if contained, false otherwise
+	 * @throws ArithmeticException
+	 *             - if norm equals zero in epsilon range. This exception
+	 *             originates in the method normalize(ScalarOperator) of the
+	 *             class Vector3D.
 	 */
 	public boolean containsElt(Triangle3D tri) { // Dag
 		ScalarOperator sop = this.getScalarOperator();
@@ -465,6 +533,10 @@ public class TetrahedronNet3DComp implements PersistentObject, ComplexGeoObj,
 	 * @param seg
 	 *            Segment3D
 	 * @return boolean - true if contained, false otherwise.
+	 * @throws ArithmeticException
+	 *             - if norm equals zero in epsilon range. This exception
+	 *             originates in the method normalize(ScalarOperator) of the
+	 *             class Vector3D.
 	 */
 	public boolean containsElt(Segment3D seg) { // Dag
 		ScalarOperator sop = this.getScalarOperator();
@@ -489,6 +561,10 @@ public class TetrahedronNet3DComp implements PersistentObject, ComplexGeoObj,
 	 * @param point
 	 *            Point3D
 	 * @return boolean - true if contained, false otherwise.
+	 * @throws IllegalArgumentException
+	 *             if the index of the point of the tetrahedron is not in the
+	 *             interval [0;3]. The exception originates in the method
+	 *             getPoint(int) of the class Tetrahedron3D.
 	 */
 	public boolean containsElt(Point3D point) { // Dag
 		ScalarOperator sop = this.getScalarOperator();
@@ -557,6 +633,14 @@ public class TetrahedronNet3DComp implements PersistentObject, ComplexGeoObj,
 	 * @param typ SimpleGeoObj constants
 	 * 
 	 * @return int - count of elements of the specified type.
+	 * 
+	 * @throws IllegalArgumentException - if index of a triangle point is not 0,
+	 * 1 or 2. The exception originates in the method getPoint(int) of the class
+	 * Triangle3D.
+	 * 
+	 * @throws ArithmeticException - if norm equals zero in epsilon range. This
+	 * exception originates in the method normalize(ScalarOperator) of the class
+	 * Vector3D.
 	 */
 	private int countBorderElements(byte typ) { // Dag
 		Set tetras = this.getElementsViaSAM();
@@ -615,6 +699,14 @@ public class TetrahedronNet3DComp implements PersistentObject, ComplexGeoObj,
 	 * Returns the number of vertices in the border of this component
 	 * 
 	 * @return int - number of vertices in the border.
+	 * @throws IllegalArgumentException
+	 *             - if index of a triangle point is not 0, 1 or 2. The
+	 *             exception originates in the method getPoint(int) of the class
+	 *             Triangle3D.
+	 * @throws ArithmeticException
+	 *             - if norm equals zero in epsilon range. This exception
+	 *             originates in the method normalize(ScalarOperator) of the
+	 *             class Vector3D.
 	 */
 	public int countBorderVertices() {
 		return countBorderElements(SimpleGeoObj.POINT3D);
@@ -624,6 +716,14 @@ public class TetrahedronNet3DComp implements PersistentObject, ComplexGeoObj,
 	 * Returns the number of edges in the border of this component
 	 * 
 	 * @return int - number of edges in the border.
+	 * @throws IllegalArgumentException
+	 *             - if index of a triangle point is not 0, 1 or 2. The
+	 *             exception originates in the method getPoint(int) of the class
+	 *             Triangle3D.
+	 * @throws ArithmeticException
+	 *             - if norm equals zero in epsilon range. This exception
+	 *             originates in the method normalize(ScalarOperator) of the
+	 *             class Vector3D.
 	 */
 	public int countBorderEdges() {
 		return countBorderElements(SimpleGeoObj.SEGMENT3D);
@@ -633,6 +733,14 @@ public class TetrahedronNet3DComp implements PersistentObject, ComplexGeoObj,
 	 * Returns the number of faces in the border of this component
 	 * 
 	 * @return int - number of faces in the border.
+	 * @throws IllegalArgumentException
+	 *             - if index of a triangle point is not 0, 1 or 2. The
+	 *             exception originates in the method getPoint(int) of the class
+	 *             Triangle3D.
+	 * @throws ArithmeticException
+	 *             - if norm equals zero in epsilon range. This exception
+	 *             originates in the method normalize(ScalarOperator) of the
+	 *             class Vector3D.
 	 */
 	public int countBorderFaces() {
 		return countBorderElements(SimpleGeoObj.TRIANGLE3D);
@@ -642,6 +750,14 @@ public class TetrahedronNet3DComp implements PersistentObject, ComplexGeoObj,
 	 * Returns the number of tetrahedrons in the border of this component
 	 * 
 	 * @return int - number of tetrahedrons in the border.
+	 * @throws IllegalArgumentException
+	 *             - if index of a triangle point is not 0, 1 or 2. The
+	 *             exception originates in the method getPoint(int) of the class
+	 *             Triangle3D.
+	 * @throws ArithmeticException
+	 *             - if norm equals zero in epsilon range. This exception
+	 *             originates in the method normalize(ScalarOperator) of the
+	 *             class Vector3D.
 	 */
 	public int countBorderTetras() {
 		return countBorderElements(SimpleGeoObj.TETRAHEDRON3D);
@@ -655,6 +771,14 @@ public class TetrahedronNet3DComp implements PersistentObject, ComplexGeoObj,
 	 * @param typ SimpleGeoObj constants
 	 * 
 	 * @return int - count of elements of the specified type.
+	 * 
+	 * @throws IllegalArgumentException - if index of a triangle point is not 0,
+	 * 1 or 2. The exception originates in the method getPoint(int) of the class
+	 * Triangle3D.
+	 * 
+	 * @throws ArithmeticException - if norm equals zero in epsilon range. This
+	 * exception originates in the method normalize(ScalarOperator) of the class
+	 * Vector3D.
 	 */
 	private Set getBorderElements(byte typ) { // Dag
 		Set tetras = this.getElementsViaSAM();
@@ -714,6 +838,14 @@ public class TetrahedronNet3DComp implements PersistentObject, ComplexGeoObj,
 	 * Returns a set of border vertices of this component.
 	 * 
 	 * @return Set of border vertices.
+	 * @throws IllegalArgumentException
+	 *             - if index of a triangle point is not 0, 1 or 2. The
+	 *             exception originates in the method getPoint(int) of the class
+	 *             Triangle3D.
+	 * @throws ArithmeticException
+	 *             - if norm equals zero in epsilon range. This exception
+	 *             originates in the method normalize(ScalarOperator) of the
+	 *             class Vector3D.
 	 */
 	public Set getBorderVertices() {
 		return getBorderElements(SimpleGeoObj.POINT3D);
@@ -723,6 +855,14 @@ public class TetrahedronNet3DComp implements PersistentObject, ComplexGeoObj,
 	 * Returns a set of border edges of this component.
 	 * 
 	 * @return Set of border edges.
+	 * @throws IllegalArgumentException
+	 *             - if index of a triangle point is not 0, 1 or 2. The
+	 *             exception originates in the method getPoint(int) of the class
+	 *             Triangle3D.
+	 * @throws ArithmeticException
+	 *             - if norm equals zero in epsilon range. This exception
+	 *             originates in the method normalize(ScalarOperator) of the
+	 *             class Vector3D.
 	 */
 	public Set getBorderEdges() {
 		return getBorderElements(SimpleGeoObj.SEGMENT3D);
@@ -732,6 +872,14 @@ public class TetrahedronNet3DComp implements PersistentObject, ComplexGeoObj,
 	 * Returns a set of border faces of this component.
 	 * 
 	 * @return Set of border faces.
+	 * @throws IllegalArgumentException
+	 *             - if index of a triangle point is not 0, 1 or 2. The
+	 *             exception originates in the method getPoint(int) of the class
+	 *             Triangle3D.
+	 * @throws ArithmeticException
+	 *             - if norm equals zero in epsilon range. This exception
+	 *             originates in the method normalize(ScalarOperator) of the
+	 *             class Vector3D.
 	 */
 	public Set getBorderFaces() {
 		return getBorderElements(SimpleGeoObj.TRIANGLE3D);
@@ -741,6 +889,11 @@ public class TetrahedronNet3DComp implements PersistentObject, ComplexGeoObj,
 	 * Returns a set of border elements (tetrahedrons) of this component.
 	 * 
 	 * @return Set of border elements of this component.
+	 * @throws ArithmeticException
+	 *             - if norm equals zero in epsilon range. This exception
+	 *             originates in the method normalize(ScalarOperator) of the
+	 *             class Vector3D.
+	 * 
 	 */
 	public Set getBorderTetras() {
 		return getBorderElements(SimpleGeoObj.TETRAHEDRON3D);
@@ -759,6 +912,10 @@ public class TetrahedronNet3DComp implements PersistentObject, ComplexGeoObj,
 	 * Returns the boundary area of this component.
 	 * 
 	 * @return double - area.
+	 * @throws ArithmeticException
+	 *             - if norm equals zero in epsilon range. This exception
+	 *             originates in the method normalize(ScalarOperator) of the
+	 *             class Vector3D.
 	 */
 	public double getArea() { // Dag
 
@@ -858,6 +1015,10 @@ public class TetrahedronNet3DComp implements PersistentObject, ComplexGeoObj,
 	 * terminate method.
 	 * 
 	 * @return TetrahedronElt3DIterator - iterator over elements of this.
+	 * @throws IllegalArgumentException
+	 *             if the index of the point of the tetrahedron is not in the
+	 *             interval [0;3]. The exception originates in the method
+	 *             getPoint(int) of the class Tetrahedron3D.
 	 */
 	public TetrahedronElt3DIterator getElementsIterator() {
 		return new TetrahedronElt3DIterator(getEntryElement());
@@ -876,6 +1037,10 @@ public class TetrahedronNet3DComp implements PersistentObject, ComplexGeoObj,
 	 * Returns all Segment3D objects of this in a Set.
 	 * 
 	 * @return Set of all Segment3D objects of this.
+	 * @throws ArithmeticException
+	 *             - if norm equals zero in epsilon range. This exception
+	 *             originates in the method normalize(ScalarOperator) of the
+	 *             class Vector3D.
 	 */
 	public Set getSegments() { // Dag
 		return this.getSegments(this.getElementsViaRecursion());
@@ -885,6 +1050,10 @@ public class TetrahedronNet3DComp implements PersistentObject, ComplexGeoObj,
 	 * Returns all Segment3D objects of this in a Set.
 	 * 
 	 * @return Set of all Segment3D objects of this.
+	 * @throws ArithmeticException
+	 *             - if norm equals zero in epsilon range. This exception
+	 *             originates in the method normalize(ScalarOperator) of the
+	 *             class Vector3D.
 	 */
 	public Set getTriangles() { // Dag
 		return this.getTriangles(this.getElementsViaRecursion());
@@ -897,6 +1066,10 @@ public class TetrahedronNet3DComp implements PersistentObject, ComplexGeoObj,
 	 * @param tetraSet Set of TetrahedronElt3D objects
 	 * 
 	 * @return Set of Triangle3D objects.
+	 * 
+	 * @throws ArithmeticException - if norm equals zero in epsilon range. This
+	 * exception originates in the method normalize(ScalarOperator) of the class
+	 * Vector3D.
 	 */
 	private Set getTriangles(Set tetraSet) { // Dag
 		TetrahedronElt3D[] tetras = (TetrahedronElt3D[]) tetraSet
@@ -920,6 +1093,10 @@ public class TetrahedronNet3DComp implements PersistentObject, ComplexGeoObj,
 	 * @param tetraSet Set of TetrahedronElt3D objects
 	 * 
 	 * @return Set of Segment3D objects.
+	 * 
+	 * @throws ArithmeticException - if norm equals zero in epsilon range. This
+	 * exception originates in the method normalize(ScalarOperator) of the class
+	 * Vector3D.
 	 */
 	private Set getSegments(Set tetraSet) { // Dag
 
@@ -943,6 +1120,10 @@ public class TetrahedronNet3DComp implements PersistentObject, ComplexGeoObj,
 	 * @param tetras Set of TetrahedronElt3D objects
 	 * 
 	 * @return Set of Point3D objects.
+	 * 
+	 * @throws IllegalArgumentException if the index of the point of the
+	 * tetrahedron is not in the interval [0;3]. The exception originates in the
+	 * method getPoint(int) of the class Tetrahedron3D.
 	 */
 	private Set getPoints(Set tetras) { // Dag
 
@@ -974,6 +1155,14 @@ public class TetrahedronNet3DComp implements PersistentObject, ComplexGeoObj,
 	 * @param point
 	 *            Point3D to be tested
 	 * @return boolean - true if is a border vertex, false otherwise.
+	 * @throws IllegalArgumentException
+	 *             - if index of a triangle point is not 0, 1 or 2. The
+	 *             exception originates in the method getPoint(int) of the class
+	 *             Triangle3D.
+	 * @throws ArithmeticException
+	 *             - if norm equals zero in epsilon range. This exception
+	 *             originates in the method normalize(ScalarOperator) of the
+	 *             class Vector3D.
 	 */
 	public boolean isBorderVertex(Point3D point) { // Dag
 
@@ -1007,6 +1196,10 @@ public class TetrahedronNet3DComp implements PersistentObject, ComplexGeoObj,
 	 * @param seg
 	 *            Segment3D to be tested
 	 * @return boolean - true if is a border edge, false otherwise.
+	 * @throws ArithmeticException
+	 *             - if norm equals zero in epsilon range. This exception
+	 *             originates in the method normalize(ScalarOperator) of the
+	 *             class Vector3D.
 	 */
 	public boolean isBorderEdge(Segment3D seg) { // Dag
 
@@ -1038,6 +1231,10 @@ public class TetrahedronNet3DComp implements PersistentObject, ComplexGeoObj,
 	 * @param triangle
 	 *            Triangle3D to be tested
 	 * @return boolean - true if is a border face, false otherwise.
+	 * @throws ArithmeticException
+	 *             - if norm equals zero in epsilon range. This exception
+	 *             originates in the method normalize(ScalarOperator) of the
+	 *             class Vector3D.
 	 */
 	public boolean isBorderFace(Triangle3D triangle) { // Dag
 
@@ -1099,6 +1296,30 @@ public class TetrahedronNet3DComp implements PersistentObject, ComplexGeoObj,
 	 * @param plane
 	 *            Plane3D to be tested
 	 * @return boolean - true if intersects, false otherwise.
+	 * @throws IllegalArgumentException
+	 *             - if an attempt is made to construct a MBB3D whose maximum
+	 *             point is not greater than its minimum point.
+	 * @throws IllegalStateException
+	 *             - signals Problems with the dimension of the wireframe.
+	 * @throws IllegalStateException
+	 *             - if the index of the point coordinate is not 0 , 1 or 2
+	 *             (that stands for the x-, y- and z-coordinate).
+	 * @throws IllegalArgumentException
+	 *             if the index of the point of the tetrahedron is not in the
+	 *             interval [0;3]. The exception originates in the method
+	 *             getPoint(int) of the class Tetrahedron3D.
+	 * @throws IllegalArgumentException
+	 *             - if validation of a Triangle3D fails. The exception
+	 *             originates in the constructor Triangle3D(Point3D, Point3D,
+	 *             Point3D, ScalarOperator).
+	 * @throws IllegalArgumentException
+	 *             - if index of a triangle point is not 0, 1 or 2. The
+	 *             exception originates in the method getPoint(int) of the class
+	 *             Triangle3D.
+	 * @throws ArithmeticException
+	 *             - if norm equals zero in epsilon range. This exception
+	 *             originates in the method normalize(ScalarOperator) of the
+	 *             class Vector3D.
 	 */
 	public boolean intersects(Plane3D plane) {
 
@@ -1122,6 +1343,29 @@ public class TetrahedronNet3DComp implements PersistentObject, ComplexGeoObj,
 	 * @param line
 	 *            Line3D to be tested
 	 * @return boolean - true if intersects, false otherwise.
+	 * @throws IllegalStateException
+	 *             - if the intersectsInt(Line3D line, ScalarOperator sop)
+	 *             method of the class Line3D (which computes the intersection
+	 *             of two lines) called by this method returns a value that is
+	 *             not -2, -1, 0 or 1.
+	 * @throws IllegalArgumentException
+	 *             - if an attempt is made to construct a MBB3D whose maximum
+	 *             point is not greater than its minimum point.
+	 * @throws IllegalStateException
+	 *             - if the index of the point coordinate is not 0 , 1 or 2
+	 *             (that stands for the x-, y- and z-coordinate).
+	 * @throws IllegalArgumentException
+	 *             if the index of the point of the tetrahedron is not in the
+	 *             interval [0;3]. The exception originates in the method
+	 *             getPoint(int) of the class Tetrahedron3D.
+	 * @throws IllegalArgumentException
+	 *             - if index of a triangle point is not 0, 1 or 2. The
+	 *             exception originates in the method getPoint(int) of the class
+	 *             Triangle3D.
+	 * @throws ArithmeticException
+	 *             - if norm equals zero in epsilon range. This exception
+	 *             originates in the method normalize(ScalarOperator) of the
+	 *             class Vector3D.
 	 */
 	public boolean intersects(Line3D line) {
 
@@ -1145,6 +1389,42 @@ public class TetrahedronNet3DComp implements PersistentObject, ComplexGeoObj,
 	 * @param mbb
 	 *            MBB3D to be tested
 	 * @return boolean - true if intersects, false otherwise.
+	 * @throws IllegalStateException
+	 *             - if the intersectsInt(Line3D line, ScalarOperator sop)
+	 *             method of the class Line3D (which computes the intersection
+	 *             of two lines) called by this method returns a value that is
+	 *             not -2, -1, 0 or 1.
+	 * @throws IllegalStateException
+	 *             - if the index of a Point3D in a Rectangle3D is not in the
+	 *             interval [0, 3]. This exception originates in the getPoint
+	 *             (int index) method of the class Rectangle3D called by this
+	 *             method.
+	 * @throws IllegalStateException
+	 *             - signals Problems with the dimension of the wireframe.
+	 * @throws IllegalStateException
+	 *             - if the index of the point coordinate is not 0 , 1 or 2
+	 *             (that stands for the x-, y- and z-coordinate).
+	 * @throws IllegalArgumentException
+	 *             if the index of the point of the tetrahedron is not in the
+	 *             interval [0;3]. The exception originates in the method
+	 *             getPoint(int) of the class Tetrahedron3D.
+	 * @throws IllegalArgumentException
+	 *             - if validation of a Triangle3D fails. The exception
+	 *             originates in the constructor Triangle3D(Point3D, Point3D,
+	 *             Point3D, ScalarOperator).
+	 * @throws IllegalArgumentException
+	 *             - if index of a triangle point is not 0, 1 or 2. The
+	 *             exception originates in the method getPoint(int) of the class
+	 *             Triangle3D.
+	 * @throws IllegalStateException
+	 *             - if the result of the intersection of a Triangle3D and a
+	 *             MBB3D is not a simplex. The exception originates in the
+	 *             method intersection(MBB3D, ScalarOperator) of the class
+	 *             Triangle3D.
+	 * @throws ArithmeticException
+	 *             - if norm equals zero in epsilon range. This exception
+	 *             originates in the method normalize(ScalarOperator) of the
+	 *             class Vector3D.
 	 */
 	public boolean intersects(MBB3D mbb) { // Dag
 
@@ -1167,6 +1447,17 @@ public class TetrahedronNet3DComp implements PersistentObject, ComplexGeoObj,
 	 * @param point
 	 *            Point3D tp be tested
 	 * @return boolean - true if contained, false otherwise.
+	 * @throws IllegalArgumentException
+	 *             if an attempt is made to construct a MBB3D whose maximum
+	 *             point is not greater than its minimum point.
+	 * @throws IllegalArgumentException
+	 *             if the index of the point of the tetrahedron is not in the
+	 *             interval [0;3]. The exception originates in the method
+	 *             getPoint(int) of the class Tetrahedron3D.
+	 * @throws IllegalArgumentException
+	 *             - if index of a triangle point is not 0, 1 or 2. The
+	 *             exception originates in the method getPoint(int) of the class
+	 *             Triangle3D.
 	 */
 	public boolean containsInside(Point3D point) { // Dag
 		if (getTetraContainingPoint(point) != null)
@@ -1182,6 +1473,21 @@ public class TetrahedronNet3DComp implements PersistentObject, ComplexGeoObj,
 	 * 
 	 * @return TetrahedronElt3D if contains the point or <code>null</code>
 	 * otherwise.
+	 * 
+	 * @throws IllegalArgumentException if an attempt is made to construct a
+	 * MBB3D whose maximum point is not greater than its minimum point.
+	 * 
+	 * @throws IllegalArgumentException if the index of the point of the
+	 * tetrahedron is not in the interval [0;3]. The exception originates in the
+	 * method getPoint(int) of the class Tetrahedron3D.
+	 * 
+	 * @throws IllegalArgumentException - if index of a triangle point is not 0,
+	 * 1 or 2. The exception originates in the method getPoint(int) of the class
+	 * Triangle3D.
+	 * 
+	 * @throws ArithmeticException - if norm equals zero in epsilon range. This
+	 * exception originates in the method normalize(ScalarOperator) of the class
+	 * Vector3D.
 	 */
 	private TetrahedronElt3D getTetraContainingPoint(Point3D point) { // Dag
 
@@ -1202,6 +1508,30 @@ public class TetrahedronNet3DComp implements PersistentObject, ComplexGeoObj,
 	 * @param seg
 	 *            Segment3D to be tested
 	 * @return boolean - true if contained, false otherwise.
+	 * @throws IllegalStateException
+	 *             if the intersectsInt(Line3D line, ScalarOperator sop) method
+	 *             of the class Line3D (which computes the intersection of two
+	 *             lines) called by this method returns a value that is not -2,
+	 *             -1, 0 or 1.
+	 * @throws IllegalArgumentException
+	 *             if an attempt is made to construct a MBB3D whose maximum
+	 *             point is not greater than its minimum point.
+	 * @throws IllegalArgumentException
+	 *             if the index of the point of the tetrahedron is not in the
+	 *             interval [0;3]. The exception originates in the method
+	 *             getPoint(int) of the class Tetrahedron3D.
+	 * @throws IllegalArgumentException
+	 *             - if index of a triangle point is not 0, 1 or 2. The
+	 *             exception originates in the method getPoint(int) of the class
+	 *             Triangle3D.
+	 * @throws ArithmeticException
+	 *             - if norm equals zero in epsilon range. This exception
+	 *             originates in the method normalize(ScalarOperator) of the
+	 *             class Vector3D.
+	 * @throws ArithmeticException
+	 *             - if norm equals zero in epsilon range. This exception
+	 *             originates in the method normalize(ScalarOperator) of the
+	 *             class Vector3D.
 	 */
 	public boolean containsInside(Segment3D seg) {
 
@@ -1239,6 +1569,37 @@ public class TetrahedronNet3DComp implements PersistentObject, ComplexGeoObj,
 	 * @param triangle
 	 *            Triangle3D to be tested
 	 * @return boolean - true if contained, false otherwise.
+	 * @throws IllegalStateException
+	 *             if the intersectsInt(Line3D line, ScalarOperator sop) method
+	 *             of the class Line3D (which computes the intersection of two
+	 *             lines) called by this method returns a value that is not -2,
+	 *             -1, 0 or 1.
+	 * @throws IllegalArgumentException
+	 *             if an attempt is made to construct a MBB3D whose maximum
+	 *             point is not greater than its minimum point.
+	 * @throws IllegalStateException
+	 *             - signals Problems with the dimension of the wireframe.
+	 * @throws IllegalArgumentException
+	 *             if the index of the point of the tetrahedron is not in the
+	 *             interval [0;3]. The exception originates in the method
+	 *             getPoint(int) of the class Tetrahedron3D.
+	 * @throws IllegalArgumentException
+	 *             - if validation of a Triangle3D fails. The exception
+	 *             originates in the constructor Triangle3D(Point3D, Point3D,
+	 *             Point3D, ScalarOperator).
+	 * @throws IllegalArgumentException
+	 *             - if index of a triangle point is not 0, 1 or 2. The
+	 *             exception originates in the method getPoint(int) of the class
+	 *             Triangle3D.
+	 * @throws IllegalStateException
+	 *             - if the result of the intersection of a Triangle3D and a
+	 *             Triangle3D is not a simplex. The exception originates in the
+	 *             method intersects(Triangle3D, ScalarOperator) of the class
+	 *             Triangle3D.
+	 * @throws ArithmeticException
+	 *             - if norm equals zero in epsilon range. This exception
+	 *             originates in the method normalize(ScalarOperator) of the
+	 *             class Vector3D.
 	 */
 	public boolean containsInside(Triangle3D triangle) {
 
@@ -1258,6 +1619,8 @@ public class TetrahedronNet3DComp implements PersistentObject, ComplexGeoObj,
 		while (it.hasNext()) {
 			TetrahedronElt3D tet = (TetrahedronElt3D) it.next();
 			if (tet.intersects(triangle, this.getScalarOperator()))
+				// Here an IllegalStateException can be thrown signaling
+				// problems with the dimensions of the wireframe.
 				for (int i = 0; i < 4; i++) {
 					if (!tet.hasNeighbour(i))
 						hull.add(tet.getTriangle(i));
@@ -1268,6 +1631,8 @@ public class TetrahedronNet3DComp implements PersistentObject, ComplexGeoObj,
 		while (it.hasNext()) {
 			Triangle3D tri = (Triangle3D) it.next();
 			if (tri.intersects(triangle, this.getScalarOperator()))
+				// Here an IllegalStateException can be thrown signaling
+				// problems with the dimensions of the wireframe.
 				return false;
 		}
 
@@ -1280,6 +1645,37 @@ public class TetrahedronNet3DComp implements PersistentObject, ComplexGeoObj,
 	 * @param tetra
 	 *            Tetrahedron3D to be tested
 	 * @return boolean - true if contained, false otherwise.
+	 * @throws IllegalStateException
+	 *             if the intersectsInt(Line3D line, ScalarOperator sop) method
+	 *             of the class Line3D (which computes the intersection of two
+	 *             lines) called by this method returns a value that is not -2,
+	 *             -1, 0 or 1.
+	 * @throws IllegalArgumentException
+	 *             if an attempt is made to construct a MBB3D whose maximum
+	 *             point is not greater than its minimum point.
+	 * @throws IllegalStateException
+	 *             - signals Problems with the dimension of the wireframe.
+	 * @throws IllegalArgumentException
+	 *             if the index of the point of the tetrahedron is not in the
+	 *             interval [0;3]. The exception originates in the method
+	 *             getPoint(int) of the class Tetrahedron3D.
+	 * @throws IllegalArgumentException
+	 *             - if validation of a Triangle3D fails. The exception
+	 *             originates in the constructor Triangle3D(Point3D, Point3D,
+	 *             Point3D, ScalarOperator).
+	 * @throws IllegalArgumentException
+	 *             - if index of a triangle point is not 0, 1 or 2. The
+	 *             exception originates in the method getPoint(int) of the class
+	 *             Triangle3D.
+	 * @throws IllegalStateException
+	 *             - if the result of the intersection of a Triangle3D and a
+	 *             MBB3D is not a simplex. The exception originates in the
+	 *             method intersection(MBB3D, ScalarOperator) of the class
+	 *             Triangle3D.
+	 * @throws ArithmeticException
+	 *             - if norm equals zero in epsilon range. This exception
+	 *             originates in the method normalize(ScalarOperator) of the
+	 *             class Vector3D.
 	 */
 	public boolean containsInside(Tetrahedron3D tetra) {
 
@@ -1310,6 +1706,8 @@ public class TetrahedronNet3DComp implements PersistentObject, ComplexGeoObj,
 		while (it.hasNext()) {
 			Triangle3D tri = (Triangle3D) it.next();
 			if (tetra.intersects(tri, this.getScalarOperator()))
+				// Here an IllegalStateException can be thrown signaling
+				// problems with the dimensions of the wireframe.
 				return false;
 		}
 
@@ -1379,6 +1777,9 @@ public class TetrahedronNet3DComp implements PersistentObject, ComplexGeoObj,
 	 * 
 	 * @param elements TetrahedronElt3D whose elements should be inserted into
 	 * SAM
+	 * 
+	 * @throws IllegalArgumentException if an attempt is made to construct a
+	 * MBB3D whose maximum point is not greater than its minimum point.
 	 */
 	private void loadSAM(TetrahedronElt3D[] elements) {
 		for (int i = 0; i < elements.length; i++)
@@ -1394,6 +1795,10 @@ public class TetrahedronNet3DComp implements PersistentObject, ComplexGeoObj,
 	 * @throws DB3DException
 	 *             - during registering neighbours, a DB3DException is thrown if
 	 *             the neighbour index is not 0, 1, 2 or 3.
+	 * @throws IllegalArgumentException
+	 *             if the index of the point of the tetrahedron is not in the
+	 *             interval [0;3]. The exception originates in the method
+	 *             getPoint(int) of the class Tetrahedron3D.
 	 */
 	public void buildNetTopology(TetrahedronElt3D[] elts) throws DB3DException {
 		ScalarOperator so = getScalarOperator();
@@ -1728,6 +2133,10 @@ public class TetrahedronNet3DComp implements PersistentObject, ComplexGeoObj,
 
 	/**
 	 * Updates the MBB after changes in the net component.
+	 * 
+	 * @throws IllegalArgumentException
+	 *             - if an attempt is made to construct a MBB3D whose maximum
+	 *             point is not greater than its minimum point.
 	 */
 	protected void updateMBB() {
 		setMBB(this.getSAM().getMBB());
@@ -1761,6 +2170,15 @@ public class TetrahedronNet3DComp implements PersistentObject, ComplexGeoObj,
 	/**
 	 * Updates the vertices, edges, faces statistics after changes in the net
 	 * component.
+	 * 
+	 * @throws IllegalArgumentException
+	 *             if the index of the point of the tetrahedron is not in the
+	 *             interval [0;3]. The exception originates in the method
+	 *             getPoint(int) of the class Tetrahedron3D.
+	 * @throws ArithmeticException
+	 *             - if norm equals zero in epsilon range. This exception
+	 *             originates in the method normalize(ScalarOperator) of the
+	 *             class Vector3D.
 	 */
 	protected void updateEulerStatistics() {
 		SAM sam = this.getSAM();
@@ -1796,10 +2214,16 @@ public class TetrahedronNet3DComp implements PersistentObject, ComplexGeoObj,
 	 * their outer triangles.
 	 * 
 	 * @return HashSet with outer triangles.
+	 * @throws IllegalStateException
+	 *             - if this TIN component is empty.
+	 * @throws ArithmeticException
+	 *             - if norm equals zero in epsilon range. This exception
+	 *             originates in the method normalize(ScalarOperator) of the
+	 *             class Vector3D.
 	 */
 	public Set<Triangle3D> findTinBorder1() {
 		if (this.isEmpty())
-			throw new RuntimeException("The TIN is empty!");
+			throw new IllegalStateException("The TIN is empty!");
 
 		HashSet<Triangle3D> outerTriangles = new HashSet<Triangle3D>();
 
@@ -1828,6 +2252,10 @@ public class TetrahedronNet3DComp implements PersistentObject, ComplexGeoObj,
 	 * afterwards follows the edge of the tin.
 	 * 
 	 * @return HashSet with outer triangles.
+	 * @throws ArithmeticException
+	 *             - if norm equals zero in epsilon range. This exception
+	 *             originates in the method normalize(ScalarOperator) of the
+	 *             class Vector3D.
 	 */
 	public Set<Triangle3D> findTinBorder2() {
 		TetrahedronElt3D tetr = null;
@@ -1867,6 +2295,10 @@ public class TetrahedronNet3DComp implements PersistentObject, ComplexGeoObj,
 	 * visited
 	 * 
 	 * @param tetr the Tetrahedron from which the method starts
+	 * 
+	 * @throws ArithmeticException - if norm equals zero in epsilon range. This
+	 * exception originates in the method normalize(ScalarOperator) of the class
+	 * Vector3D.
 	 */
 	private void tinBorderViaRecursion(Set<Triangle3D> outerTriangles,
 			Set<Tetrahedron3D> visited, TetrahedronElt3D tetr) {
@@ -1921,6 +2353,10 @@ public class TetrahedronNet3DComp implements PersistentObject, ComplexGeoObj,
 	 * 
 	 * @param seg the common segment of the current outer tetrahedron and the
 	 * next outer tetrahedron that needs to be found
+	 * 
+	 * @throws ArithmeticException - if norm equals zero in epsilon range. This
+	 * exception originates in the method normalize(ScalarOperator) of the class
+	 * Vector3D.
 	 */
 	private void getOuterNeighbourViaRecursion(TetrahedronElt3D nb,
 			Segment3D seg) {
@@ -1950,6 +2386,10 @@ public class TetrahedronNet3DComp implements PersistentObject, ComplexGeoObj,
 	 * @param nb tetrahedron
 	 * 
 	 * @return Segment3D if tri and nb have a common segment, null otherwise.
+	 * 
+	 * @throws ArithmeticException - if norm equals zero in epsilon range. This
+	 * exception originates in the method normalize(ScalarOperator) of the class
+	 * Vector3D.
 	 */
 	private Segment3D getCommonSegment(Triangle3D tri, TetrahedronElt3D nb) {
 		Segment3D[] outerSeg = tri.getSegments();
@@ -1985,6 +2425,10 @@ public class TetrahedronNet3DComp implements PersistentObject, ComplexGeoObj,
 	 * @param nb tetrahedron
 	 * 
 	 * @return true if nb contains the segment, false otherwise.
+	 * 
+	 * @throws ArithmeticException - if norm equals zero in epsilon range. This
+	 * exception originates in the method normalize(ScalarOperator) of the class
+	 * Vector3D.
 	 */
 	private boolean haveCommonSegment(Segment3D seg, TetrahedronElt3D nb) {
 		Triangle3D[] nbTri = nb.getTriangles();

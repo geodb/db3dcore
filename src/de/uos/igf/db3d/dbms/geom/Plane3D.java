@@ -52,6 +52,10 @@ public class Plane3D implements SimpleGeoObj, Serializable {
 	 *            position vector for a point on the plane
 	 * @param sop
 	 *            ScalarOperator - used for normalization of norm vector
+	 * @throws ArithmeticException
+	 *             - if norm equals zero in epsilon range. This exception
+	 *             originates in the method normalize(ScalarOperator) of the
+	 *             class Vector3D.
 	 */
 	public Plane3D(Vector3D norm, Vector3D point, ScalarOperator sop) {
 		this.normvec = norm;
@@ -74,6 +78,10 @@ public class Plane3D implements SimpleGeoObj, Serializable {
 	 *            point 3
 	 * @param sop
 	 *            ScalarOperator - used for normalization of norm vector
+	 * @throws ArithmeticException
+	 *             - if norm equals zero in epsilon range. This exception
+	 *             originates in the method normalize(ScalarOperator) of the
+	 *             class Vector3D.
 	 */
 	public Plane3D(Point3D p1, Point3D p2, Point3D p3, ScalarOperator sop) {
 		this.normvec = buildNormVector(p1, p2, p3);
@@ -90,6 +98,14 @@ public class Plane3D implements SimpleGeoObj, Serializable {
 	 *            triangle of type Triangle3D
 	 * @param sop
 	 *            ScalarOperator
+	 * @throws IllegalArgumentException
+	 *             - if index of a triangle point is not 0, 1 or 2. The
+	 *             exception originates in the method getPoint(int) of the class
+	 *             Triangle3D.
+	 * @throws ArithmeticException
+	 *             - if norm equals zero in epsilon range. This exception
+	 *             originates in the method normalize(ScalarOperator) of the
+	 *             class Vector3D.
 	 */
 	public Plane3D(Triangle3D triangle, ScalarOperator sop) {
 		this.normvec = triangle.getNormal(sop);
@@ -280,6 +296,10 @@ public class Plane3D implements SimpleGeoObj, Serializable {
 	 * @param sop
 	 *            ScalarOperator
 	 * @return int - intersection flag.
+	 * @throws ArithmeticException
+	 *             - if norm equals zero in epsilon range. This exception
+	 *             originates in the method normalize(ScalarOperator) of the
+	 *             class Vector3D.
 	 */
 	public int intersectsInt(Segment3D segment, ScalarOperator sop) {
 		SimpleGeoObj result = this.intersection(new Line3D(segment, sop), sop);
@@ -303,6 +323,10 @@ public class Plane3D implements SimpleGeoObj, Serializable {
 	 * @param sop
 	 *            ScalarOperator
 	 * @return boolean - true if intersect, false otherwise.
+	 * @throws ArithmeticException
+	 *             - if norm equals zero in epsilon range. This exception
+	 *             originates in the method normalize(ScalarOperator) of the
+	 *             class Vector3D.
 	 */
 	public boolean intersects(Segment3D segment, ScalarOperator sop) {
 		if (intersectsInt(segment, sop) < 0)
@@ -375,6 +399,10 @@ public class Plane3D implements SimpleGeoObj, Serializable {
 	 *            ScalarOperator
 	 * @return SimpleGeoObj - result SimpleGeoObj object (null, Plane3D,
 	 *         Line3D).
+	 * @throws ArithmeticException
+	 *             - if norm equals zero in epsilon range. This exception
+	 *             originates in the method normalize(ScalarOperator) of the
+	 *             class Vector3D.
 	 */
 	public SimpleGeoObj intersection(Plane3D plane, ScalarOperator sop) {
 		// if parallel, return null;
@@ -477,6 +505,10 @@ public class Plane3D implements SimpleGeoObj, Serializable {
 	 *            ScalarOperator
 	 * @return SimpleGeoObj - result SimpleGeoObj object (null, Segment3D,
 	 *         Point3D).
+	 * @throws ArithmeticException
+	 *             - if norm equals zero in epsilon range. This exception
+	 *             originates in the method normalize(ScalarOperator) of the
+	 *             class Vector3D.
 	 */
 	public SimpleGeoObj intersection(Segment3D segment, ScalarOperator sop) {
 
@@ -517,7 +549,9 @@ public class Plane3D implements SimpleGeoObj, Serializable {
 	 * Returns a MBB from NEGATIV_INFINITY to POSITIVE_INFINITY
 	 * 
 	 * @return MBB3D of this.
-	 * 
+	 * @throws IllegalArgumentException
+	 *             if an attempt is made to construct a MBB3D whose maximum
+	 *             point is not greater than its minimum point.
 	 * @see db3d.dbms.structure.GeoObj#getMBB()
 	 */
 	public MBB3D getMBB() {

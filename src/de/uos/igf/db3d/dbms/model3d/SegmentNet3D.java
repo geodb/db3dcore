@@ -58,6 +58,9 @@ public class SegmentNet3D extends SpatialObject3D implements Curve3D,
 	 *            SegmentNet3DComp[]
 	 * @param sop
 	 *            ScalarOperator
+	 * @throws IllegalArgumentException
+	 *             if an attempt is made to construct a MBB3D whose maximum
+	 *             point is not greater than its minimum point.
 	 */
 	protected SegmentNet3D(SegmentNet3DComp[] components, ScalarOperator sop) {
 		super();
@@ -75,6 +78,9 @@ public class SegmentNet3D extends SpatialObject3D implements Curve3D,
 	 * 
 	 * @param net
 	 *            SegmentNet3D
+	 * @throws IllegalArgumentException
+	 *             if an attempt is made to construct a MBB3D whose maximum
+	 *             point is not greater than its minimum point.
 	 */
 	public SegmentNet3D(SegmentNet3D net) {
 		super();
@@ -86,6 +92,7 @@ public class SegmentNet3D extends SpatialObject3D implements Curve3D,
 		}
 		this.setScalarOperator(net.getScalarOperator().copy());
 		updateMBB();
+		// Here an IllegalArgumentException can be thrown.
 	}
 
 	/**
@@ -135,6 +142,9 @@ public class SegmentNet3D extends SpatialObject3D implements Curve3D,
 	 * 
 	 * @param comp
 	 *            SegmentNet3DComp to be added
+	 * @throws IllegalArgumentException
+	 *             if an attempt is made to construct a MBB3D whose maximum
+	 *             point is not greater than its minimum point.
 	 */
 	public void addComponent(SegmentNet3DComp comp) {
 		// set the element ids for this net
@@ -154,6 +164,7 @@ public class SegmentNet3D extends SpatialObject3D implements Curve3D,
 		// set net
 		comp.setNet(this);
 		setComponents(temp);
+		// Here an IllegalArgumentException can be thrown.
 	}
 
 	/**
@@ -161,6 +172,9 @@ public class SegmentNet3D extends SpatialObject3D implements Curve3D,
 	 * 
 	 * @param comp
 	 *            SegmentNet3DComp to be removed
+	 * @throws IllegalArgumentException
+	 *             if an attempt is made to construct a MBB3D whose maximum
+	 *             point is not greater than its minimum point.
 	 */
 	public void removeComponent(SegmentNet3DComp comp) {
 		SegmentNet3DComp[] comps = getComponents();
@@ -173,12 +187,16 @@ public class SegmentNet3D extends SpatialObject3D implements Curve3D,
 			}
 		}
 		setComponents(temp);
+		// Here an IllegalArgumentException can be thrown.
 	}
 
 	/**
 	 * Creates and returns a new component of the net.
 	 * 
 	 * @return SegmentNet3DComp that has been created.
+	 * @throws IllegalArgumentException
+	 *             if an attempt is made to construct a MBB3D whose maximum
+	 *             point is not greater than its minimum point.
 	 */
 	public SegmentNet3DComp createComponent() {
 		SegmentNet3DComp comp = new SegmentNet3DComp(getScalarOperator().copy());
@@ -194,6 +212,9 @@ public class SegmentNet3D extends SpatialObject3D implements Curve3D,
 	 * @param indexes
 	 *            int[]
 	 * @return SegmentNet3D - new SegmentNet3D.
+	 * @throws IllegalArgumentException
+	 *             if an attempt is made to construct a MBB3D whose maximum
+	 *             point is not greater than its minimum point.
 	 */
 	public SegmentNet3D splitSegmentNet(int[] indexes, ScalarOperator sop) {// Dag
 		SegmentNet3DComp[] newSegmentNetComps = new SegmentNet3DComp[indexes.length];
@@ -201,9 +222,11 @@ public class SegmentNet3D extends SpatialObject3D implements Curve3D,
 		for (int i = 0; i < indexes.length; i++) {
 			newSegmentNetComps[i] = this.getComponent(i);
 			this.removeComponent(getComponent(i));
+			// Here an IllegalArgumentException can be thrown.
 		}
 
 		return new SegmentNet3D(newSegmentNetComps, sop);
+		// Here an IllegalArgumentException can be thrown.
 	}
 
 	/**
@@ -290,6 +313,27 @@ public class SegmentNet3D extends SpatialObject3D implements Curve3D,
 	 *             - if the type if the <code>SimpleGeoObj</code> resulting from
 	 *             the intersection of the components of this and the given
 	 *             <code>Plane3D</code> cannot be identified.
+	 * @throws IllegalArgumentException
+	 *             - if an attempt is made to construct a MBB3D whose maximum
+	 *             point is not greater than its minimum point.
+	 * @throws IllegalStateException
+	 *             - if the index of a Point3D in a Rectangle3D is not in the
+	 *             interval [0, 3]. This exception originates in the getPoint
+	 *             (int index) method of the class Rectangle3D called by this
+	 *             method.
+	 * @throws IllegalStateException
+	 *             - signals Problems with the dimension of the wireframe.
+	 * @throws IllegalStateException
+	 *             - if the index of the point coordinate is not 0 , 1 or 2
+	 *             (that stands for the x-, y- and z-coordinate).
+	 * @throws IllegalArgumentException
+	 *             - if validation of a Triangle3D fails. The exception
+	 *             originates in the constructor Triangle3D(Point3D, Point3D,
+	 *             Point3D, ScalarOperator).
+	 * @throws ArithmeticException
+	 *             - if norm equals zero in epsilon range. This exception
+	 *             originates in the method normalize(ScalarOperator) of the
+	 *             class Vector3D.
 	 */
 	public boolean intersects(Plane3D plane) throws DB3DException {
 		SegmentNet3DComp[] comps = getComponents();
@@ -306,6 +350,18 @@ public class SegmentNet3D extends SpatialObject3D implements Curve3D,
 	 * @param line
 	 *            Line3D to be tested
 	 * @return boolean - true if intersects, false otherwise.
+	 * @throws IllegalStateException
+	 *             - if the intersectsInt(Line3D line, ScalarOperator sop)
+	 *             method of the class Line3D (which computes the intersection
+	 *             of two lines) called by this method returns a value that is
+	 *             not -2, -1, 0 or 1.
+	 * @throws IllegalStateException
+	 *             - if the index of the point coordinate is not 0 , 1 or 2
+	 *             (that stands for the x-, y- and z-coordinate).
+	 * @throws ArithmeticException
+	 *             - if norm equals zero in epsilon range. This exception
+	 *             originates in the method normalize(ScalarOperator) of the
+	 *             class Vector3D.
 	 */
 	public boolean intersects(Line3D line) {
 		SegmentNet3DComp[] comps = getComponents();
@@ -322,6 +378,18 @@ public class SegmentNet3D extends SpatialObject3D implements Curve3D,
 	 * @param mbb
 	 *            MBB3D to be tested
 	 * @return boolean - true if intersects, false otherwise.
+	 * @throws IllegalStateException
+	 *             - if the intersectsInt(Line3D line, ScalarOperator sop)
+	 *             method of the class Line3D (which computes the intersection
+	 *             of two lines) called by this method returns a value that is
+	 *             not -2, -1, 0 or 1.
+	 * @throws IllegalStateException
+	 *             - if the index of the point coordinate is not 0 , 1 or 2
+	 *             (that stands for the x-, y- and z-coordinate).
+	 * @throws ArithmeticException
+	 *             - if norm equals zero in epsilon range. This exception
+	 *             originates in the method normalize(ScalarOperator) of the
+	 *             class Vector3D.
 	 */
 	public boolean intersects(MBB3D mbb) {
 		SegmentNet3DComp[] comps = getComponents();
@@ -338,6 +406,13 @@ public class SegmentNet3D extends SpatialObject3D implements Curve3D,
 	 * @param point
 	 *            Point3D to be tested
 	 * @return boolean - true if contained, false otherwise.
+	 * @throws IllegalArgumentException
+	 *             if an attempt is made to construct a MBB3D whose maximum
+	 *             point is not greater than its minimum point.
+	 * @throws ArithmeticException
+	 *             - if norm equals zero in epsilon range. This exception
+	 *             originates in the method normalize(ScalarOperator) of the
+	 *             class Vector3D.
 	 */
 	public boolean contains(Point3D point) {
 		SegmentNet3DComp[] comps = getComponents();
@@ -354,6 +429,10 @@ public class SegmentNet3D extends SpatialObject3D implements Curve3D,
 	 * @param seg
 	 *            Segment3D to be tested
 	 * @return boolean - true if contained, false otherwise.
+	 * @throws ArithmeticException
+	 *             - if norm equals zero in epsilon range. This exception
+	 *             originates in the method normalize(ScalarOperator) of the
+	 *             class Vector3D.
 	 */
 	public boolean contains(Segment3D seg) {
 		SegmentNet3DComp[] comps = getComponents();
@@ -401,6 +480,10 @@ public class SegmentNet3D extends SpatialObject3D implements Curve3D,
 	/**
 	 * Marks the end of an update.<br>
 	 * Resets the update flag and begins updating the net.
+	 * 
+	 * @throws IllegalArgumentException
+	 *             if an attempt is made to construct a MBB3D whose maximum
+	 *             point is not greater than its minimum point.
 	 */
 	public void endUpdate() {
 		setUpdate(false);
@@ -412,9 +495,11 @@ public class SegmentNet3D extends SpatialObject3D implements Curve3D,
 				// comps[i].updateEntryElement(); add and remove keeps track of
 				// entry element
 				comps[i].updateMBB();
+				// Here an IllegalArgumentException can be thrown.
 			}
 		}
 		this.updateMBB();
+		// Here an IllegalArgumentException can be thrown.
 	}
 
 	/**
@@ -422,6 +507,9 @@ public class SegmentNet3D extends SpatialObject3D implements Curve3D,
 	 * 
 	 * @param comps
 	 *            SegmentNet3DComp[]
+	 * @throws IllegalArgumentException
+	 *             if an attempt is made to construct a MBB3D whose maximum
+	 *             point is not greater than its minimum point.
 	 */
 	protected void setComponents(SegmentNet3DComp[] comps) {
 		this.components = comps;
@@ -433,6 +521,10 @@ public class SegmentNet3D extends SpatialObject3D implements Curve3D,
 	 * Iterates over all components updating and union their mbbs.<br>
 	 * Sets the updated MBB in the abstract SpatialObject.<br>
 	 * Updates the index in which the net is.
+	 * 
+	 * @throws IllegalArgumentException
+	 *             if an attempt is made to construct a MBB3D whose maximum
+	 *             point is not greater than its minimum point.
 	 */
 	protected void updateMBB() {
 		MBB3D neu = null;
@@ -451,8 +543,10 @@ public class SegmentNet3D extends SpatialObject3D implements Curve3D,
 		SAM sam = getSAM();
 		if (sam != null) {
 			sam.remove(this);
+			// Here an IllegalArgumentException can be thrown.
 			setMBB(neu);
 			sam.insert(this);
+			// Here an IllegalArgumentException can be thrown.
 		} else {
 			// set the SpatialObject mbb
 			setMBB(neu);

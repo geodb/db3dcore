@@ -166,6 +166,10 @@ public class TriangleSet3D implements SimpleGeoObj {
 	 *            Triangle3D to be removed
 	 * @return boolean - true if this collection changed as a result of the
 	 *         call.
+	 * @throws IllegalArgumentException
+	 *             if the index of the point of the tetrahedron is not in the
+	 *             interval [0;3]. The exception originates in the method
+	 *             getPoint(int) of the class Tetrahedron3D.
 	 */
 	public boolean remove(Triangle3D obj) {
 		return getSet().remove(obj);
@@ -254,6 +258,13 @@ public class TriangleSet3D implements SimpleGeoObj {
 	 * Returns the MBB of this.
 	 * 
 	 * @return MBB of this.
+	 * @throws IllegalArgumentException
+	 *             if an attempt is made to construct a MBB3D whose maximum
+	 *             point is not greater than its minimum point.
+	 * @throws IllegalArgumentException
+	 *             - if index of a triangle point is not 0, 1 or 2. The
+	 *             exception originates in the method getPoint(int) of the class
+	 *             Triangle3D.
 	 * @see db3d.dbms.structure.GeoObj#getMBB()
 	 */
 	public MBB3D getMBB() {

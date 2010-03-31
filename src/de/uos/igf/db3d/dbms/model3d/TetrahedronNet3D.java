@@ -59,6 +59,9 @@ public class TetrahedronNet3D extends SpatialObject3D implements Solid3D,
 	 *            TetrahedronNet3DComp[]
 	 * @param sop
 	 *            ScalarOperator
+	 * @throws IllegalArgumentException
+	 *             if an attempt is made to construct a MBB3D whose maximum
+	 *             point is not greater than its minimum point.
 	 */
 	protected TetrahedronNet3D(TetrahedronNet3DComp[] components,
 			ScalarOperator sop) {
@@ -66,6 +69,7 @@ public class TetrahedronNet3D extends SpatialObject3D implements Solid3D,
 		this.components = components;
 		this.setScalarOperator(sop);
 		updateMBB();
+		// Here an IllegalArgumentException can be thrown.
 	}
 
 	/**
@@ -77,6 +81,9 @@ public class TetrahedronNet3D extends SpatialObject3D implements Solid3D,
 	 * 
 	 * @param net
 	 *            TetrahedronNet3D
+	 * @throws IllegalArgumentException
+	 *             if an attempt is made to construct a MBB3D whose maximum
+	 *             point is not greater than its minimum point.
 	 */
 	public TetrahedronNet3D(TetrahedronNet3D net) {
 		super();
@@ -88,6 +95,7 @@ public class TetrahedronNet3D extends SpatialObject3D implements Solid3D,
 		}
 		this.setScalarOperator(net.getScalarOperator().copy());
 		updateMBB();
+		// Here an IllegalArgumentException can be thrown.
 	}
 
 	/**
@@ -142,6 +150,9 @@ public class TetrahedronNet3D extends SpatialObject3D implements Solid3D,
 	 * 
 	 * @param comp
 	 *            TetrahedronNet3DComp to be added
+	 * @throws IllegalArgumentException
+	 *             if an attempt is made to construct a MBB3D whose maximum
+	 *             point is not greater than its minimum point.
 	 */
 	public void addComponent(TetrahedronNet3DComp comp) {
 		// set the element ids for this net
@@ -161,6 +172,7 @@ public class TetrahedronNet3D extends SpatialObject3D implements Solid3D,
 		// set net
 		comp.setNet(this);
 		setComponents(temp);
+		// Here an IllegalArgumentException can be thrown.
 	}
 
 	/**
@@ -168,6 +180,9 @@ public class TetrahedronNet3D extends SpatialObject3D implements Solid3D,
 	 * 
 	 * @param comp
 	 *            TetrahedronNet3DComp to be removed
+	 * @throws IllegalArgumentException
+	 *             if an attempt is made to construct a MBB3D whose maximum
+	 *             point is not greater than its minimum point.
 	 */
 	public void removeComponent(TetrahedronNet3DComp comp) {
 		TetrahedronNet3DComp[] comps = getComponents();
@@ -180,12 +195,16 @@ public class TetrahedronNet3D extends SpatialObject3D implements Solid3D,
 			}
 		}
 		setComponents(temp);
+		// Here an IllegalArgumentException can be thrown.
 	}
 
 	/**
 	 * Creates and returns a new (empty) component of the net.
 	 * 
 	 * @return TetrahedronNet3DComp - empty.
+	 * @throws IllegalArgumentException
+	 *             if an attempt is made to construct a MBB3D whose maximum
+	 *             point is not greater than its minimum point.
 	 */
 	public TetrahedronNet3DComp createComponent() {
 		TetrahedronNet3DComp comp = new TetrahedronNet3DComp(
@@ -202,6 +221,9 @@ public class TetrahedronNet3D extends SpatialObject3D implements Solid3D,
 	 * @param indexes
 	 *            int[]
 	 * @return TetrahedronNet3D - new TetrahedronNet3D.
+	 * @throws IllegalArgumentException
+	 *             if an attempt is made to construct a MBB3D whose maximum
+	 *             point is not greater than its minimum point.
 	 */
 	public TetrahedronNet3D splitTetrahedronNet(int[] indexes,
 			ScalarOperator sop) { // Dag
@@ -210,8 +232,10 @@ public class TetrahedronNet3D extends SpatialObject3D implements Solid3D,
 		for (int i = 0; i < indexes.length; i++) {
 			newTetrahedronNetComps[i] = this.getComponent(i);
 			this.removeComponent(getComponent(i));
+			// Here an IllegalArgumentException can be thrown.
 		}
 		return new TetrahedronNet3D(newTetrahedronNetComps, sop);
+		// Here an IllegalArgumentException can be thrown.
 	}
 
 	/**
@@ -219,6 +243,10 @@ public class TetrahedronNet3D extends SpatialObject3D implements Solid3D,
 	 * components.
 	 * 
 	 * @return double - boundary area.
+	 * @throws ArithmeticException
+	 *             - if norm equals zero in epsilon range. This exception
+	 *             originates in the method normalize(ScalarOperator) of the
+	 *             class Vector3D.
 	 */
 	public double getArea() {
 		double temp = 0;
@@ -319,6 +347,14 @@ public class TetrahedronNet3D extends SpatialObject3D implements Solid3D,
 	 * Returns the number of vertices in the border of his net.
 	 * 
 	 * @return int - number of vertices in the border.
+	 * @throws IllegalArgumentException
+	 *             - if index of a triangle point is not 0, 1 or 2. The
+	 *             exception originates in the method getPoint(int) of the class
+	 *             Triangle3D.
+	 * @throws ArithmeticException
+	 *             - if norm equals zero in epsilon range. This exception
+	 *             originates in the method normalize(ScalarOperator) of the
+	 *             class Vector3D.
 	 */
 	public int countBorderVertices() {
 		int temp = 0;
@@ -333,6 +369,14 @@ public class TetrahedronNet3D extends SpatialObject3D implements Solid3D,
 	 * Returns the number of edges in the border of this net.
 	 * 
 	 * @return int - number of edges in the border.
+	 * @throws IllegalArgumentException
+	 *             - if index of a triangle point is not 0, 1 or 2. The
+	 *             exception originates in the method getPoint(int) of the class
+	 *             Triangle3D.
+	 * @throws ArithmeticException
+	 *             - if norm equals zero in epsilon range. This exception
+	 *             originates in the method normalize(ScalarOperator) of the
+	 *             class Vector3D.
 	 */
 	public int countBorderEdges() {
 		int temp = 0;
@@ -347,6 +391,14 @@ public class TetrahedronNet3D extends SpatialObject3D implements Solid3D,
 	 * Returns the number of faces in the border of this net.
 	 * 
 	 * @return int - number of faces in the border.
+	 * @throws IllegalArgumentException
+	 *             - if index of a triangle point is not 0, 1 or 2. The
+	 *             exception originates in the method getPoint(int) of the class
+	 *             Triangle3D.
+	 * @throws ArithmeticException
+	 *             - if norm equals zero in epsilon range. This exception
+	 *             originates in the method normalize(ScalarOperator) of the
+	 *             class Vector3D.
 	 */
 	public int countBorderFaces() {
 		int temp = 0;
@@ -361,6 +413,14 @@ public class TetrahedronNet3D extends SpatialObject3D implements Solid3D,
 	 * Returns the number of tetrahedrons in the border of this net.
 	 * 
 	 * @return int - number of tetrahedrons in the border.
+	 * @throws IllegalArgumentException
+	 *             - if index of a triangle point is not 0, 1 or 2. The
+	 *             exception originates in the method getPoint(int) of the class
+	 *             Triangle3D.
+	 * @throws ArithmeticException
+	 *             - if norm equals zero in epsilon range. This exception
+	 *             originates in the method normalize(ScalarOperator) of the
+	 *             class Vector3D.
 	 */
 	public int countBorderTetras() {
 		int temp = 0;
@@ -377,6 +437,30 @@ public class TetrahedronNet3D extends SpatialObject3D implements Solid3D,
 	 * @param plane
 	 *            Plane3D to be tested
 	 * @return boolean - true if intersects, false otherwise.
+	 * @throws IllegalArgumentException
+	 *             - if an attempt is made to construct a MBB3D whose maximum
+	 *             point is not greater than its minimum point.
+	 * @throws IllegalStateException
+	 *             - signals Problems with the dimension of the wireframe.
+	 * @throws IllegalStateException
+	 *             - if the index of the point coordinate is not 0 , 1 or 2
+	 *             (that stands for the x-, y- and z-coordinate).
+	 * @throws IllegalArgumentException
+	 *             if the index of the point of the tetrahedron is not in the
+	 *             interval [0;3]. The exception originates in the method
+	 *             getPoint(int) of the class Tetrahedron3D.
+	 * @throws IllegalArgumentException
+	 *             - if validation of a Triangle3D fails. The exception
+	 *             originates in the constructor Triangle3D(Point3D, Point3D,
+	 *             Point3D, ScalarOperator).
+	 * @throws IllegalArgumentException
+	 *             - if index of a triangle point is not 0, 1 or 2. The
+	 *             exception originates in the method getPoint(int) of the class
+	 *             Triangle3D.
+	 * @throws ArithmeticException
+	 *             - if norm equals zero in epsilon range. This exception
+	 *             originates in the method normalize(ScalarOperator) of the
+	 *             class Vector3D.
 	 */
 	public boolean intersects(Plane3D plane) {
 		TetrahedronNet3DComp[] comps = getComponents();
@@ -393,6 +477,29 @@ public class TetrahedronNet3D extends SpatialObject3D implements Solid3D,
 	 * @param line
 	 *            Line3D to be tested
 	 * @return boolean - true if intersects, false otherwise.
+	 * @throws IllegalStateException
+	 *             - if the intersectsInt(Line3D line, ScalarOperator sop)
+	 *             method of the class Line3D (which computes the intersection
+	 *             of two lines) called by this method returns a value that is
+	 *             not -2, -1, 0 or 1.
+	 * @throws IllegalArgumentException
+	 *             - if an attempt is made to construct a MBB3D whose maximum
+	 *             point is not greater than its minimum point.
+	 * @throws IllegalStateException
+	 *             - if the index of the point coordinate is not 0 , 1 or 2
+	 *             (that stands for the x-, y- and z-coordinate).
+	 * @throws IllegalArgumentException
+	 *             if the index of the point of the tetrahedron is not in the
+	 *             interval [0;3]. The exception originates in the method
+	 *             getPoint(int) of the class Tetrahedron3D.
+	 * @throws IllegalArgumentException
+	 *             - if index of a triangle point is not 0, 1 or 2. The
+	 *             exception originates in the method getPoint(int) of the class
+	 *             Triangle3D.
+	 * @throws ArithmeticException
+	 *             - if norm equals zero in epsilon range. This exception
+	 *             originates in the method normalize(ScalarOperator) of the
+	 *             class Vector3D.
 	 */
 	public boolean intersects(Line3D line) {
 		TetrahedronNet3DComp[] comps = getComponents();
@@ -409,6 +516,42 @@ public class TetrahedronNet3D extends SpatialObject3D implements Solid3D,
 	 * @param mbb
 	 *            MBB3D to be tested
 	 * @return boolean - true if intersects, false otherwise.
+	 * @throws IllegalStateException
+	 *             - if the intersectsInt(Line3D line, ScalarOperator sop)
+	 *             method of the class Line3D (which computes the intersection
+	 *             of two lines) called by this method returns a value that is
+	 *             not -2, -1, 0 or 1.
+	 * @throws IllegalStateException
+	 *             - if the index of a Point3D in a Rectangle3D is not in the
+	 *             interval [0, 3]. This exception originates in the getPoint
+	 *             (int index) method of the class Rectangle3D called by this
+	 *             method.
+	 * @throws IllegalStateException
+	 *             - signals Problems with the dimension of the wireframe.
+	 * @throws IllegalStateException
+	 *             - if the index of the point coordinate is not 0 , 1 or 2
+	 *             (that stands for the x-, y- and z-coordinate).
+	 * @throws IllegalArgumentException
+	 *             if the index of the point of the tetrahedron is not in the
+	 *             interval [0;3]. The exception originates in the method
+	 *             getPoint(int) of the class Tetrahedron3D.
+	 * @throws IllegalArgumentException
+	 *             - if validation of a Triangle3D fails. The exception
+	 *             originates in the constructor Triangle3D(Point3D, Point3D,
+	 *             Point3D, ScalarOperator).
+	 * @throws IllegalArgumentException
+	 *             - if index of a triangle point is not 0, 1 or 2. The
+	 *             exception originates in the method getPoint(int) of the class
+	 *             Triangle3D.
+	 * @throws IllegalStateException
+	 *             - if the result of the intersection of a Triangle3D and a
+	 *             MBB3D is not a simplex. The exception originates in the
+	 *             method intersection(MBB3D, ScalarOperator) of the class
+	 *             Triangle3D.
+	 * @throws ArithmeticException
+	 *             - if norm equals zero in epsilon range. This exception
+	 *             originates in the method normalize(ScalarOperator) of the
+	 *             class Vector3D.
 	 */
 	public boolean intersects(MBB3D mbb) {
 		TetrahedronNet3DComp[] comps = getComponents();
@@ -425,6 +568,17 @@ public class TetrahedronNet3D extends SpatialObject3D implements Solid3D,
 	 * @param point
 	 *            Point3D to be tested
 	 * @return boolean - true if contained, false otherwise.
+	 * @throws IllegalArgumentException
+	 *             if an attempt is made to construct a MBB3D whose maximum
+	 *             point is not greater than its minimum point.
+	 * @throws IllegalArgumentException
+	 *             if the index of the point of the tetrahedron is not in the
+	 *             interval [0;3]. The exception originates in the method
+	 *             getPoint(int) of the class Tetrahedron3D.
+	 * @throws IllegalArgumentException
+	 *             - if index of a triangle point is not 0, 1 or 2. The
+	 *             exception originates in the method getPoint(int) of the class
+	 *             Triangle3D.
 	 */
 	public boolean containsInside(Point3D point) {
 		TetrahedronNet3DComp[] comps = getComponents();
@@ -441,6 +595,26 @@ public class TetrahedronNet3D extends SpatialObject3D implements Solid3D,
 	 * @param seg
 	 *            Segment3D to be tested
 	 * @return boolean - true if contained, false otherwise.
+	 * @throws IllegalStateException
+	 *             if the intersectsInt(Line3D line, ScalarOperator sop) method
+	 *             of the class Line3D (which computes the intersection of two
+	 *             lines) called by this method returns a value that is not -2,
+	 *             -1, 0 or 1.
+	 * @throws IllegalArgumentException
+	 *             if an attempt is made to construct a MBB3D whose maximum
+	 *             point is not greater than its minimum point.
+	 * @throws IllegalArgumentException
+	 *             if the index of the point of the tetrahedron is not in the
+	 *             interval [0;3]. The exception originates in the method
+	 *             getPoint(int) of the class Tetrahedron3D.
+	 * @throws IllegalArgumentException
+	 *             - if index of a triangle point is not 0, 1 or 2. The
+	 *             exception originates in the method getPoint(int) of the class
+	 *             Triangle3D.
+	 * @throws ArithmeticException
+	 *             - if norm equals zero in epsilon range. This exception
+	 *             originates in the method normalize(ScalarOperator) of the
+	 *             class Vector3D.
 	 */
 	public boolean containsInside(Segment3D seg) {
 		TetrahedronNet3DComp[] comps = getComponents();
@@ -457,11 +631,40 @@ public class TetrahedronNet3D extends SpatialObject3D implements Solid3D,
 	 * @param triangle
 	 *            Triangle3D to be tested
 	 * @return boolean - true if contained, false otherwise.
+	 * @throws IllegalStateException
+	 *             if the intersectsInt(Line3D line, ScalarOperator sop) method
+	 *             of the class Line3D (which computes the intersection of two
+	 *             lines) called by this method returns a value that is not -2,
+	 *             -1, 0 or 1.
+	 * @throws IllegalArgumentException
+	 *             if an attempt is made to construct a MBB3D whose maximum
+	 *             point is not greater than its minimum point.
+	 * @throws IllegalStateException
+	 *             - signals Problems with the dimension of the wireframe.
+	 * @throws IllegalArgumentException
+	 *             if the index of the point of the tetrahedron is not in the
+	 *             interval [0;3]. The exception originates in the method
+	 *             getPoint(int) of the class Tetrahedron3D.
+	 * @throws IllegalArgumentException
+	 *             - if validation of a Triangle3D fails. The exception
+	 *             originates in the constructor Triangle3D(Point3D, Point3D,
+	 *             Point3D, ScalarOperator).
+	 * @throws IllegalStateException
+	 *             - if the result of the intersection of a Triangle3D and a
+	 *             MBB3D is not a simplex. The exception originates in the
+	 *             method intersection(MBB3D, ScalarOperator) of the class
+	 *             Triangle3D.
+	 * @throws ArithmeticException
+	 *             - if norm equals zero in epsilon range. This exception
+	 *             originates in the method normalize(ScalarOperator) of the
+	 *             class Vector3D.
 	 */
 	public boolean containsInside(Triangle3D triangle) {
 		TetrahedronNet3DComp[] comps = getComponents();
 		for (int i = 0; i < comps.length; i++) {
 			if (comps[i].containsInside(triangle))
+				// Here an IllegalStateException can be thrown signaling
+				// problems with the dimensions of the wireframe.
 				return true;
 		}
 		return false;
@@ -473,6 +676,37 @@ public class TetrahedronNet3D extends SpatialObject3D implements Solid3D,
 	 * @param tetra
 	 *            Tetrahedron3D to be tested
 	 * @return boolean - true if contained, false otherwise.
+	 * @throws IllegalStateException
+	 *             if the intersectsInt(Line3D line, ScalarOperator sop) method
+	 *             of the class Line3D (which computes the intersection of two
+	 *             lines) called by this method returns a value that is not -2,
+	 *             -1, 0 or 1.
+	 * @throws IllegalArgumentException
+	 *             if an attempt is made to construct a MBB3D whose maximum
+	 *             point is not greater than its minimum point.
+	 * @throws IllegalStateException
+	 *             - signals Problems with the dimension of the wireframe.
+	 * @throws IllegalArgumentException
+	 *             if the index of the point of the tetrahedron is not in the
+	 *             interval [0;3]. The exception originates in the
+	 * @throws IllegalArgumentException
+	 *             - if validation of a Triangle3D fails. The exception
+	 *             originates in the constructor Triangle3D(Point3D, Point3D,
+	 *             Point3D, ScalarOperator). method getPoint(int) of the class
+	 *             Tetrahedron3D.
+	 * @throws IllegalArgumentException
+	 *             - if index of a triangle point is not 0, 1 or 2. The
+	 *             exception originates in the method getPoint(int) of the class
+	 *             Triangle3D.
+	 * @throws IllegalStateException
+	 *             - if the result of the intersection of a Triangle3D and a
+	 *             MBB3D is not a simplex. The exception originates in the
+	 *             method intersection(MBB3D, ScalarOperator) of the class
+	 *             Triangle3D.
+	 * @throws ArithmeticException
+	 *             - if norm equals zero in epsilon range. This exception
+	 *             originates in the method normalize(ScalarOperator) of the
+	 *             class Vector3D.
 	 */
 	public boolean containsInside(Tetrahedron3D tetra) {
 		TetrahedronNet3DComp[] comps = getComponents();
@@ -506,6 +740,18 @@ public class TetrahedronNet3D extends SpatialObject3D implements Solid3D,
 	/**
 	 * Marks the end of an update.<br>
 	 * Resets the update flag and begins updating the net.
+	 * 
+	 * @throws IllegalArgumentException
+	 *             if an attempt is made to construct a MBB3D whose maximum
+	 *             point is not greater than its minimum point.
+	 * @throws IllegalArgumentException
+	 *             if the index of the point of the tetrahedron is not in the
+	 *             interval [0;3]. The exception originates in the method
+	 *             getPoint(int) of the class Tetrahedron3D.
+	 * @throws ArithmeticException
+	 *             - if norm equals zero in epsilon range. This exception
+	 *             originates in the method normalize(ScalarOperator) of the
+	 *             class Vector3D.
 	 */
 	public void endUpdate() {
 		setUpdate(false);
@@ -516,9 +762,11 @@ public class TetrahedronNet3D extends SpatialObject3D implements Solid3D,
 				comps[i].updateEulerStatistics();
 				comps[i].updateEntryElement();
 				comps[i].updateMBB();
+				// Here an IllegalArgumentException can be thrown.
 			}
 		}
 		this.updateMBB();
+		// Here an IllegalArgumentException can be thrown.
 	}
 
 	/**
@@ -527,6 +775,9 @@ public class TetrahedronNet3D extends SpatialObject3D implements Solid3D,
 	 * 
 	 * @param comps
 	 *            TetrahedronNet3DComp[]
+	 * @throws IllegalArgumentException
+	 *             if an attempt is made to construct a MBB3D whose maximum
+	 *             point is not greater than its minimum point.
 	 */
 	protected void setComponents(TetrahedronNet3DComp[] comps) {
 		this.components = comps;
@@ -537,7 +788,11 @@ public class TetrahedronNet3D extends SpatialObject3D implements Solid3D,
 	 * Updates the MBB of this net.<br>
 	 * Iterates over all components updating and union their mbbs.<br>
 	 * Sets the updated MBB in the abstract SpatialObject.<br>
-	 * Updates the index in which the net is
+	 * Updates the index in which the net is.
+	 * 
+	 * @throws IllegalArgumentException
+	 *             if an attempt is made to construct a MBB3D whose maximum
+	 *             point is not greater than its minimum point.
 	 */
 	protected void updateMBB() {
 		MBB3D neu = null;
@@ -553,8 +808,10 @@ public class TetrahedronNet3D extends SpatialObject3D implements Solid3D,
 		SAM sam = getSAM();
 		if (sam != null) {
 			sam.remove(this);
+			// Here an IllegalArgumentException can be thrown.
 			setMBB(neu);
 			sam.insert(this);
+			// Here an IllegalArgumentException can be thrown.
 		} else {
 			// set the SpatialObject mbb
 			setMBB(neu);

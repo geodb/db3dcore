@@ -120,12 +120,24 @@ public final class RStar implements SAM, PersistentObject {
 	 *            GeoObj to insert.
 	 * @return boolean - true if successfull, false otherwise
 	 * @throws IllegalArgumentException
-	 *             - if mbb of given GeoObject is null
+	 *             if mbb of given GeoObject is null
+	 * @throws IllegalArgumentException
+	 *             if an attempt is made to construct a MBB3D whose maximum
+	 *             point is not greater than its minimum point.
+	 * @throws IllegalArgumentException
+	 *             if the index of the point of the tetrahedron is not in the
+	 *             interval [0;3]. The exception originates in the method
+	 *             getPoint(int) of the class Tetrahedron3D.
+	 * @throws IllegalArgumentException
+	 *             - if index of a triangle point is not 0, 1 or 2. The
+	 *             exception originates in the method getPoint(int) of the class
+	 *             Triangle3D.
 	 */
 	public synchronized boolean insert(GeoObj obj) {
 		if (obj == null)
 			return false;
 		MBB3D mbb = obj.getMBB();
+		// Here an IllegalArgumentException can be thrown.
 		if (mbb == null)
 			throw new IllegalArgumentException(
 					"MBB3D of given GeoObject is null.");
@@ -140,6 +152,7 @@ public final class RStar implements SAM, PersistentObject {
 
 		// search subtree - insert in leaf -> -1; deep of root = 0
 		Node node = this.getRoot().chooseSubtree(mbb, -1, 0);
+		// Here an IllegalArgumentException can be thrown.
 
 		// test if object is not already in entry
 		if (node.findEntryIndex(obj) == -1) {
@@ -165,10 +178,22 @@ public final class RStar implements SAM, PersistentObject {
 	 *            GeoObj to remove.
 	 * @return boolean - true if successful, false otherwise
 	 * @throws IllegalArgumentException
-	 *             - if mbb of given GeoObject is null.
+	 *             if mbb of given GeoObject is null.
+	 * @throws IllegalArgumentException
+	 *             if an attempt is made to construct a MBB3D whose maximum
+	 *             point is not greater than its minimum point.
+	 * @throws IllegalArgumentException
+	 *             if the index of the point of the tetrahedron is not in the
+	 *             interval [0;3]. The exception originates in the method
+	 *             getPoint(int) of the class Tetrahedron3D.
+	 * @throws IllegalArgumentException
+	 *             - if index of a triangle point is not 0, 1 or 2. The
+	 *             exception originates in the method getPoint(int) of the class
+	 *             Triangle3D.
 	 */
 	public synchronized boolean remove(GeoObj obj) {
 		MBB3D mbb = obj.getMBB();
+		// Here an IllegalArgumentException can be thrown.
 		if (mbb == null)
 			throw new IllegalArgumentException(
 					"MBB3D of given GeoObject is null.");
@@ -196,6 +221,7 @@ public final class RStar implements SAM, PersistentObject {
 				object_found = true;
 				// List for reinsertion
 				List entries = n.remove(index);
+				// Here an IllegalArgumentException can be thrown.
 
 				// System.out.println("Constructed list for reinsertion");
 				// tree should be ok - now we can start reinsertion
@@ -207,6 +233,7 @@ public final class RStar implements SAM, PersistentObject {
 						e = (Entry) it.next();
 						helpNode = this.getRoot().chooseSubtree(e.getMBB(),
 								e.getHeight() + this.getHeightDiff(), 0);
+						// Here an IllegalArgumentException can be thrown.
 						helpNode.append(e);
 						if (helpNode.adjustNode(levelFRI))
 							this.adjustHeightDiff(1);
@@ -396,6 +423,9 @@ public final class RStar implements SAM, PersistentObject {
 	 * Returns the MBB3D of the objects in this.
 	 * 
 	 * @return MBB3D - MBB3D of this.
+	 * @throws IllegalArgumentException
+	 *             - if an attempt is made to construct a MBB3D whose maximum
+	 *             point is not greater than its minimum point.
 	 */
 	public MBB3D getMBB() {
 		if (this.getCount() == 0)
@@ -494,6 +524,9 @@ public final class RStar implements SAM, PersistentObject {
 	 * @param point
 	 *            the Point3D object for test
 	 * @return Set - a Set object containing the result.
+	 * @throws IllegalArgumentException
+	 *             if an attempt is made to construct a MBB3D whose maximum
+	 *             point is not greater than its minimum point.
 	 */
 	public Set contains(Point3D point) {
 		return this.contains(new MBB3D(point, point));
@@ -1022,6 +1055,9 @@ public final class RStar implements SAM, PersistentObject {
 		 * @param currentHeight the current height of this
 		 * 
 		 * @return Node - node for insert.
+		 * 
+		 * @throws IllegalArgumentException - if an attempt is made to construct
+		 * a MBB3D whose maximum point is not greater than its minimum point.
 		 */
 		protected Node chooseSubtree(MBB3D mbb, int level, int currentHeight) {
 			// if wanted insertion level == currentHeight OR we are on leaf
@@ -1033,7 +1069,9 @@ public final class RStar implements SAM, PersistentObject {
 				// check the entries of this (-> subtrees) for best son
 				// and go on until level or leaf
 				Node node = this.chooseNode(mbb);
+				// Here an IllegalArgumentException can be thrown.
 				return node.chooseSubtree(mbb, level, currentHeight + 1);
+				// Here an IllegalArgumentException can be thrown.
 			}
 		}
 
@@ -1073,6 +1111,9 @@ public final class RStar implements SAM, PersistentObject {
 		 * @param index index of entry to remove
 		 * 
 		 * @return List - entries for reinsertion.
+		 * 
+		 * @throws IllegalArgumentException - if an attempt is made to construct
+		 * a MBB3D whose maximum point is not greater than its minimum point.
 		 */
 		protected List remove(int index) {
 
@@ -1081,6 +1122,7 @@ public final class RStar implements SAM, PersistentObject {
 			Set delete = new HashSet();
 			List _entries = new ArrayList();
 			adjustNode_4remove(_entries, delete);
+			// Here an IllegalArgumentException can be thrown.
 
 			// tree should be ok now
 			// database specific deletion code
@@ -1102,6 +1144,9 @@ public final class RStar implements SAM, PersistentObject {
 		 * @param entries List with entries for reinsertion
 		 * 
 		 * @param delete Set for nodes to be deleted on the way up (DB specific)
+		 * 
+		 * @throws IllegalArgumentException - if an attempt is made to construct
+		 * a MBB3D whose maximum point is not greater than its minimum point.
 		 */
 		protected void adjustNode_4remove(List entries, Set delete) {
 
@@ -1116,6 +1161,7 @@ public final class RStar implements SAM, PersistentObject {
 								this.getFatherEntryIndex());
 						// copy all entries in set
 						int height = this.computeHeight();
+						// Here an IllegalArgumentException can be thrown.
 						Entry entry = null;
 						for (int i = 0; i < this.getUsed(); i++) {
 							entry = this.getEntry(i);
@@ -1128,9 +1174,11 @@ public final class RStar implements SAM, PersistentObject {
 				} else {
 					// ok node has not too less entries - so only update his mbb
 					this.adjustNodeMBB();
+					// Here an IllegalArgumentException can be thrown.
 				}
 				// go to father node and look if there is something to do
 				this.getFather().adjustNode_4remove(entries, delete);
+				// Here an IllegalArgumentException can be thrown.
 			}
 		}
 
@@ -1142,6 +1190,9 @@ public final class RStar implements SAM, PersistentObject {
 		 * @param levelFRI array for marking level based forced reinsertion
 		 * 
 		 * @return boolean - true if height of tree changed, false otherwise.
+		 * 
+		 * @throws IllegalArgumentException if an attempt is made to construct a
+		 * MBB3D whose maximum point is not greater than its minimum point.
 		 */
 		protected boolean adjustNode(boolean[] levelFRI) {
 
@@ -1154,6 +1205,7 @@ public final class RStar implements SAM, PersistentObject {
 				// overflow - treatment after RStar algorithm 4.3/I3 p. 327
 				// current height of node this.
 				int currentHeight = computeHeight();
+				// Here an IllegalArgumentException can be thrown.
 
 				// check if a forced reinsertion or a split should occur
 				// if not root and at this level has no forcedreinsert already
@@ -1162,6 +1214,7 @@ public final class RStar implements SAM, PersistentObject {
 					// forcedReinsert - set levelFRI to happened
 					levelFRI[currentHeight] = true;
 					forcedReInsert(levelFRI);
+					// Here an IllegalArgumentException can be thrown.
 				} else {
 					// split
 					newNode = splitNode();
@@ -1187,10 +1240,12 @@ public final class RStar implements SAM, PersistentObject {
 			// test if inner node and not root
 			if (this.getFather() != null) {
 				mbbUpdate = adjustNodeMBB();
+				// Here an IllegalArgumentException can be thrown.
 
 				if (split) {
 					// node got splitted
 					Entry r = new Entry(newNode.computeNodeMBB(), newNode);
+					// Here an IllegalArgumentException can be thrown.
 					this.getFather().append(r);
 					newNode.setFather(this.getFather(), this.getFather()
 							.getUsed() - 1);
@@ -1245,6 +1300,9 @@ public final class RStar implements SAM, PersistentObject {
 		 * @param mbb - MBB3D to best fit
 		 * 
 		 * @return Node - best node for MBB3D.
+		 * 
+		 * @throws IllegalArgumentException - if an attempt is made to construct
+		 * a MBB3D whose maximum point is not greater than its minimum point.
 		 */
 		private Node chooseNode(MBB3D mbb) {
 			// chooseNode - after RStar algorithm
@@ -1264,6 +1322,7 @@ public final class RStar implements SAM, PersistentObject {
 				// compute overlap enlargement index
 				// beginn with entry 0 and assume the return index is the best
 				bestIndex = computeOverlapEnlargeIndex(0, mbb);
+				// Here an IllegalArgumentException can be thrown.
 
 				// go through the rest
 				for (i = 1; i < getUsed(); i++) {
@@ -1282,6 +1341,7 @@ public final class RStar implements SAM, PersistentObject {
 
 							enlargeTemp = computeVolumeEnlargeIndex(getEntry(i)
 									.getMBB(), mbb);
+							// Here an IllegalArgumentException can be thrown.
 							enlargeBest = computeVolumeEnlargeIndex(getEntry(
 									iBest).getMBB(), mbb);
 
@@ -1373,6 +1433,9 @@ public final class RStar implements SAM, PersistentObject {
 		 * @param mbb - the MBB3D we want to know the overlap enlargement
 		 * 
 		 * @return double - the computed index number for overlap enlargement.
+		 * 
+		 * @throws IllegalArgumentException if an attempt is made to construct a
+		 * MBB3D whose maximum point is not greater than its minimum point.
 		 */
 		private double computeOverlapEnlargeIndex(int index, MBB3D mbb) {
 			ScalarOperator sop = getSOP();
@@ -1393,6 +1456,7 @@ public final class RStar implements SAM, PersistentObject {
 			// union with given MBB3D mbb and compute the value of overlap a
 			// second time
 			testBox = testBox.union(mbb, sop);
+			// Here an IllegalArgumentException can be thrown.
 			for (int i = 0; i < getUsed(); i++) {
 				if (index != i
 						&& this.getEntry(index).getMBB().intersectsStrict(
@@ -1414,6 +1478,9 @@ public final class RStar implements SAM, PersistentObject {
 		 * @param mbb2 the test MBB3D
 		 * 
 		 * @return double - volume enlargement index.
+		 * 
+		 * @throws IllegalArgumentException - if an attempt is made to construct
+		 * a MBB3D whose maximum point is not greater than its minimum point.
 		 */
 		private double computeVolumeEnlargeIndex(MBB3D mbb1, MBB3D mbb2) {
 			// compute before and after volume - return difference
@@ -1426,6 +1493,9 @@ public final class RStar implements SAM, PersistentObject {
 		 * Computes the current MBB3D of node this.
 		 * 
 		 * @return MBB3D - computed MBB3D of this.
+		 * 
+		 * @throws IllegalArgumentException - if an attempt is made to construct
+		 * a MBB3D whose maximum point is not greater than its minimum point.
 		 */
 		protected MBB3D computeNodeMBB() {
 			// compute a union of the mbbs of the entries
@@ -1433,6 +1503,7 @@ public final class RStar implements SAM, PersistentObject {
 
 			for (int i = 1; i < this.getUsed(); i++)
 				mbb = mbb.union(this.getEntry(i).getMBB(), getSOP());
+			// Here an IllegalArgumentException can be thrown.
 
 			return mbb;
 		}
@@ -1442,12 +1513,16 @@ public final class RStar implements SAM, PersistentObject {
 		 * the two resulting nodes are this and the return value.
 		 * 
 		 * @return Node - second split node.
+		 * 
+		 * @throws IllegalArgumentException if an attempt is made to construct a
+		 * MBB3D whose maximum point is not greater than its minimum point.
 		 */
 		private Node splitNode() {
 			Node v1 = new Node();
 			Node v2 = new Node(); // later copied to this
 
 			short axis = chooseSplitAxis();
+			// Here an IllegalArgumentException can be thrown.
 			short[] splitresult = chooseSplitIndex(axis);
 
 			short[] splitA = new short[splitresult.length - 1];
@@ -1480,6 +1555,9 @@ public final class RStar implements SAM, PersistentObject {
 		 * Chooses the best split axis to perform a split on this.
 		 * 
 		 * @return int - best axis (axis begin with 1).
+		 * 
+		 * @throws IllegalArgumentException - if an attempt is made to construct
+		 * a MBB3D whose maximum point is not greater than its minimum point.
 		 */
 		private short chooseSplitAxis() {
 
@@ -1516,6 +1594,7 @@ public final class RStar implements SAM, PersistentObject {
 								+ computeMarginValue(sort,
 										(short) (rstarMin + k),
 										(short) (used - 1));
+						// Here an IllegalArgumentException can be thrown.
 						value += vK;
 					}
 				}
@@ -1539,6 +1618,9 @@ public final class RStar implements SAM, PersistentObject {
 		 * @param right right index
 		 * 
 		 * @return double - area (volume...) value.
+		 * 
+		 * @throws IllegalArgumentException - if an attempt is made to construct
+		 * a MBB3D whose maximum point is not greater than its minimum point.
 		 */
 		private double computeAreaValue(short[] sort, short left, short right) {
 			return computeMBBValue(sort, left, right).computeVolume();
@@ -1557,6 +1639,9 @@ public final class RStar implements SAM, PersistentObject {
 		 * @param right right bound for 2. box
 		 * 
 		 * @return double - overlap value.
+		 * 
+		 * @throws IllegalArgumentException if an attempt is made to construct a
+		 * MBB3D whose maximum point is not greater than its minimum point.
 		 */
 		private double computeOverlapValue(short[] sort, short left,
 				short middle, short right) {
@@ -1582,6 +1667,9 @@ public final class RStar implements SAM, PersistentObject {
 		 * @param right right index to compute
 		 * 
 		 * @return double - margin of the MBB3D.
+		 * 
+		 * @throws IllegalArgumentException - if an attempt is made to construct
+		 * a MBB3D whose maximum point is not greater than its minimum point.
 		 */
 		private double computeMarginValue(short[] sort, short left, short right) {
 			return computeMBBValue(sort, left, right).margin();
@@ -1598,6 +1686,9 @@ public final class RStar implements SAM, PersistentObject {
 		 * @param right right index
 		 * 
 		 * @return MBB3D - unioned MBB3D.
+		 * 
+		 * @throws IllegalArgumentException - if an attempt is made to construct
+		 * a MBB3D whose maximum point is not greater than its minimum point.
 		 */
 		private MBB3D computeMBBValue(short[] sort, short left, short right) {
 			MBB3D mbb = null;
@@ -1607,6 +1698,7 @@ public final class RStar implements SAM, PersistentObject {
 					mbb = this.getEntry(sort[i]).getMBB();
 				else
 					mbb = mbb.union(this.getEntry(sort[i]).getMBB(), getSOP());
+				// Here an IllegalArgumentException can be thrown.
 			}
 			return mbb;
 		}
@@ -1688,6 +1780,9 @@ public final class RStar implements SAM, PersistentObject {
 		 * @param axis number of axis
 		 * 
 		 * @return short[] - split result (last index place is the splitindex).
+		 * 
+		 * @throws IllegalArgumentException if an attempt is made to construct a
+		 * MBB3D whose maximum point is not greater than its minimum point.
 		 */
 		private short[] chooseSplitIndex(short axis) {
 
@@ -1730,6 +1825,7 @@ public final class RStar implements SAM, PersistentObject {
 									+ computeAreaValue(bestSort,
 											(short) (bestSplitIndex + 1),
 											(short) (used - 1));
+							// Here an IllegalArgumentException can be thrown.
 
 							areaValue = computeAreaValue(sort, (short) 0,
 									(short) (rstarMin - 1 + k))
@@ -1770,6 +1866,9 @@ public final class RStar implements SAM, PersistentObject {
 		 * Forces a reinsert of the RStar.forcedReInsertCount entries of this.
 		 * 
 		 * @param levelFRI boolean array indicating reinserts on levels
+		 * 
+		 * @throws IllegalArgumentException if an attempt is made to construct a
+		 * MBB3D whose maximum point is not greater than its minimum point.
 		 */
 		private void forcedReInsert(boolean[] levelFRI) {
 
@@ -1786,6 +1885,7 @@ public final class RStar implements SAM, PersistentObject {
 			centerSort(sort, 0, this.getUsed() - 1);
 
 			int height = this.computeHeight();
+			// Here an IllegalArgumentException can be thrown.
 
 			for (int i = 0; i < getForcedReInsertCount(); i++)
 				entrySet[i] = new Entry(this.getEntry(sort[i]), height);
@@ -1804,6 +1904,7 @@ public final class RStar implements SAM, PersistentObject {
 
 				Node node = getRoot().chooseSubtree(entrySet[i].getMBB(),
 						entrySet[i].getHeight() + getHeightDiff(), 0);
+				// Here an IllegalArgumentException can be thrown.
 				node.append(entrySet[i]);
 
 				if (node.adjustNode(levelFRI))
@@ -1927,6 +2028,9 @@ public final class RStar implements SAM, PersistentObject {
 		 * Adjusts the MBBs of node this and updates the father.
 		 * 
 		 * @return boolean - true if update took place.
+		 * 
+		 * @throws IllegalArgumentException - if an attempt is made to construct
+		 * a MBB3D whose maximum point is not greater than its minimum point.
 		 */
 		private boolean adjustNodeMBB() {
 			MBB3D newMBB = computeNodeMBB();
@@ -1962,6 +2066,9 @@ public final class RStar implements SAM, PersistentObject {
 		 * Computes the height from node this to root recursivley.
 		 * 
 		 * @return int - height of node this.
+		 * 
+		 * @throws IllegalArgumentException - if an attempt is made to construct
+		 * a MBB3D whose maximum point is not greater than its minimum point.
 		 */
 		private int computeHeight() {
 			if (this.getFather() != null)

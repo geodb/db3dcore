@@ -57,6 +57,9 @@ public class TriangleNet3D extends SpatialObject3D implements Surface3D,
 	 *            TriangleNet3DComp[]
 	 * @param sop
 	 *            ScalarOperator needed for validation
+	 * @throws IllegalArgumentException
+	 *             if an attempt is made to construct a MBB3D whose maximum
+	 *             point is not greater than its minimum point.
 	 */
 	protected TriangleNet3D(TriangleNet3DComp[] components, ScalarOperator sop) {
 		super();
@@ -74,6 +77,9 @@ public class TriangleNet3D extends SpatialObject3D implements Surface3D,
 	 * 
 	 * @param net
 	 *            TriangleNet3D
+	 * @throws IllegalArgumentException
+	 *             if an attempt is made to construct a MBB3D whose maximum
+	 *             point is not greater than its minimum point.
 	 */
 	public TriangleNet3D(TriangleNet3D net) {
 		super();
@@ -126,6 +132,9 @@ public class TriangleNet3D extends SpatialObject3D implements Surface3D,
 	 * 
 	 * @param comp
 	 *            TriangleNet3DComp to be added
+	 * @throws IllegalArgumentException
+	 *             if an attempt is made to construct a MBB3D whose maximum
+	 *             point is not greater than its minimum point.
 	 */
 	public void addComponent(TriangleNet3DComp comp) {
 		// set the element ids for this net
@@ -153,6 +162,7 @@ public class TriangleNet3D extends SpatialObject3D implements Surface3D,
 		// set net
 		comp.setNet(this);
 		setComponents(temp);
+		// Here an IllegalArgumentException can be thrown.
 	}
 
 	/**
@@ -160,6 +170,9 @@ public class TriangleNet3D extends SpatialObject3D implements Surface3D,
 	 * 
 	 * @param comp
 	 *            TriangleNet3DComp to be removed
+	 * @throws IllegalArgumentException
+	 *             if an attempt is made to construct a MBB3D whose maximum
+	 *             point is not greater than its minimum point.
 	 */
 	public void removeComponent(TriangleNet3DComp comp) {
 		TriangleNet3DComp[] comps = getComponents();
@@ -172,17 +185,22 @@ public class TriangleNet3D extends SpatialObject3D implements Surface3D,
 			}
 		}
 		setComponents(temp);
+		// Here an IllegalArgumentException can be thrown.
 	}
 
 	/**
 	 * Creates and returns a new component of the net.
 	 * 
 	 * @return TriangleNet3DComp that has been created.
+	 * @throws IllegalArgumentException
+	 *             if an attempt is made to construct a MBB3D whose maximum
+	 *             point is not greater than its minimum point.
 	 */
 	public TriangleNet3DComp createComponent() {
 		TriangleNet3DComp comp = new TriangleNet3DComp(getScalarOperator()
 				.copy());
 		addComponent(comp);
+		// Here an IllegalArgumentException can be thrown.
 		return comp;
 	}
 
@@ -194,6 +212,9 @@ public class TriangleNet3D extends SpatialObject3D implements Surface3D,
 	 * @param indexes
 	 *            int[]
 	 * @return TriangleNet3D - new TriangleNet3D.
+	 * @throws IllegalArgumentException
+	 *             if an attempt is made to construct a MBB3D whose maximum
+	 *             point is not greater than its minimum point.
 	 */
 	public TriangleNet3D splitTriangleNet(int[] indexes, ScalarOperator sop) { // Dag
 		TriangleNet3DComp[] newTriangleNetComps = new TriangleNet3DComp[indexes.length];
@@ -201,8 +222,10 @@ public class TriangleNet3D extends SpatialObject3D implements Surface3D,
 		for (int i = 0; i < indexes.length; i++) {
 			newTriangleNetComps[i] = this.getComponent(i);
 			this.removeComponent(getComponent(i));
+			// Here an IllegalArgumentException can be thrown.
 		}
 		return new TriangleNet3D(newTriangleNetComps, sop);
+		// Here an IllegalArgumentException can be thrown.
 	}
 
 	/**
@@ -294,6 +317,10 @@ public class TriangleNet3D extends SpatialObject3D implements Surface3D,
 	 * Returns the number of vertices in the border of his net.
 	 * 
 	 * @return int - number of vertices in the border.
+	 * @throws IllegalArgumentException
+	 *             - if index of a triangle point is not 0, 1 or 2. The
+	 *             exception originates in the method getPoint(int) of the class
+	 *             Triangle3D.
 	 */
 	public int countBorderVertices() { // Dag
 		int temp = 0;
@@ -338,6 +365,35 @@ public class TriangleNet3D extends SpatialObject3D implements Surface3D,
 	 * @param plane
 	 *            Plane3D to be tested
 	 * @return boolean - true if intersects, false otherwise.
+	 * @throws IllegalArgumentException
+	 *             - if an attempt is made to construct a MBB3D whose maximum
+	 *             point is not greater than its minimum point.
+	 * @throws IllegalStateException
+	 *             - if the index of a Point3D in a Rectangle3D is not in the
+	 *             interval [0, 3]. This exception originates in the getPoint
+	 *             (int index) method of the class Rectangle3D called by this
+	 *             method.
+	 * @throws IllegalStateException
+	 *             - signals Problems with the dimension of the wireframe.
+	 * @throws IllegalStateException
+	 *             - if the index of the point coordinate is not 0 , 1 or 2
+	 *             (that stands for the x-, y- and z-coordinate).
+	 * @throws IllegalArgumentException
+	 *             if the index of the point of the tetrahedron is not in the
+	 *             interval [0;3]. The exception originates in the method
+	 *             getPoint(int) of the class Tetrahedron3D.
+	 * @throws IllegalArgumentException
+	 *             - if validation of a Triangle3D fails. The exception
+	 *             originates in the constructor Triangle3D(Point3D, Point3D,
+	 *             Point3D, ScalarOperator).
+	 * @throws IllegalArgumentException
+	 *             - if index of a triangle point is not 0, 1 or 2. The
+	 *             exception originates in the method getPoint(int) of the class
+	 *             Triangle3D.
+	 * @throws ArithmeticException
+	 *             - if norm equals zero in epsilon range. This exception
+	 *             originates in the method normalize(ScalarOperator) of the
+	 *             class Vector3D.
 	 */
 	public boolean intersects(Plane3D plane) { // Dag
 		TriangleNet3DComp[] comps = getComponents();
@@ -354,6 +410,29 @@ public class TriangleNet3D extends SpatialObject3D implements Surface3D,
 	 * @param line
 	 *            Line3D to be tested
 	 * @return boolean - true if intersects, false otherwise.
+	 * @throws IllegalStateException
+	 *             - if the intersectsInt(Line3D line, ScalarOperator sop)
+	 *             method of the class Line3D (which computes the intersection
+	 *             of two lines) called by this method returns a value that is
+	 *             not -2, -1, 0 or 1.
+	 * @throws IllegalArgumentException
+	 *             - if an attempt is made to construct a MBB3D whose maximum
+	 *             point is not greater than its minimum point.
+	 * @throws IllegalStateException
+	 *             - if the index of the point coordinate is not 0 , 1 or 2
+	 *             (that stands for the x-, y- and z-coordinate).
+	 * @throws IllegalArgumentException
+	 *             if the index of the point of the tetrahedron is not in the
+	 *             interval [0;3]. The exception originates in the method
+	 *             getPoint(int) of the class Tetrahedron3D.
+	 * @throws IllegalArgumentException
+	 *             - if index of a triangle point is not 0, 1 or 2. The
+	 *             exception originates in the method getPoint(int) of the class
+	 *             Triangle3D.
+	 * @throws ArithmeticException
+	 *             - if norm equals zero in epsilon range. This exception
+	 *             originates in the method normalize(ScalarOperator) of the
+	 *             class Vector3D.
 	 */
 	public boolean intersects(Line3D line) { // Dag
 		TriangleNet3DComp[] comps = getComponents();
@@ -370,6 +449,38 @@ public class TriangleNet3D extends SpatialObject3D implements Surface3D,
 	 * @param mbb
 	 *            MBB3D to be tested
 	 * @return boolean - true if intersects, false otherwise.
+	 * @throws IllegalStateException
+	 *             - if the intersectsInt(Line3D line, ScalarOperator sop)
+	 *             method of the class Line3D (which computes the intersection
+	 *             of two lines) called by this method returns a value that is
+	 *             not -2, -1, 0 or 1.
+	 * @throws IllegalStateException
+	 *             - if the index of a Point3D in a Rectangle3D is not in the
+	 *             interval [0, 3]. This exception originates in the getPoint
+	 *             (int index) method of the class Rectangle3D called by this
+	 *             method.
+	 * @throws IllegalStateException
+	 *             - signals Problems with the dimension of the wireframe.
+	 * @throws IllegalStateException
+	 *             - if the index of the point coordinate is not 0 , 1 or 2
+	 *             (that stands for the x-, y- and z-coordinate).
+	 * @throws IllegalArgumentException
+	 *             - if validation of a Triangle3D fails. The exception
+	 *             originates in the constructor Triangle3D(Point3D, Point3D,
+	 *             Point3D, ScalarOperator).
+	 * @throws IllegalArgumentException
+	 *             - if index of a triangle point is not 0, 1 or 2. The
+	 *             exception originates in the method getPoint(int) of the class
+	 *             Triangle3D.
+	 * @throws IllegalStateException
+	 *             - if the result of the intersection of a Triangle3D and a
+	 *             MBB3D is not a simplex. The exception originates in the
+	 *             method intersection(MBB3D, ScalarOperator) of the class
+	 *             Triangle3D.
+	 * @throws ArithmeticException
+	 *             - if norm equals zero in epsilon range. This exception
+	 *             originates in the method normalize(ScalarOperator) of the
+	 *             class Vector3D.
 	 */
 	public boolean intersects(MBB3D mbb) { // Dag
 		TriangleNet3DComp[] comps = getComponents();
@@ -386,6 +497,17 @@ public class TriangleNet3D extends SpatialObject3D implements Surface3D,
 	 * @param point
 	 *            Point3D to be tested
 	 * @return boolean - true if contained, false otherwise.
+	 * @throws IllegalArgumentException
+	 *             if an attempt is made to construct a MBB3D whose maximum
+	 *             point is not greater than its minimum point.
+	 * @throws IllegalArgumentException
+	 *             - if index of a triangle point is not 0, 1 or 2. The
+	 *             exception originates in the method getPoint(int) of the class
+	 *             Triangle3D.
+	 * @throws ArithmeticException
+	 *             - if norm equals zero in epsilon range. This exception
+	 *             originates in the method normalize(ScalarOperator) of the
+	 *             class Vector3D.
 	 */
 	public boolean contains(Point3D point) { // Dag
 
@@ -403,6 +525,19 @@ public class TriangleNet3D extends SpatialObject3D implements Surface3D,
 	 * @param seg
 	 *            Segment3D to be tested
 	 * @return boolean - true if contained, false otherwise.
+	 * @throws IllegalStateException
+	 *             - if the intersectsInt(Line3D line, ScalarOperator sop)
+	 *             method of the class Line3D (which computes the intersection
+	 *             of two lines) called by this method returns a value that is
+	 *             not -2, -1, 0 or 1.
+	 * @throws IllegalArgumentException
+	 *             - if index of a triangle point is not 0, 1 or 2. The
+	 *             exception originates in the method getPoint(int) of the class
+	 *             Triangle3D.
+	 * @throws ArithmeticException
+	 *             - if norm equals zero in epsilon range. This exception
+	 *             originates in the method normalize(ScalarOperator) of the
+	 *             class Vector3D.
 	 */
 	public boolean contains(Segment3D seg) { // Dag
 
@@ -420,6 +555,25 @@ public class TriangleNet3D extends SpatialObject3D implements Surface3D,
 	 * @param triangle
 	 *            Triangle3D to be tested
 	 * @return boolean - true if contained, false otherwise.
+	 * @throws IllegalStateException
+	 *             - if the intersectsInt(Line3D line, ScalarOperator sop)
+	 *             method of the class Line3D (which computes the intersection
+	 *             of two lines) called by this method returns a value that is
+	 *             not -2, -1, 0 or 1.
+	 * @throws IllegalStateException
+	 *             - signals Problems with the dimension of the wireframe.
+	 * @throws IllegalArgumentException
+	 *             - if validation of a Triangle3D fails. The exception
+	 *             originates in the constructor Triangle3D(Point3D, Point3D,
+	 *             Point3D, ScalarOperator).
+	 * @throws IllegalArgumentException
+	 *             - if index of a triangle point is not 0, 1 or 2. The
+	 *             exception originates in the method getPoint(int) of the class
+	 *             Triangle3D.
+	 * @throws ArithmeticException
+	 *             - if norm equals zero in epsilon range. This exception
+	 *             originates in the method normalize(ScalarOperator) of the
+	 *             class Vector3D.
 	 */
 	public boolean contains(Triangle3D triangle) { // Dag
 		TriangleNet3DComp[] comps = getComponents();
@@ -466,6 +620,14 @@ public class TriangleNet3D extends SpatialObject3D implements Surface3D,
 	/**
 	 * Marks the end of an update.<br>
 	 * Resets the update flag and begins updating the net.
+	 * 
+	 * @throws IllegalArgumentException
+	 *             - if an attempt is made to construct a MBB3D whose maximum
+	 *             point is not greater than its minimum point.
+	 * @throws IllegalArgumentException
+	 *             - if index of a triangle point is not 0, 1 or 2. The
+	 *             exception originates in the method getPoint(int) of the class
+	 *             Triangle3D.
 	 */
 	public void endUpdate() {
 		setUpdate(false);
@@ -486,6 +648,9 @@ public class TriangleNet3D extends SpatialObject3D implements Surface3D,
 	 * 
 	 * @param comps
 	 *            TriangleNet3DComp[]
+	 * @throws IllegalArgumentException
+	 *             if an attempt is made to construct a MBB3D whose maximum
+	 *             point is not greater than its minimum point.
 	 */
 	protected void setComponents(TriangleNet3DComp[] comps) {
 		this.components = comps;
@@ -497,6 +662,10 @@ public class TriangleNet3D extends SpatialObject3D implements Surface3D,
 	 * Iterates over all components updating and union their mbbs.<br>
 	 * Sets the updated MBB in the abstract SpatialObject.<br>
 	 * Updates the index in which the net is.
+	 * 
+	 * @throws IllegalArgumentException
+	 *             if an attempt is made to construct a MBB3D whose maximum
+	 *             point is not greater than its minimum point.
 	 */
 	protected void updateMBB() {
 		MBB3D neu = null;
@@ -513,8 +682,10 @@ public class TriangleNet3D extends SpatialObject3D implements Surface3D,
 		SAM sam = getSAM();
 		if (sam != null) {
 			sam.remove(this);
+			// Here an IllegalArgumentException can be thrown.
 			setMBB(neu);
 			sam.insert(this);
+			// Here an IllegalArgumentException can be thrown.
 		} else {
 			// set the SpatialObject mbb
 			setMBB(neu);

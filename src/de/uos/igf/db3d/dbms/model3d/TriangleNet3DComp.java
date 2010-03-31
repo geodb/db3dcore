@@ -131,6 +131,13 @@ public class TriangleNet3DComp implements PersistentObject, ComplexGeoObj,
 	 *            ScalarOperator needed for validation
 	 * @param elements
 	 *            TriangleElt3D[]
+	 * @throws IllegalArgumentException
+	 *             - if an attempt is made to construct a MBB3D whose maximum
+	 *             point is not greater than its minimum point.
+	 * @throws IllegalArgumentException
+	 *             - if index of a triangle point is not 0, 1 or 2. The
+	 *             exception originates in the method getPoint(int) of the class
+	 *             Triangle3D.
 	 */
 	public TriangleNet3DComp(ScalarOperator sop, TriangleElt3D[] elements) {
 		this.id = -1;
@@ -143,7 +150,9 @@ public class TriangleNet3DComp implements PersistentObject, ComplexGeoObj,
 		//		
 		// this.sam = new Octree((short)10, XXMBB, sop);
 		loadSAM(elements);
+		// Here an IllegalArgumentException can be thrown.
 		this.mbb = sam.getMBB();
+		// Here an IllegalArgumentException can be thrown.
 		this.buildNetTopology(elements);
 		this.connected = true;
 		updateEntryElement();
@@ -161,6 +170,28 @@ public class TriangleNet3DComp implements PersistentObject, ComplexGeoObj,
 	 *         inserted.
 	 * @throws UpdateException
 	 *             - or subclass of it, signals an Update problem.
+	 * @throws IllegalStateException
+	 *             - if the intersectsInt(Line3D line, ScalarOperator sop)
+	 *             method of the class Line3D (which computes the intersection
+	 *             of two lines) called by this method returns a value that is
+	 *             not -2, -1, 0 or 1.
+	 * @throws IllegalArgumentException
+	 *             - if an attempt is made to construct a MBB3D whose maximum
+	 *             point is not greater than its minimum point.
+	 * @throws IllegalStateException
+	 *             - signals Problems with the dimension of the wireframe.
+	 * @throws IllegalArgumentException
+	 *             - if validation of a Triangle3D fails. The exception
+	 *             originates in the constructor Triangle3D(Point3D, Point3D,
+	 *             Point3D, ScalarOperator).
+	 * @throws IllegalArgumentException
+	 *             - if index of a triangle point is not 0, 1 or 2. The
+	 *             exception originates in the method getPoint(int) of the class
+	 *             Triangle3D.
+	 * @throws ArithmeticException
+	 *             - if norm equals zero in epsilon range. This exception
+	 *             originates in the method normalize(ScalarOperator) of the
+	 *             class Vector3D.
 	 */
 	public TriangleElt3D addElt(Triangle3D elt) throws UpdateException {
 		TriangleElt3D element = new TriangleElt3D(elt);
@@ -171,10 +202,13 @@ public class TriangleNet3DComp implements PersistentObject, ComplexGeoObj,
 			this.setOriented(true);
 			this.setConnected(true);
 			this.getSAM().insert(element);
+			// Here an IllegalArgumentException can be thrown.
 			return element;
 		}
 
 		if (this.contains(elt))
+			// Here an IllegalStateException can be thrown signaling problems
+			// with the dimensions of the wireframe.
 			throw new ContainmentException("Element already contained !");
 
 		Set<Equivalentable> triangles = this.getSAM().intersects(elt.getMBB());
@@ -187,6 +221,8 @@ public class TriangleNet3DComp implements PersistentObject, ComplexGeoObj,
 			TriangleElt3D triElt = (TriangleElt3D) it.next();
 			SimpleGeoObj sgo = element.intersection(triElt, this
 					.getScalarOperator());
+			// Here an IllegalStateException can be thrown signaling problems
+			// with the dimensions of the wireframe.
 
 			if (sgo != null) {
 				switch (sgo.getType()) {
@@ -253,6 +289,9 @@ public class TriangleNet3DComp implements PersistentObject, ComplexGeoObj,
 	 * @return TriangleElt3D - removed element.
 	 * @throws UpdateException
 	 *             - or subclass of it, signals an Update problem.
+	 * @throws IllegalArgumentException
+	 *             - if an attempt is made to construct a MBB3D whose maximum
+	 *             point is not greater than its minimum point.
 	 */
 	public TriangleElt3D removeElt(Triangle3D elt) throws UpdateException { // Dag
 
@@ -328,6 +367,7 @@ public class TriangleNet3DComp implements PersistentObject, ComplexGeoObj,
 				}
 			}
 			this.getSAM().remove(removable);
+			// Here an IllegalArgumentException can be thrown.
 			return removable;
 		}
 		throw new ContainmentException("Element not contained !"); // not
@@ -342,6 +382,9 @@ public class TriangleNet3DComp implements PersistentObject, ComplexGeoObj,
 	 * @return the removed triangle or <code>null</code> if not removable.
 	 * @throws UpdateException
 	 *             - or subclass of it, signals an Update problem.
+	 * @throws IllegalArgumentException
+	 *             if an attempt is made to construct a MBB3D whose maximum
+	 *             point is not greater than its minimum point.
 	 */
 	public TriangleElt3D removeEltWithoutTopologyCheck(Triangle3D elt)
 			throws UpdateException {
@@ -395,6 +438,7 @@ public class TriangleNet3DComp implements PersistentObject, ComplexGeoObj,
 		}
 
 		this.getSAM().remove(removable);
+		// Here an IllegalArgumentException could be thrown.
 		// System.out.println("Actual removal step ... done");
 		return removable;
 	}
@@ -409,6 +453,28 @@ public class TriangleNet3DComp implements PersistentObject, ComplexGeoObj,
 	 *         inserted.
 	 * @throws UpdateException
 	 *             - or subclass of it, signals an Update problem.
+	 * @throws IllegalStateException
+	 *             - if the intersectsInt(Line3D line, ScalarOperator sop)
+	 *             method of the class Line3D (which computes the intersection
+	 *             of two lines) called by this method returns a value that is
+	 *             not -2, -1, 0 or 1.
+	 * @throws IllegalArgumentException
+	 *             - if an attempt is made to construct a MBB3D whose maximum
+	 *             point is not greater than its minimum point.
+	 * @throws IllegalStateException
+	 *             - signals Problems with the dimension of the wireframe.
+	 * @throws IllegalArgumentException
+	 *             - if validation of a Triangle3D fails. The exception
+	 *             originates in the constructor Triangle3D(Point3D, Point3D,
+	 *             Point3D, ScalarOperator).
+	 * @throws IllegalArgumentException
+	 *             - if index of a triangle point is not 0, 1 or 2. The
+	 *             exception originates in the method getPoint(int) of the class
+	 *             Triangle3D.
+	 * @throws ArithmeticException
+	 *             - if norm equals zero in epsilon range. This exception
+	 *             originates in the method normalize(ScalarOperator) of the
+	 *             class Vector3D.
 	 */
 	public TriangleElt3D addEltWithoutTopologyCheck(Triangle3D elt)
 			throws UpdateException {
@@ -422,6 +488,7 @@ public class TriangleNet3DComp implements PersistentObject, ComplexGeoObj,
 			this.setOriented(true);
 			this.setConnected(true);
 			this.getSAM().insert(element);
+			// Here an IllegalArgumentException can be thrown.
 			return element;
 		}
 
@@ -444,6 +511,8 @@ public class TriangleNet3DComp implements PersistentObject, ComplexGeoObj,
 			TriangleElt3D triElt = (TriangleElt3D) it.next();
 			SimpleGeoObj sgo = element.intersection(triElt, this
 					.getScalarOperator());
+			// Here an IllegalStateException can be thrown signaling problems
+			// with the dimensions of the wireframe.
 
 			if (sgo != null) {
 				switch (sgo.getType()) {
@@ -514,12 +583,12 @@ public class TriangleNet3DComp implements PersistentObject, ComplexGeoObj,
 	 * Checks whether start element is via neighbour elements somehow connected
 	 * with given end element.
 	 * 
-	 * @param start
-	 *            TriangleElt3D
-	 * @param end
-	 *            TriangleElt3D
-	 * @param flags
-	 *            FlagMap
+	 * @param start TriangleElt3D
+	 * 
+	 * @param end TriangleElt3D
+	 * 
+	 * @param flags FlagMap
+	 * 
 	 * @return boolean - whether elements are connected or not.
 	 */
 	private boolean isConnectedWith(TriangleElt3D start, TriangleElt3D end,
@@ -590,6 +659,10 @@ public class TriangleNet3DComp implements PersistentObject, ComplexGeoObj,
 	 * @param point
 	 *            Point3D to be tested
 	 * @return boolean - true if contained, false otherwise.
+	 * @throws IllegalArgumentException
+	 *             - if index of a triangle point is not 0, 1 or 2. The
+	 *             exception originates in the method getPoint(int) of the class
+	 *             Triangle3D.
 	 */
 	public boolean containsElt(Point3D point) { // Dag
 		Set<Equivalentable> set = this.getSAM().intersects(point.getMBB());
@@ -644,6 +717,10 @@ public class TriangleNet3DComp implements PersistentObject, ComplexGeoObj,
 	 * Returns the number of vertices in the border of this component.
 	 * 
 	 * @return int - number of vertices in the border.
+	 * @throws IllegalArgumentException
+	 *             - if index of a triangle point is not 0, 1 or 2. The
+	 *             exception originates in the method getPoint(int) of the class
+	 *             Triangle3D.
 	 */
 	public int countBorderVertices() { // Dag
 
@@ -810,6 +887,10 @@ public class TriangleNet3DComp implements PersistentObject, ComplexGeoObj,
 	 * Returns all Point3D objects of this in a Set.
 	 * 
 	 * @return Set of all Point3D objects of this.
+	 * @throws IllegalArgumentException
+	 *             - if index of a triangle point is not 0, 1 or 2. The
+	 *             exception originates in the method getPoint(int) of the class
+	 *             Triangle3D.
 	 */
 	public Set<Equivalentable> getPoints() { // Dag
 		return this.getPoints(this.getElementsViaRecursion());
@@ -827,8 +908,8 @@ public class TriangleNet3DComp implements PersistentObject, ComplexGeoObj,
 	/*
 	 * Returns all Segment3D objects from given Set of TriangleElt3D objects.
 	 * 
-	 * @param triangleSet
-	 *            Set of TriangleElt3D elements
+	 * @param triangleSet Set of TriangleElt3D elements
+	 * 
 	 * @return Set of Segment3D objects.
 	 */
 	private Set<Equivalentable> getSegments(Set<Equivalentable> triangleSet) { // Dag
@@ -850,9 +931,13 @@ public class TriangleNet3DComp implements PersistentObject, ComplexGeoObj,
 	/*
 	 * Returns all Point3D objects from given Set of TriangleElt3D objects.
 	 * 
-	 * @param triangleSet
-	 *            Set of TriangleElt3D elements.
+	 * @param triangleSet Set of TriangleElt3D elements.
+	 * 
 	 * @return Set of Point3D objects.
+	 * 
+	 * @throws IllegalArgumentException - if index of a triangle point is not 0,
+	 * 1 or 2. The exception originates in the method getPoint(int) of the class
+	 * Triangle3D.
 	 */
 	private Set<Equivalentable> getPoints(Set<Equivalentable> triangleSet) { // Dag
 
@@ -920,6 +1005,35 @@ public class TriangleNet3DComp implements PersistentObject, ComplexGeoObj,
 	 * @param plane
 	 *            Plane3D to be tested
 	 * @return boolean - true if intersects, false otherwise.
+	 * @throws IllegalArgumentException
+	 *             - if an attempt is made to construct a MBB3D whose maximum
+	 *             point is not greater than its minimum point.
+	 * @throws IllegalStateException
+	 *             - if the index of a Point3D in a Rectangle3D is not in the
+	 *             interval [0, 3]. This exception originates in the getPoint
+	 *             (int index) method of the class Rectangle3D called by this
+	 *             method.
+	 * @throws IllegalStateException
+	 *             - signals Problems with the dimension of the wireframe.
+	 * @throws IllegalStateException
+	 *             - if the index of the point coordinate is not 0 , 1 or 2
+	 *             (that stands for the x-, y- and z-coordinate).
+	 * @throws IllegalArgumentException
+	 *             if the index of the point of the tetrahedron is not in the
+	 *             interval [0;3]. The exception originates in the method
+	 *             getPoint(int) of the class Tetrahedron3D.
+	 * @throws IllegalArgumentException
+	 *             - if validation of a Triangle3D fails. The exception
+	 *             originates in the constructor Triangle3D(Point3D, Point3D,
+	 *             Point3D, ScalarOperator).
+	 * @throws IllegalArgumentException
+	 *             - if index of a triangle point is not 0, 1 or 2. The
+	 *             exception originates in the method getPoint(int) of the class
+	 *             Triangle3D.
+	 * @throws ArithmeticException
+	 *             - if norm equals zero in epsilon range. This exception
+	 *             originates in the method normalize(ScalarOperator) of the
+	 *             class Vector3D.
 	 */
 	public boolean intersects(Plane3D plane) {// Dag
 		SimpleGeoObj sgo = this.getMBB().intersection(plane,
@@ -942,6 +1056,29 @@ public class TriangleNet3DComp implements PersistentObject, ComplexGeoObj,
 	 * @param line
 	 *            Line3D to be tested
 	 * @return boolean - true if intersects, false otherwise.
+	 * @throws IllegalStateException
+	 *             - if the intersectsInt(Line3D line, ScalarOperator sop)
+	 *             method of the class Line3D (which computes the intersection
+	 *             of two lines) called by this method returns a value that is
+	 *             not -2, -1, 0 or 1.
+	 * @throws IllegalArgumentException
+	 *             - if an attempt is made to construct a MBB3D whose maximum
+	 *             point is not greater than its minimum point.
+	 * @throws IllegalStateException
+	 *             - if the index of the point coordinate is not 0 , 1 or 2
+	 *             (that stands for the x-, y- and z-coordinate).
+	 * @throws IllegalArgumentException
+	 *             if the index of the point of the tetrahedron is not in the
+	 *             interval [0;3]. The exception originates in the method
+	 *             getPoint(int) of the class Tetrahedron3D.
+	 * @throws IllegalArgumentException
+	 *             - if index of a triangle point is not 0, 1 or 2. The
+	 *             exception originates in the method getPoint(int) of the class
+	 *             Triangle3D.
+	 * @throws ArithmeticException
+	 *             - if norm equals zero in epsilon range. This exception
+	 *             originates in the method normalize(ScalarOperator) of the
+	 *             class Vector3D.
 	 */
 	public boolean intersects(Line3D line) { // Dag
 
@@ -950,6 +1087,7 @@ public class TriangleNet3DComp implements PersistentObject, ComplexGeoObj,
 		if (sgo == null)
 			return false;
 		Set<Equivalentable> set = this.getSAM().intersects(sgo.getMBB());
+		// Here an IllegalArgumentException can be thrown.
 		Iterator<Equivalentable> it = set.iterator();
 		while (it.hasNext()) {
 			TriangleElt3D tri = (TriangleElt3D) it.next();
@@ -965,6 +1103,39 @@ public class TriangleNet3DComp implements PersistentObject, ComplexGeoObj,
 	 * @param mbb
 	 *            MBB3D to be tested
 	 * @return boolean - true if intersects, false otherwise.
+	 * @throws IllegalStateException
+	 *             - if the intersectsInt(Line3D line, ScalarOperator sop)
+	 *             method of the class Line3D (which computes the intersection
+	 *             of two lines) called by this method returns a value that is
+	 *             not -2, -1, 0 or 1.
+	 * @throws IllegalStateException
+	 *             - if the index of a Point3D in a Rectangle3D is not in the
+	 *             interval [0, 3]. This exception originates in the getPoint
+	 *             (int index) method of the class Rectangle3D called by this
+	 *             method.
+	 * @throws IllegalStateException
+	 *             - signals Problems with the dimension of the wireframe.
+	 * @throws IllegalStateException
+	 *             - if the index of the point coordinate is not 0 , 1 or 2
+	 *             (that stands for the x-, y- and z-coordinate).
+	 * @throws IllegalArgumentException
+	 *             - if validation of a Triangle3D fails. The exception
+	 *             originates in the constructor Triangle3D(Point3D, Point3D,
+	 *             Point3D, ScalarOperator).
+	 * @throws IllegalArgumentException
+	 *             - if index of a triangle point is not 0, 1 or 2. The
+	 *             exception originates in the method getPoint(int) of the class
+	 *             Triangle3D.
+	 * @throws IllegalStateException
+	 *             - if the result of the intersection of a Triangle3D and a
+	 *             MBB3D is not a simplex. The exception originates in the
+	 *             method intersection(MBB3D, ScalarOperator) of the class
+	 *             Triangle3D.
+	 * @throws ArithmeticException
+	 *             - if norm equals zero in epsilon range. This exception
+	 *             originates in the method normalize(ScalarOperator) of the
+	 *             class Vector3D.
+	 * 
 	 */
 	public boolean intersects(MBB3D mbb) { // Dag
 
@@ -987,6 +1158,17 @@ public class TriangleNet3DComp implements PersistentObject, ComplexGeoObj,
 	 * @param point
 	 *            Point3D to be tested
 	 * @return boolean - true if contained, false otherwise.
+	 * @throws IllegalArgumentException
+	 *             if an attempt is made to construct a MBB3D whose maximum
+	 *             point is not greater than its minimum point.
+	 * @throws IllegalArgumentException
+	 *             - if index of a triangle point is not 0, 1 or 2. The
+	 *             exception originates in the method getPoint(int) of the class
+	 *             Triangle3D.
+	 * @throws ArithmeticException
+	 *             - if norm equals zero in epsilon range. This exception
+	 *             originates in the method normalize(ScalarOperator) of the
+	 *             class Vector3D.
 	 */
 	public boolean contains(Point3D point) { // Dag
 		// tests whether a triangle of this contains point until one is found
@@ -1010,7 +1192,20 @@ public class TriangleNet3DComp implements PersistentObject, ComplexGeoObj,
 	 * 
 	 * @param seg
 	 *            Segment3D to be tested
-	 * @return boolean - true if contained, false otherwise.
+	 * @return boolean - true if contained, false otherwise.\
+	 * @throws IllegalStateException
+	 *             - if the intersectsInt(Line3D line, ScalarOperator sop)
+	 *             method of the class Line3D (which computes the intersection
+	 *             of two lines) called by this method returns a value that is
+	 *             not -2, -1, 0 or 1.
+	 * @throws IllegalArgumentException
+	 *             - if index of a triangle point is not 0, 1 or 2. The
+	 *             exception originates in the method getPoint(int) of the class
+	 *             Triangle3D.
+	 * @throws ArithmeticException
+	 *             - if norm equals zero in epsilon range. This exception
+	 *             originates in the method normalize(ScalarOperator) of the
+	 *             class Vector3D.
 	 */
 	public boolean contains(Segment3D seg) { // Dag
 
@@ -1046,6 +1241,25 @@ public class TriangleNet3DComp implements PersistentObject, ComplexGeoObj,
 	 * @param triangle
 	 *            Triangle3D to be tested
 	 * @return boolean - true if contained, false otherwise.
+	 * @throws IllegalStateException
+	 *             - if the intersectsInt(Line3D line, ScalarOperator sop)
+	 *             method of the class Line3D (which computes the intersection
+	 *             of two lines) called by this method returns a value that is
+	 *             not -2, -1, 0 or 1.
+	 * @throws IllegalStateException
+	 *             - signals Problems with the dimension of the wireframe.
+	 * @throws IllegalArgumentException
+	 *             - if validation of a Triangle3D fails. The exception
+	 *             originates in the constructor Triangle3D(Point3D, Point3D,
+	 *             Point3D, ScalarOperator).
+	 * @throws IllegalArgumentException
+	 *             - if index of a triangle point is not 0, 1 or 2. The
+	 *             exception originates in the method getPoint(int) of the class
+	 *             Triangle3D.
+	 * @throws ArithmeticException
+	 *             - if norm equals zero in epsilon range. This exception
+	 *             originates in the method normalize(ScalarOperator) of the
+	 *             class Vector3D.
 	 */
 	public boolean contains(Triangle3D triangle) { // Dag
 
@@ -1067,6 +1281,8 @@ public class TriangleNet3DComp implements PersistentObject, ComplexGeoObj,
 		while (it.hasNext()) {
 			TriangleElt3D triElt = (TriangleElt3D) it.next();
 			if ((triElt.intersectsInt(triangle, sop) == 2))
+				// Here an IllegalStateException can be thrown signaling
+				// problems with the dimensions of the wireframe.
 				return true;
 		}
 		return false;
@@ -1105,6 +1321,11 @@ public class TriangleNet3DComp implements PersistentObject, ComplexGeoObj,
 
 	/**
 	 * Inverts the orientation of every triangle element.
+	 * 
+	 * @throws IllegalArgumentException
+	 *             - if index of a triangle point is not 0, 1 or 2. The
+	 *             exception originates in the method getPoint(int) of the class
+	 *             Triangle3D.
 	 */
 	public void invertOrientation() { // Dag
 
@@ -1121,6 +1342,14 @@ public class TriangleNet3DComp implements PersistentObject, ComplexGeoObj,
 	 * @param point
 	 *            Point3D to be tested
 	 * @return boolean - true if is a border vertex, false otherwise.
+	 * @throws IllegalArgumentException
+	 *             - if index of a triangle point is not 0, 1 or 2. The
+	 *             exception originates in the method getPoint(int) of the class
+	 *             Triangle3D.
+	 * @throws ArithmeticException
+	 *             - if norm equals zero in epsilon range. This exception
+	 *             originates in the method normalize(ScalarOperator) of the
+	 *             class Vector3D.
 	 */
 	public boolean isBorderVertex(Point3D point) { // Dag
 		// find all segments containing point
@@ -1146,6 +1375,14 @@ public class TriangleNet3DComp implements PersistentObject, ComplexGeoObj,
 	 * @param seg
 	 *            Segment3D to be tested
 	 * @return boolean - true if is a border edge, false otherwise.
+	 * @throws IllegalArgumentException
+	 *             - if index of a triangle point is not 0, 1 or 2. The
+	 *             exception originates in the method getPoint(int) of the class
+	 *             Triangle3D.
+	 * @throws ArithmeticException
+	 *             - if norm equals zero in epsilon range. This exception
+	 *             originates in the method normalize(ScalarOperator) of the
+	 *             class Vector3D.
 	 */
 	public boolean isBorderEdge(Segment3D seg) { // Dag
 
@@ -1278,6 +1515,9 @@ public class TriangleNet3DComp implements PersistentObject, ComplexGeoObj,
 	 * Loads the sam at construction time and counts the vertices.
 	 * 
 	 * @param elements Triangle3D[]
+	 * 
+	 * @throws IllegalArgumentException if an attempt is made to construct a
+	 * MBB3D whose maximum point is not greater than its minimum point.
 	 */
 	private void loadSAM(TriangleElt3D[] elements) {
 		for (int i = 0; i < elements.length; i++)
@@ -1290,6 +1530,14 @@ public class TriangleNet3DComp implements PersistentObject, ComplexGeoObj,
 	 * @param elts
 	 *            TriangleElt3D[] for this the neighbour topology should be
 	 *            built
+	 * @throws IllegalArgumentException
+	 *             if the index of the point of the tetrahedron is not in the
+	 *             interval [0;3]. The exception originates in the method
+	 *             getPoint(int) of the class Tetrahedron3D.
+	 * @throws IllegalArgumentException
+	 *             - if index of a triangle point is not 0, 1 or 2. The
+	 *             exception originates in the method getPoint(int) of the class
+	 *             Triangle3D.
 	 */
 	public void buildNetTopology(TriangleElt3D[] elts) {
 		ScalarOperator so = getScalarOperator();
@@ -1406,6 +1654,14 @@ public class TriangleNet3DComp implements PersistentObject, ComplexGeoObj,
 	 * 
 	 * @param elts
 	 *            TriangleElt3D for which the topology should be checked
+	 * @throws IllegalArgumentException
+	 *             if the index of the point of the tetrahedron is not in the
+	 *             interval [0;3]. The exception originates in the method
+	 *             getPoint(int) of the class Tetrahedron3D.
+	 * @throws IllegalArgumentException
+	 *             - if index of a triangle point is not 0, 1 or 2. The
+	 *             exception originates in the method getPoint(int) of the class
+	 *             Triangle3D.
 	 */
 	public void checkNetTopology(TriangleElt3D[] elts) {
 		// not checked contains errors
@@ -1621,6 +1877,10 @@ public class TriangleNet3DComp implements PersistentObject, ComplexGeoObj,
 
 	/**
 	 * Updates the MBB after changes in the net component.
+	 * 
+	 * @throws IllegalArgumentException
+	 *             - if an attempt is made to construct a MBB3D whose maximum
+	 *             point is not greater than its minimum point.
 	 */
 	protected void updateMBB() {
 		setMBB(this.getSAM().getMBB());
@@ -1658,6 +1918,11 @@ public class TriangleNet3DComp implements PersistentObject, ComplexGeoObj,
 	/**
 	 * Updates the vertices, edges, faces statistics after changes in the net
 	 * component.
+	 * 
+	 * @throws IllegalArgumentException
+	 *             - if index of a triangle point is not 0, 1 or 2. The
+	 *             exception originates in the method getPoint(int) of the class
+	 *             Triangle3D.
 	 */
 	protected void updateEulerStatistics() {
 		Set<?> set = this.getSAM().getEntries();
@@ -1703,10 +1968,12 @@ public class TriangleNet3DComp implements PersistentObject, ComplexGeoObj,
 	 * their outer segments.
 	 * 
 	 * @return HashSet with outer segments.
+	 * @throws IllegalStateException
+	 *             - if this TIN component is empty
 	 */
 	public Set<Segment3D> findTinBorder1() {
 		if (this.isEmpty())
-			throw new RuntimeException("The TIN is empty!");
+			throw new IllegalStateException("The TIN is empty!");
 
 		HashSet<Segment3D> outerSegments = new HashSet<Segment3D>();
 
@@ -1735,6 +2002,10 @@ public class TriangleNet3DComp implements PersistentObject, ComplexGeoObj,
 	 * afterwards follows the edge of the tin.
 	 * 
 	 * @return HashSet with outer segments
+	 * @throws IllegalArgumentException
+	 *             - if index of a triangle point is not 0, 1 or 2. The
+	 *             exception originates in the method getPoint(int) of the class
+	 *             Triangle3D.
 	 */
 
 	public Set<Segment3D> findTinBorder2() {
@@ -1868,6 +2139,14 @@ public class TriangleNet3DComp implements PersistentObject, ComplexGeoObj,
 	 * @return the search result as a set of triangles. The set may be empty but
 	 *         is never <code>null</code>.
 	 * @author Edgar Butwilowski
+	 * @throws IllegalArgumentException
+	 *             - if index of a triangle point is not 0, 1 or 2. The
+	 *             exception originates in the method getPoint(int) of the class
+	 *             Triangle3D.
+	 * @throws ArithmeticException
+	 *             - if norm equals zero in epsilon range. This exception
+	 *             originates in the method normalize(ScalarOperator) of the
+	 *             class Vector3D.
 	 */
 	public Set<TriangleElt3D> getAllTrianglesWithPoint(Point3D point) {
 		Set<TriangleElt3D> resultSet = new HashSet<TriangleElt3D>();

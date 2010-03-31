@@ -114,11 +114,23 @@ public class TetrahedronNetBuilder {
 	 *            It is assumed that there are NO ! redundant Point3D used in
 	 *            this tetrahedron array.
 	 * @return addition successful or not.
+	 * @throws IllegalArgumentException
+	 *             - if an attempt is made to construct a MBB3D whose maximum
+	 *             point is not greater than its minimum point.
+	 * @throws IllegalArgumentException
+	 *             if the index of the point of the tetrahedron is not in the
+	 *             interval [0;3]. The exception originates in the method
+	 *             getPoint(int) of the class Tetrahedron3D.
+	 * @throws ArithmeticException
+	 *             - if norm equals zero in epsilon range. This exception
+	 *             originates in the method normalize(ScalarOperator) of the
+	 *             class Vector3D.
 	 */
 	public boolean addComponent(TetrahedronElt3D[] elements) {
 		TetrahedronNet3DComp comp = null;
 		try {
 			comp = new TetrahedronNet3DComp(getScalarOperator(), elements);
+			// Here an IllegalArgumentException can be thrown.
 		} catch (DB3DException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -152,11 +164,23 @@ public class TetrahedronNetBuilder {
 	 *             - during building net topology of TetrahedronNet3DComp and
 	 *             registering neighbours, a DB3DException is thrown if the
 	 *             neighbour index is not 0, 1, 2 or 3.
+	 * @throws IllegalArgumentException
+	 *             - if an attempt is made to construct a MBB3D whose maximum
+	 *             point is not greater than its minimum point.
+	 * @throws IllegalArgumentException
+	 *             if the index of the point of the tetrahedron is not in the
+	 *             interval [0;3]. The exception originates in the method
+	 *             getPoint(int) of the class Tetrahedron3D.
+	 * @throws ArithmeticException
+	 *             - if norm equals zero in epsilon range. This exception
+	 *             originates in the method normalize(ScalarOperator) of the
+	 *             class Vector3D.
 	 */
 	public boolean addComponent(TetrahedronElt3D[] elements, int id)
 			throws DB3DException {
 		TetrahedronNet3DComp comp = null;
 		comp = new TetrahedronNet3DComp(getScalarOperator(), elements);
+		// Here an IllegalArgumentException can be thrown.
 		if (comp != null) {
 			comp.setComponentID(id);
 
@@ -175,6 +199,9 @@ public class TetrahedronNetBuilder {
 	 * The method returns null if no component was added.
 	 * 
 	 * @return TetrahedronNet3D if one was built, false otherwise.
+	 * @throws IllegalArgumentException
+	 *             if an attempt is made to construct a MBB3D whose maximum
+	 *             point is not greater than its minimum point.
 	 */
 	public TetrahedronNet3D getTetrahedronNet() {
 		if (components.size() <= 0)
@@ -187,6 +214,7 @@ public class TetrahedronNetBuilder {
 
 		TetrahedronNet3D net = new TetrahedronNet3D(compnet,
 				getScalarOperator());
+		// Here an IllegalArgumentException can be thrown.
 
 		// set component counter
 		net.setComponentID(this.compIDCounter);

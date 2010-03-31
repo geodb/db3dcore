@@ -86,6 +86,9 @@ public class PointSet3D implements SimpleGeoObj {
 	 * Returns the MBB of all points.<br>
 	 * 
 	 * @return MBB3D - or null if size of set is zero.
+	 * @throws IllegalArgumentException
+	 *             if an attempt is made to construct a MBB3D whose maximum
+	 *             point is not greater than its minimum point.
 	 */
 	public MBB3D getMBB() { // Dag
 		if (size() > 0) {
@@ -203,6 +206,10 @@ public class PointSet3D implements SimpleGeoObj {
 	 *            Point3D to be removed
 	 * @return boolean - true if this collection changed as a result of the
 	 *         call.
+	 * @throws IllegalArgumentException
+	 *             if the index of the point of the tetrahedron is not in the
+	 *             interval [0;3]. The exception originates in the method
+	 *             getPoint(int) of the class Tetrahedron3D.
 	 */
 	public boolean remove(Point3D obj) {
 		return getSet().remove(obj);

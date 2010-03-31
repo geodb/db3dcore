@@ -59,6 +59,9 @@ public class ClosedHull3D extends SpatialObject3D implements Hull3D,
 	 * 
 	 * @param chull
 	 *            ClosedHull3D to copy.
+	 * @throws IllegalArgumentException
+	 *             if an attempt is made to construct a MBB3D whose maximum
+	 *             point is not greater than its minimum point.
 	 */
 	public ClosedHull3D(ClosedHull3D chull) {
 		this(new TriangleNet3D(chull.getTNet()));
@@ -86,8 +89,21 @@ public class ClosedHull3D extends SpatialObject3D implements Hull3D,
 	/**
 	 * Tests if the wrapped triangle net of this contains the given point.
 	 * 
+	 * @param point
+	 *            Point3D for test
 	 * @return boolean - true if the given point is contained in the triangle
 	 *         net, false otherwise.
+	 * @throws IllegalArgumentException
+	 *             if an attempt is made to construct a MBB3D whose maximum
+	 *             point is not greater than its minimum point.
+	 * @throws IllegalArgumentException
+	 *             - if index of a triangle point is not 0, 1 or 2. The
+	 *             exception originates in the method getPoint(int) of the class
+	 *             Triangle3D.
+	 * @throws ArithmeticException
+	 *             - if norm equals zero in epsilon range. This exception
+	 *             originates in the method normalize(ScalarOperator) of the
+	 *             class Vector3D.
 	 * @see db3d.dbms.model3d.Hull3D#contains(db3d.dbms.geom.Point3D)
 	 */
 	public boolean contains(Point3D point) {
@@ -97,8 +113,23 @@ public class ClosedHull3D extends SpatialObject3D implements Hull3D,
 	/**
 	 * Tests if the wrapped triangle net of this contains the given segment.
 	 * 
+	 * @param seg
+	 *            Segment3D for test
 	 * @return boolean - true if the given segment is contained in the triangle
 	 *         net, false otherwise.
+	 * @throws IllegalStateException
+	 *             - if the intersectsInt(Line3D line, ScalarOperator sop)
+	 *             method of the class Line3D (which computes the intersection
+	 *             of two lines) called by this method returns a value that is
+	 *             not -2, -1, 0 or 1.
+	 * @throws IllegalArgumentException
+	 *             - if index of a triangle point is not 0, 1 or 2. The
+	 *             exception originates in the method getPoint(int) of the class
+	 *             Triangle3D.
+	 * @throws ArithmeticException
+	 *             - if norm equals zero in epsilon range. This exception
+	 *             originates in the method normalize(ScalarOperator) of the
+	 *             class Vector3D.
 	 * @see db3d.dbms.model3d.Hull3D#contains(db3d.dbms.geom.Segment3D)
 	 */
 	public boolean contains(Segment3D seg) {
@@ -108,8 +139,29 @@ public class ClosedHull3D extends SpatialObject3D implements Hull3D,
 	/**
 	 * Tests if the wrapped triangle net of this contains the given triangle.
 	 * 
+	 * @param triangle
+	 *            Triangle3D for test
 	 * @return boolean - true if the given triangle is contained in the triangle
 	 *         net, false otherwise.
+	 * @throws IllegalStateException
+	 *             - if the intersectsInt(Line3D line, ScalarOperator sop)
+	 *             method of the class Line3D (which computes the intersection
+	 *             of two lines) called by this method returns a value that is
+	 *             not -2, -1, 0 or 1.
+	 * @throws IllegalStateException
+	 *             - signals Problems with the dimension of the wireframe.
+	 * @throws IllegalArgumentException
+	 *             - if validation of a Triangle3D fails. The exception
+	 *             originates in the constructor Triangle3D(Point3D, Point3D,
+	 *             Point3D, ScalarOperator).
+	 * @throws IllegalArgumentException
+	 *             - if index of a triangle point is not 0, 1 or 2. The
+	 *             exception originates in the method getPoint(int) of the class
+	 *             Triangle3D.
+	 * @throws ArithmeticException
+	 *             - if norm equals zero in epsilon range. This exception
+	 *             originates in the method normalize(ScalarOperator) of the
+	 *             class Vector3D.
 	 * @see db3d.dbms.model3d.Hull3D#contains(db3d.dbms.geom.Triangle3D)
 	 */
 	public boolean contains(Triangle3D triangle) {
@@ -120,8 +172,27 @@ public class ClosedHull3D extends SpatialObject3D implements Hull3D,
 	 * Tests if the wrapped triangle net of this strictly contains the given
 	 * point.
 	 * 
+	 * @param point
+	 *            Point3D for test
 	 * @return boolean - true if the given point is strictly contained in the
 	 *         triangle net, false otherwise.
+	 * @throws IllegalStateException
+	 *             - if the intersectsInt(Line3D line, ScalarOperator sop)
+	 *             method of the class Line3D (which computes the intersection
+	 *             of two lines) called by this method returns a value that is
+	 *             not -2, -1, 0 or 1.
+	 * @throws IllegalArgumentException
+	 *             if the index of the point of the tetrahedron is not in the
+	 *             interval [0;3]. The exception originates in the method
+	 *             getPoint(int) of the class Tetrahedron3D.
+	 * @throws IllegalArgumentException
+	 *             - if index of a triangle point is not 0, 1 or 2. The
+	 *             exception originates in the method getPoint(int) of the class
+	 *             Triangle3D.
+	 * @throws ArithmeticException
+	 *             - if norm equals zero in epsilon range. This exception
+	 *             originates in the method normalize(ScalarOperator) of the
+	 *             class Vector3D.
 	 * @see db3d.dbms.model3d.Volume3D#containsInside(db3d.dbms.geom.Point3D)
 	 */
 	public boolean containsInside(Point3D point) {
@@ -136,8 +207,23 @@ public class ClosedHull3D extends SpatialObject3D implements Hull3D,
 	 * Tests if the wrapped triangle net of this strictly contains the given
 	 * segment.
 	 * 
+	 * @param seg
+	 *            Segment3D for test
 	 * @return boolean - true if the given segment is strictly contained in the
 	 *         triangle net, false otherwise.
+	 * @throws IllegalStateException
+	 *             - if the intersectsInt(Line3D line, ScalarOperator sop)
+	 *             method of the class Line3D (which computes the intersection
+	 *             of two lines) called by this method returns a value that is
+	 *             not -2, -1, 0 or 1.
+	 * @throws IllegalArgumentException
+	 *             if the index of the point of the tetrahedron is not in the
+	 *             interval [0;3]. The exception originates in the method
+	 *             getPoint(int) of the class Tetrahedron3D.
+	 * @throws IllegalArgumentException
+	 *             - if index of a triangle point is not 0, 1 or 2. The
+	 *             exception originates in the method getPoint(int) of the class
+	 *             Triangle3D.
 	 * @see db3d.dbms.model3d.Volume3D#containsInside(db3d.dbms.geom.Segment3D)
 	 */
 	public boolean containsInside(Segment3D seg) {
@@ -152,8 +238,27 @@ public class ClosedHull3D extends SpatialObject3D implements Hull3D,
 	 * Tests if the wrapped triangle net of this strictly contains the given
 	 * tetrahedron.
 	 * 
+	 * @param tetra
+	 *            Tetrahedron3D for test
 	 * @return boolean - true if the given tetrahedron is strictly contained in
 	 *         the triangle net, false otherwise.
+	 * @throws IllegalStateException
+	 *             - if the intersectsInt(Line3D line, ScalarOperator sop)
+	 *             method of the class Line3D (which computes the intersection
+	 *             of two lines) called by this method returns a value that is
+	 *             not -2, -1, 0 or 1.
+	 * @throws IllegalArgumentException
+	 *             if the index of the point of the tetrahedron is not in the
+	 *             interval [0;3]. The exception originates in the method
+	 *             getPoint(int) of the class Tetrahedron3D.
+	 * @throws IllegalArgumentException
+	 *             - if index of a triangle point is not 0, 1 or 2. The
+	 *             exception originates in the method getPoint(int) of the class
+	 *             Triangle3D.
+	 * @throws ArithmeticException
+	 *             - if norm equals zero in epsilon range. This exception
+	 *             originates in the method normalize(ScalarOperator) of the
+	 *             class Vector3D.
 	 * @see db3d.dbms.model3d.Volume3D#containsInside(db3d.dbms.geom.Tetrahedron3D)
 	 */
 	public boolean containsInside(Tetrahedron3D tetra) {
@@ -168,8 +273,27 @@ public class ClosedHull3D extends SpatialObject3D implements Hull3D,
 	 * Tests if the wrapped triangle net of this strictly contains the given
 	 * triangle.
 	 * 
+	 * @param triangle
+	 *            Triangle3D for test
 	 * @return boolean - true if the given triangle is strictly contained in the
 	 *         triangle net, false otherwise.
+	 * @throws IllegalStateException
+	 *             - if the intersectsInt(Line3D line, ScalarOperator sop)
+	 *             method of the class Line3D (which computes the intersection
+	 *             of two lines) called by this method returns a value that is
+	 *             not -2, -1, 0 or 1.
+	 * @throws IllegalArgumentException
+	 *             if the index of the point of the tetrahedron is not in the
+	 *             interval [0;3]. The exception originates in the method
+	 *             getPoint(int) of the class Tetrahedron3D.
+	 * @throws IllegalArgumentException
+	 *             - if index of a triangle point is not 0, 1 or 2. The
+	 *             exception originates in the method getPoint(int) of the class
+	 *             Triangle3D.
+	 * @throws ArithmeticException
+	 *             - if norm equals zero in epsilon range. This exception
+	 *             originates in the method normalize(ScalarOperator) of the
+	 *             class Vector3D.
 	 * @see db3d.dbms.model3d.Volume3D#containsInside(db3d.dbms.geom.Triangle3D)
 	 */
 	public boolean containsInside(Triangle3D triangle) {
@@ -278,6 +402,10 @@ public class ClosedHull3D extends SpatialObject3D implements Hull3D,
 	 * Calculates the volume of the wrapped triangle net of this.
 	 * 
 	 * @return double - volume of the triangle net.
+	 * @throws IllegalArgumentException
+	 *             - if index of a triangle point is not 0, 1 or 2. The
+	 *             exception originates in the method getPoint(int) of the class
+	 *             Triangle3D.
 	 * @see db3d.dbms.model3d.Volume3D#getVolume()
 	 */
 	public double getVolume() {
@@ -306,6 +434,29 @@ public class ClosedHull3D extends SpatialObject3D implements Hull3D,
 	 *            Line3D
 	 * @return boolean - true if the triangle net intersects with the given
 	 *         line, false otherwise.
+	 * @throws IllegalStateException
+	 *             - if the intersectsInt(Line3D line, ScalarOperator sop)
+	 *             method of the class Line3D (which computes the intersection
+	 *             of two lines) called by this method returns a value that is
+	 *             not -2, -1, 0 or 1.
+	 * @throws IllegalArgumentException
+	 *             - if an attempt is made to construct a MBB3D whose maximum
+	 *             point is not greater than its minimum point.
+	 * @throws IllegalStateException
+	 *             - if the index of the point coordinate is not 0 , 1 or 2
+	 *             (that stands for the x-, y- and z-coordinate).
+	 * @throws IllegalArgumentException
+	 *             if the index of the point of the tetrahedron is not in the
+	 *             interval [0;3]. The exception originates in the method
+	 *             getPoint(int) of the class Tetrahedron3D.
+	 * @throws IllegalArgumentException
+	 *             - if index of a triangle point is not 0, 1 or 2. The
+	 *             exception originates in the method getPoint(int) of the class
+	 *             Triangle3D.
+	 * @throws ArithmeticException
+	 *             - if norm equals zero in epsilon range. This exception
+	 *             originates in the method normalize(ScalarOperator) of the
+	 *             class Vector3D.
 	 * @see db3d.dbms.model3d.Spatial3D#intersects(db3d.dbms.geom.Line3D)
 	 */
 	public boolean intersects(Line3D line) {
@@ -320,6 +471,38 @@ public class ClosedHull3D extends SpatialObject3D implements Hull3D,
 	 *            MBB3D
 	 * @return boolean - true if the triangle net intersects with the given
 	 *         MBB3D, false otherwise.
+	 * @throws IllegalStateException
+	 *             - if the intersectsInt(Line3D line, ScalarOperator sop)
+	 *             method of the class Line3D (which computes the intersection
+	 *             of two lines) called by this method returns a value that is
+	 *             not -2, -1, 0 or 1.
+	 * @throws IllegalStateException
+	 *             - if the index of a Point3D in a Rectangle3D is not in the
+	 *             interval [0, 3]. This exception originates in the getPoint
+	 *             (int index) method of the class Rectangle3D called by this
+	 *             method.
+	 * @throws IllegalStateException
+	 *             - signals Problems with the dimension of the wireframe.
+	 * @throws IllegalStateException
+	 *             - if the index of the point coordinate is not 0 , 1 or 2
+	 *             (that stands for the x-, y- and z-coordinate).
+	 * @throws IllegalArgumentException
+	 *             - if validation of a Triangle3D fails. The exception
+	 *             originates in the constructor Triangle3D(Point3D, Point3D,
+	 *             Point3D, ScalarOperator).
+	 * @throws IllegalArgumentException
+	 *             - if index of a triangle point is not 0, 1 or 2. The
+	 *             exception originates in the method getPoint(int) of the class
+	 *             Triangle3D.
+	 * @throws IllegalStateException
+	 *             - if the result of the intersection of a Triangle3D and a
+	 *             MBB3D is not a simplex. The exception originates in the
+	 *             method intersection(MBB3D, ScalarOperator) of the class
+	 *             Triangle3D.
+	 * @throws ArithmeticException
+	 *             - if norm equals zero in epsilon range. This exception
+	 *             originates in the method normalize(ScalarOperator) of the
+	 *             class Vector3D.
 	 * @see db3d.dbms.model3d.Spatial3D#intersects(db3d.dbms.geom.MBB3D)
 	 */
 	public boolean intersects(MBB3D mbb) {
@@ -334,6 +517,35 @@ public class ClosedHull3D extends SpatialObject3D implements Hull3D,
 	 *            Plane3D
 	 * @return boolean - true if the triangle net intersects with the given
 	 *         plane.
+	 * @throws IllegalArgumentException
+	 *             - if an attempt is made to construct a MBB3D whose maximum
+	 *             point is not greater than its minimum point.
+	 * @throws IllegalStateException
+	 *             - if the index of a Point3D in a Rectangle3D is not in the
+	 *             interval [0, 3]. This exception originates in the getPoint
+	 *             (int index) method of the class Rectangle3D called by this
+	 *             method.
+	 * @throws IllegalStateException
+	 *             - signals Problems with the dimension of the wireframe.
+	 * @throws IllegalStateException
+	 *             - if the index of the point coordinate is not 0 , 1 or 2
+	 *             (that stands for the x-, y- and z-coordinate).
+	 * @throws IllegalArgumentException
+	 *             if the index of the point of the tetrahedron is not in the
+	 *             interval [0;3]. The exception originates in the method
+	 *             getPoint(int) of the class Tetrahedron3D.
+	 * @throws IllegalArgumentException
+	 *             - if validation of a Triangle3D fails. The exception
+	 *             originates in the constructor Triangle3D(Point3D, Point3D,
+	 *             Point3D, ScalarOperator).
+	 * @throws IllegalArgumentException
+	 *             - if index of a triangle point is not 0, 1 or 2. The
+	 *             exception originates in the method getPoint(int) of the class
+	 *             Triangle3D.
+	 * @throws ArithmeticException
+	 *             - if norm equals zero in epsilon range. This exception
+	 *             originates in the method normalize(ScalarOperator) of the
+	 *             class Vector3D.
 	 * @see db3d.dbms.model3d.Spatial3D#intersects(db3d.dbms.geom.Plane3D)
 	 */
 	public boolean intersects(Plane3D plane) {
@@ -364,6 +576,13 @@ public class ClosedHull3D extends SpatialObject3D implements Hull3D,
 	 * Marks the end of an update. Resets the update flag and begins updating
 	 * the net.
 	 * 
+	 * @throws IllegalArgumentException
+	 *             if an attempt is made to construct a MBB3D whose maximum
+	 *             point is not greater than its minimum point.
+	 * @throws IllegalArgumentException
+	 *             - if index of a triangle point is not 0, 1 or 2. The
+	 *             exception originates in the method getPoint(int) of the class
+	 *             Triangle3D.
 	 * @see db3d.dbms.model3d.Spatial3D#endUpdate()
 	 */
 	public void endUpdate() {
@@ -375,6 +594,9 @@ public class ClosedHull3D extends SpatialObject3D implements Hull3D,
 	 * union their mbbs. Sets the updated MBB in the abstract SpatialObject.
 	 * Updates the index in which the net is.
 	 * 
+	 * @throws IllegalArgumentException
+	 *             if an attempt is made to construct a MBB3D whose maximum
+	 *             point is not greater than its minimum point.
 	 * @see db3d.dbms.model3d.SpatialObject3D#updateMBB()
 	 */
 	protected void updateMBB() {
@@ -386,9 +608,13 @@ public class ClosedHull3D extends SpatialObject3D implements Hull3D,
 	 * 
 	 * @param comp
 	 *            ClosedHull3DComp
+	 * @throws IllegalArgumentException
+	 *             if an attempt is made to construct a MBB3D whose maximum
+	 *             point is not greater than its minimum point.
 	 */
 	public void addComponent(ClosedHull3DComp comp) {
 		getTNet().addComponent(comp.getTNetComp());
+		// Here an IllegalArgumentException can be thrown.
 
 		// add also to the wrapped array
 		ClosedHull3DComp[] comps = getComponents();
@@ -405,9 +631,13 @@ public class ClosedHull3D extends SpatialObject3D implements Hull3D,
 	 * 
 	 * @param comp
 	 *            ClosedHull3DComp
+	 * @throws IllegalArgumentException
+	 *             if an attempt is made to construct a MBB3D whose maximum
+	 *             point is not greater than its minimum point.
 	 */
 	public void removeComponent(ClosedHull3DComp comp) {
 		getTNet().removeComponent(comp.getTNetComp());
+		// Here an IllegalArgumentException can be thrown.
 
 		// remove also from wrapped array
 		ClosedHull3DComp[] comps = getComponents();

@@ -188,6 +188,10 @@ public abstract class AbstractHashMap implements Map, Cloneable {
 	 *            key whose presence in this Map is to be tested
 	 * @return <code>true</code> if this map contains a mapping for the
 	 *         specified key.
+	 * @throws IllegalArgumentException
+	 *             if the index of the point of the tetrahedron is not in the
+	 *             interval [0;3]. The exception originates in the method
+	 *             getPoint(int) of the class Tetrahedron3D.
 	 */
 	public boolean containsKey(Object key) {
 		Entry tab[] = table;
@@ -218,6 +222,10 @@ public abstract class AbstractHashMap implements Map, Cloneable {
 	 * @param key
 	 *            key whose associated value is to be returned
 	 * @return the value to which this map maps the specified key.
+	 * @throws IllegalArgumentException
+	 *             if the index of the point of the tetrahedron is not in the
+	 *             interval [0;3]. The exception originates in the method
+	 *             getPoint(int) of the class Tetrahedron3D.
 	 */
 	public Object get(Object key) {
 		Entry tab[] = table;
@@ -279,6 +287,10 @@ public abstract class AbstractHashMap implements Map, Cloneable {
 	 *         <code>null</code> return can also indicate that the
 	 *         AbstractHashMap previously associated <code>null</code> with the
 	 *         specified key.
+	 * @throws IllegalArgumentException
+	 *             if the index of the point of the tetrahedron is not in the
+	 *             interval [0;3]. The exception originates in the method
+	 *             getPoint(int) of the class Tetrahedron3D.
 	 */
 	public Object put(Object key, Object value) {
 		// Makes sure the key is not already in the AbstractHashMap.
@@ -331,6 +343,10 @@ public abstract class AbstractHashMap implements Map, Cloneable {
 	 *         <code>null</code> if there was no mapping for key. A
 	 *         <code>null</code> return can also indicate that the map
 	 *         previously associated <code>null</code> with the specified key.
+	 * @throws IllegalArgumentException
+	 *             if the index of the point of the tetrahedron is not in the
+	 *             interval [0;3]. The exception originates in the method
+	 *             getPoint(int) of the class Tetrahedron3D.
 	 */
 	public Object remove(Object key) {
 		Entry tab[] = table;
@@ -442,6 +458,10 @@ public abstract class AbstractHashMap implements Map, Cloneable {
 	 * <code>add</code> or <code>addAll</code> operations.
 	 * 
 	 * @return a set view of the keys contained in this map.
+	 * @throws IllegalArgumentException
+	 *             if the index of the point of the tetrahedron is not in the
+	 *             interval [0;3]. The exception originates in the method
+	 *             getPoint(int) of the class Tetrahedron3D.
 	 */
 	public Set keySet() {
 		if (keySet == null) {
@@ -458,6 +478,13 @@ public abstract class AbstractHashMap implements Map, Cloneable {
 					return containsKey(o);
 				}
 
+				/**
+				 * @throws IllegalArgumentException
+				 *             if the index of the point of the tetrahedron is
+				 *             not in the interval [0;3]. The exception
+				 *             originates in the method getPoint(int) of the
+				 *             class Tetrahedron3D.
+				 */
 				public boolean remove(Object o) {
 					int oldSize = count;
 					AbstractHashMap.this.remove(o);
