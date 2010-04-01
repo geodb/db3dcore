@@ -28,6 +28,7 @@ import java.util.Stack;
 import java.util.logging.Level;
 
 import de.uos.igf.db3d.dbms.api.DB3DException;
+import de.uos.igf.db3d.dbms.api.Db3dSimpleResourceBundle;
 import de.uos.igf.db3d.dbms.geom.Equivalentable;
 import de.uos.igf.db3d.dbms.geom.Line3D;
 import de.uos.igf.db3d.dbms.geom.MBB3D;
@@ -52,9 +53,6 @@ import de.uos.igf.db3d.dbms.util.SAM;
  */
 public class TetrahedronNet3DComp implements PersistentObject, ComplexGeoObj,
 		Serializable {
-
-	private ResourceBundle resourceBundle = ResourceBundle.getBundle(
-			"Resources", new Locale(System.getProperty("user.language")));
 
 	/* for serialization - ref to enclosing net skipped */
 	private static final ObjectStreamField[] serialPersistentFields;
@@ -419,7 +417,7 @@ public class TetrahedronNet3DComp implements PersistentObject, ComplexGeoObj,
 					break;
 
 				default:
-					throw new DB3DException(resourceBundle
+					throw new DB3DException(Db3dSimpleResourceBundle
 							.getString("db3d.geom.defr"));
 				}
 				if (removable == this.getEntryElement())

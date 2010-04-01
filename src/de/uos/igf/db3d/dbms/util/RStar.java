@@ -19,12 +19,8 @@ import java.util.Arrays;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
-import java.util.Locale;
-import java.util.ResourceBundle;
 import java.util.Set;
-import java.util.logging.Level;
 
-import de.uos.igf.db3d.dbms.api.DB3DException;
 import de.uos.igf.db3d.dbms.geom.Equivalentable;
 import de.uos.igf.db3d.dbms.geom.MBB3D;
 import de.uos.igf.db3d.dbms.geom.Point3D;

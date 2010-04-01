@@ -14,9 +14,10 @@ package de.uos.igf.db3d.dbms.model3d;
 
 import java.util.Locale;
 import java.util.ResourceBundle;
-import java.util.logging.Level;
 
 import de.uos.igf.db3d.dbms.api.DB3DException;
+import de.uos.igf.db3d.dbms.api.DB3DRuntimeException;
+import de.uos.igf.db3d.dbms.api.Db3dSimpleResourceBundle;
 import de.uos.igf.db3d.dbms.geom.Point3D;
 import de.uos.igf.db3d.dbms.geom.ScalarOperator;
 import de.uos.igf.db3d.dbms.geom.Segment3D;
@@ -32,10 +33,8 @@ import de.uos.igf.db3d.dbms.geom.Triangle3D;
  * net. <br>
  * Persistent through inheritance !
  */
+@SuppressWarnings("serial")
 public class TetrahedronElt3D extends Tetrahedron3D implements NetElement3D {
-
-	private ResourceBundle resourceBundle = ResourceBundle.getBundle(
-			"Resources", new Locale(System.getProperty("user.language")));
 
 	/* neighbour 0 */
 	private TetrahedronElt3D eltZero;
@@ -377,7 +376,7 @@ public class TetrahedronElt3D extends Tetrahedron3D implements NetElement3D {
 			this.eltThree = element;
 			break;
 		default:
-			throw new DB3DException(resourceBundle.getString("db3d.geom.defr"));
+			throw new DB3DException(Db3dSimpleResourceBundle.getString("db3d.geom.defr"));
 		}
 	}
 

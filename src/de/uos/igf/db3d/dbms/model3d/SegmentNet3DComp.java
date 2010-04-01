@@ -26,6 +26,7 @@ import java.util.Set;
 
 import de.uos.igf.db3d.dbms.api.ContainmentException;
 import de.uos.igf.db3d.dbms.api.DB3DException;
+import de.uos.igf.db3d.dbms.api.Db3dSimpleResourceBundle;
 import de.uos.igf.db3d.dbms.api.GeometryException;
 import de.uos.igf.db3d.dbms.api.TopologyException;
 import de.uos.igf.db3d.dbms.api.UpdateException;
@@ -209,10 +210,7 @@ public class SegmentNet3DComp implements PersistentObject, ComplexGeoObj,
 			// Here an IllegalArgumentException can be thrown.
 			break;
 		default:
-			throw new DB3DException(ResourceBundle.getBundle(
-					getClass().getCanonicalName(),
-					new Locale(System.getProperty("lang"), System
-							.getProperty("country"))).getString(
+			throw new DB3DException(Db3dSimpleResourceBundle.getString(
 					"db3d.geom.defrmethod"));
 		}
 

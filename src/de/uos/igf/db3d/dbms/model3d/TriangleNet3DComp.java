@@ -27,6 +27,7 @@ import java.util.Set;
 import java.util.Stack;
 
 import de.uos.igf.db3d.dbms.api.ContainmentException;
+import de.uos.igf.db3d.dbms.api.Db3dSimpleResourceBundle;
 import de.uos.igf.db3d.dbms.api.GeometryException;
 import de.uos.igf.db3d.dbms.api.UpdateException;
 import de.uos.igf.db3d.dbms.geom.Equivalentable;
@@ -52,9 +53,6 @@ import de.uos.igf.db3d.dbms.util.SAM;
  */
 public class TriangleNet3DComp implements PersistentObject, ComplexGeoObj,
 		Serializable {
-
-	private ResourceBundle resourceBundle = ResourceBundle.getBundle(
-			"Resources", new Locale(System.getProperty("user.language")));
 
 	/* serial version */
 	private static final long serialVersionUID = 5361954449792026181L;
@@ -359,7 +357,7 @@ public class TriangleNet3DComp implements PersistentObject, ComplexGeoObj,
 					break;
 
 				default:
-					throw new UpdateException(resourceBundle
+					throw new UpdateException(Db3dSimpleResourceBundle
 							.getString("db3d.model3d.intexc"));
 				}
 				if (removable == this.getEntryElement()) {
@@ -428,11 +426,11 @@ public class TriangleNet3DComp implements PersistentObject, ComplexGeoObj,
 			break;
 
 		default:
-			throw new UpdateException(resourceBundle
+			throw new UpdateException(Db3dSimpleResourceBundle
 					.getString("db3d.model3d.intexc"));
 		}
 		if (removable == this.getEntryElement()) {
-			throw new UpdateException(resourceBundle
+			throw new UpdateException(Db3dSimpleResourceBundle
 					.getString("db3d.trianglenet.ohgod"));
 			// this.setEntryElement(neighbour[0]);
 		}
@@ -493,7 +491,7 @@ public class TriangleNet3DComp implements PersistentObject, ComplexGeoObj,
 		}
 
 		if (this.containsElt(elt))
-			throw new UpdateException(resourceBundle
+			throw new UpdateException(Db3dSimpleResourceBundle
 					.getString("db3d.trianglenet.duplicate"));
 		// throw new ContainmentException("Element already contained !");
 

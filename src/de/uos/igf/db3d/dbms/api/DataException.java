@@ -4,7 +4,7 @@
  * University of Osnabrueck
  * Institute for Geoinformatics and Remote Sensing
  *
- * Copyright (C) Researchgroup Prof. Dr. Martin Breunig
+ * Copyright (C) Prof. Dr. Martin Breunig
  * 
  * File created on 24.06.2003
  */
