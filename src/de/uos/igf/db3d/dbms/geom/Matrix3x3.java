@@ -13,6 +13,8 @@ import java.io.IOException;
 import java.io.ObjectInput;
 import java.io.ObjectOutput;
 
+import de.uos.igf.db3d.dbms.api.Db3dSimpleResourceBundle;
+
 /**
  * Matrix3x3 implements a Matrix with 3 rows and 3 columns.
  * 
@@ -87,8 +89,10 @@ public class Matrix3x3 implements Externalizable {
 	 *             if length of array is != 9
 	 */
 	public Matrix3x3(double[] valueArray) {
-		if (valueArray.length != 9)
-			throw new IllegalArgumentException("Array must have length 9 !");
+		if (valueArray.length != 9) {
+			throw new IllegalArgumentException(Db3dSimpleResourceBundle
+					.getString("db3d.geom.arraylengthnine"));
+		}
 
 		v = new double[3][3];
 		for (int i = 0; i < 3; i++) {

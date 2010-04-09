@@ -13,6 +13,7 @@ package de.uos.igf.db3d.dbms.geom;
 import java.io.Serializable;
 import java.util.Arrays;
 
+import de.uos.igf.db3d.dbms.api.Db3dSimpleResourceBundle;
 import de.uos.igf.db3d.dbms.structure.PersistentObject;
 
 /**
@@ -61,8 +62,8 @@ public class Triangle3D implements PersistentObject, SimpleGeoObj,
 	public Triangle3D(Point3D[] pts, ScalarOperator sop)
 			throws IllegalArgumentException {
 		if (pts == null || pts.length != 3)
-			throw new IllegalArgumentException(
-					"A 3D Triangle has only 3 Point3D!");
+			throw new IllegalArgumentException(Db3dSimpleResourceBundle
+					.getString("db3d.geom.trionlythree"));
 
 		this.zero = pts[0];
 		this.one = pts[1];
@@ -73,11 +74,14 @@ public class Triangle3D implements PersistentObject, SimpleGeoObj,
 		// validate
 		if (sop != null) {
 			if (!isValid(sop))
-				throw new IllegalArgumentException("Argument not valid !");
+				throw new IllegalArgumentException(Db3dSimpleResourceBundle
+						.getString("db3d.geom.argnotval"));
 			if (!isRegular(sop))
-				throw new IllegalArgumentException("Argument not regular !");
+				throw new IllegalArgumentException(Db3dSimpleResourceBundle
+						.getString("db3d.geom.argnotreg"));
 			if (!isBeautiful(sop))
-				throw new IllegalArgumentException("Argument not beautiful !");
+				throw new IllegalArgumentException(Db3dSimpleResourceBundle
+						.getString("db3d.geom.argnotbeau"));
 		}
 	}
 
@@ -113,11 +117,14 @@ public class Triangle3D implements PersistentObject, SimpleGeoObj,
 		// validate
 		if (sop != null) {
 			if (!isValid(sop))
-				throw new IllegalArgumentException("Argument not valid !");
+				throw new IllegalArgumentException(Db3dSimpleResourceBundle
+						.getString("db3d.geom.argnotval"));
 			if (!isRegular(sop))
-				throw new IllegalArgumentException("Argument not regular !");
+				throw new IllegalArgumentException(Db3dSimpleResourceBundle
+						.getString("db3d.geom.argnotreg"));
 			if (!isBeautiful(sop))
-				throw new IllegalArgumentException("Argument not beautiful !");
+				throw new IllegalArgumentException(Db3dSimpleResourceBundle
+						.getString("db3d.geom.argnotbeau"));
 		}
 	}
 
@@ -213,8 +220,8 @@ public class Triangle3D implements PersistentObject, SimpleGeoObj,
 		case 2:
 			return this.two;
 		default:
-			throw new IllegalArgumentException(
-					"Wrong index: A 3D Triangle does only have 3 Point3D!");
+			throw new IllegalArgumentException(Db3dSimpleResourceBundle
+					.getString("db3d.geom.wrongindtrionlythree"));
 		}
 	}
 
@@ -240,8 +247,8 @@ public class Triangle3D implements PersistentObject, SimpleGeoObj,
 			this.two = point;
 			break;
 		default:
-			throw new IllegalArgumentException(
-					"Wrong index: A 3D Triangle does only have 3 Point3D!");
+			throw new IllegalArgumentException(Db3dSimpleResourceBundle
+					.getString("db3d.geom.wrongindtrionlythree"));
 		}
 		this.lines = null;
 		this.normvec = null;
@@ -645,8 +652,8 @@ public class Triangle3D implements PersistentObject, SimpleGeoObj,
 			}
 			return false;
 		default:
-			throw new IllegalStateException(
-					"Result of Intersection is not a simplex.");
+			throw new IllegalStateException(Db3dSimpleResourceBundle
+					.getString("db3d.geom.resnotsimplex"));
 		}
 	}
 
@@ -736,8 +743,8 @@ public class Triangle3D implements PersistentObject, SimpleGeoObj,
 			}
 			return false;
 		default:
-			throw new IllegalStateException(
-					"Result of Intersection is not a simplex.");
+			throw new IllegalStateException(Db3dSimpleResourceBundle
+					.getString("db3d.geom.resnotsimplex"));
 		}
 	}
 
@@ -974,8 +981,8 @@ public class Triangle3D implements PersistentObject, SimpleGeoObj,
 								return false;
 						}
 						default:
-							throw new IllegalStateException(
-									"Result of Intersection is not a simplex.");
+							throw new IllegalStateException(Db3dSimpleResourceBundle
+									.getString("db3d.geom.resnotsimplex"));
 
 						}
 					}
@@ -1012,14 +1019,14 @@ public class Triangle3D implements PersistentObject, SimpleGeoObj,
 								return false;
 						}
 						default:
-							throw new IllegalStateException(
-									"Result of Intersection is not a simplex.");
+							throw new IllegalStateException(Db3dSimpleResourceBundle
+									.getString("db3d.geom.resnotsimplex"));
 
 						}
 					}
 					default:
-						throw new IllegalStateException(
-								"Result of Intersection is not a simplex.");
+						throw new IllegalStateException(Db3dSimpleResourceBundle
+								.getString("db3d.geom.resnotsimplex"));
 
 					}
 				}
@@ -1628,13 +1635,12 @@ public class Triangle3D implements PersistentObject, SimpleGeoObj,
 			return this.containsInPlane(((Segment3D) projectionObj), sop);
 		case SimpleGeoObj.POINT3D:
 			// never should happen
-			throw new IllegalStateException(
-					"Result of projection could not be a 0D simplex (Point3D).");
+			throw new IllegalStateException(Db3dSimpleResourceBundle
+					.getString("db3d.geom.resprojnotpoint"));
 
 		default:
-			throw new IllegalStateException(
-					"Result of projection is not a simplex.");
-
+			throw new IllegalStateException(Db3dSimpleResourceBundle
+					.getString("db3d.geom.resprojnotsimplex"));
 		}
 	}
 

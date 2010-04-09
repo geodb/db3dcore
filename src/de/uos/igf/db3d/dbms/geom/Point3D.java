@@ -13,6 +13,7 @@ import java.io.IOException;
 import java.io.ObjectInput;
 import java.io.ObjectOutput;
 
+import de.uos.igf.db3d.dbms.api.Db3dSimpleResourceBundle;
 import de.uos.igf.db3d.dbms.structure.PersistentObject;
 
 /**
@@ -145,8 +146,8 @@ public class Point3D implements PersistentObject, SimpleGeoObj, Equivalentable,
 			break;
 		default:
 			// FIXME We should fix this weird stuff
-			throw new IllegalStateException(
-					"A 3D Point only has 3 Coordinates: 0 -> x, 1 -> y, 2 -> z  ");
+			throw new IllegalStateException(Db3dSimpleResourceBundle
+					.getString("db3d.geom.onlythree"));
 		}
 	}
 
@@ -166,8 +167,8 @@ public class Point3D implements PersistentObject, SimpleGeoObj, Equivalentable,
 			return this;
 		default:
 			// FIXME We should fix this weird stuff
-			throw new IllegalStateException(
-					"As this is a Point3D object, only index=0 is valid");
+			throw new IllegalStateException(Db3dSimpleResourceBundle
+					.getString("db3d.geom.onlyindexzero"));
 		}
 	}
 

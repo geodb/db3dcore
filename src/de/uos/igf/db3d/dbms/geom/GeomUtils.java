@@ -11,6 +11,7 @@ package de.uos.igf.db3d.dbms.geom;
 import java.util.Arrays;
 import java.util.Comparator;
 
+import de.uos.igf.db3d.dbms.api.Db3dSimpleResourceBundle;
 import de.uos.igf.db3d.dbms.geom.LA.SingularException;
 
 /**
@@ -102,7 +103,8 @@ public final class GeomUtils {
 			return 0;
 		}
 
-		throw new IllegalArgumentException("Cannot compare NaN values.");
+		throw new IllegalArgumentException(Db3dSimpleResourceBundle
+				.getString("db3d.geom.comparenan"));
 
 	}
 

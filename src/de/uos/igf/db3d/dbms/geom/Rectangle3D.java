@@ -12,6 +12,7 @@ package de.uos.igf.db3d.dbms.geom;
 
 import java.util.Iterator;
 
+import de.uos.igf.db3d.dbms.api.Db3dSimpleResourceBundle;
 import de.uos.igf.db3d.dbms.util.EquivalentableHashSet;
 
 /**
@@ -81,8 +82,8 @@ public class Rectangle3D {
 			return this.three;
 		default:
 			// FIXME Fix this weird switch(index) stuff
-			throw new IllegalStateException(
-					"A 3D Rectangle only has 4 3D Points!");
+			throw new IllegalStateException(Db3dSimpleResourceBundle
+					.getString("db3d.geom.rectonlyfour"));
 		}
 	}
 
@@ -168,8 +169,8 @@ public class Rectangle3D {
 			break;
 		default:
 			// FIXME Fix this weird switch(index) stuff
-			throw new IllegalStateException(
-					"A 3D Rectangle only has 4 3D Points!");
+			throw new IllegalStateException(Db3dSimpleResourceBundle
+					.getString("db3d.geom.rectonlyfour"));
 		}
 	}
 

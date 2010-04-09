@@ -14,6 +14,7 @@ import java.io.Serializable;
 import java.util.Arrays;
 import java.util.Iterator;
 
+import de.uos.igf.db3d.dbms.api.Db3dSimpleResourceBundle;
 import de.uos.igf.db3d.dbms.structure.PersistentObject;
 
 /**
@@ -67,8 +68,8 @@ public class Tetrahedron3D implements PersistentObject, SimpleGeoObj,
 	 */
 	public Tetrahedron3D(Point3D[] pts, ScalarOperator sop) {
 		if (pts == null || pts.length != 4)
-			throw new IllegalArgumentException(
-					"A 3D Tetrahedron consists of 4 Point3D!");
+			throw new IllegalArgumentException(Db3dSimpleResourceBundle
+					.getString("db3d.geom.tetraconsfour"));
 
 		this.zero = pts[0];
 		this.one = pts[1];
@@ -79,11 +80,14 @@ public class Tetrahedron3D implements PersistentObject, SimpleGeoObj,
 		// validate
 		if (sop != null) {
 			if (!isValid(sop))
-				throw new IllegalArgumentException("Argument not valid !");
+				throw new IllegalArgumentException(Db3dSimpleResourceBundle
+						.getString("db3d.geom.argnotval"));
 			if (!isRegular(sop))
-				throw new IllegalArgumentException("Argument not regular !");
+				throw new IllegalArgumentException(Db3dSimpleResourceBundle
+						.getString("db3d.geom.argnotreg"));
 			if (!isBeautiful(sop))
-				throw new IllegalArgumentException("Argument not beautiful !");
+				throw new IllegalArgumentException(Db3dSimpleResourceBundle
+						.getString("db3d.geom.argnotbeau"));
 		}
 		ensureOrder();
 	}
@@ -123,11 +127,14 @@ public class Tetrahedron3D implements PersistentObject, SimpleGeoObj,
 		// validate
 		if (sop != null) {
 			if (!isValid(sop))
-				throw new IllegalArgumentException("Argument not valid !");
+				throw new IllegalArgumentException(Db3dSimpleResourceBundle
+						.getString("db3d.geom.argnotval"));
 			if (!isRegular(sop))
-				throw new IllegalArgumentException("Argument not regular !");
+				throw new IllegalArgumentException(Db3dSimpleResourceBundle
+						.getString("db3d.geom.argnotreg"));
 			if (!isBeautiful(sop))
-				throw new IllegalArgumentException("Argument not beautiful !");
+				throw new IllegalArgumentException(Db3dSimpleResourceBundle
+						.getString("db3d.geom.argnotbeau"));
 		}
 		ensureOrder();
 	}
@@ -261,8 +268,8 @@ public class Tetrahedron3D implements PersistentObject, SimpleGeoObj,
 			return this.three;
 		default:
 			// FIXME fix this weird switch(index) stuff
-			throw new IllegalArgumentException(
-					"Wrong index: A 3D Tetrahedron consists only of 4 Point3D!");
+			throw new IllegalArgumentException(Db3dSimpleResourceBundle
+					.getString("db3d.geom.wronindtetraconsfour"));
 
 		}
 	}
@@ -293,8 +300,8 @@ public class Tetrahedron3D implements PersistentObject, SimpleGeoObj,
 			break;
 		default:
 			// FIXME fix this weird switch(index) stuff
-			throw new IllegalArgumentException(
-					"Wrong index: A 3D Tetrahedron consists only of 4 Point3D!");
+			throw new IllegalArgumentException(Db3dSimpleResourceBundle
+					.getString("db3d.geom.wronindtetraconsfour"));
 		}
 		this.triangles = null;
 		this.ensureOrder();
@@ -1253,8 +1260,8 @@ public class Tetrahedron3D implements PersistentObject, SimpleGeoObj,
 			case SimpleGeoObj.POINT3D:
 				return 0;
 			default: // must be NULL:
-				throw new IllegalStateException(
-						"Result of intersection is not a simplex!");
+				throw new IllegalStateException(Db3dSimpleResourceBundle
+						.getString("db3d.geom.resnotsimplex"));
 			}
 		}
 	}
@@ -1705,8 +1712,8 @@ public class Tetrahedron3D implements PersistentObject, SimpleGeoObj,
 			return new Segment3D(it.next(), it.next(), sop);
 
 		default:
-			throw new IllegalStateException(
-					"Result of intersection is not null or a Point3D or a Segment3D.");
+			throw new IllegalStateException(Db3dSimpleResourceBundle
+					.getString("db3d.geom.resnotnullposeg"));
 		}
 	}
 
@@ -1805,8 +1812,8 @@ public class Tetrahedron3D implements PersistentObject, SimpleGeoObj,
 					wf.add(((Point3D) result));
 					break;
 				default:
-					throw new IllegalStateException(
-							"Result of intersection is not a 3D simplex.");
+					throw new IllegalStateException(Db3dSimpleResourceBundle
+							.getString("db3d.geom.resnotthreedsimplex"));
 				}
 			}
 		}
@@ -1830,7 +1837,8 @@ public class Tetrahedron3D implements PersistentObject, SimpleGeoObj,
 			return null;
 
 		default:
-			throw new IllegalStateException("Result is not a simplex.");
+			throw new IllegalStateException(Db3dSimpleResourceBundle
+					.getString("db3d.geom.resnotsimplex"));
 		}
 	}
 
@@ -2028,7 +2036,8 @@ public class Tetrahedron3D implements PersistentObject, SimpleGeoObj,
 		case 3:
 			return new Triangle3D(p[0], p[1], p[2], sop);
 		default:
-			throw new IllegalStateException("Result is not a 3D simplex.");
+			throw new IllegalStateException(Db3dSimpleResourceBundle
+					.getString("db3d.geom.resnotthreedsimplex"));
 		}
 	}
 

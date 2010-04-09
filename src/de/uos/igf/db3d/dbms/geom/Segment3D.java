@@ -13,6 +13,7 @@ package de.uos.igf.db3d.dbms.geom;
 import java.io.Serializable;
 import java.util.Vector;
 
+import de.uos.igf.db3d.dbms.api.Db3dSimpleResourceBundle;
 import de.uos.igf.db3d.dbms.structure.PersistentObject;
 
 /**
@@ -59,9 +60,11 @@ public class Segment3D implements PersistentObject, SimpleGeoObj,
 		// validate
 		if (sop != null) {
 			if (!isValid(sop))
-				throw new IllegalArgumentException("Argument not valid !");
+				throw new IllegalArgumentException(Db3dSimpleResourceBundle
+						.getString("db3d.geom.argnotval"));
 			if (!isRegular(sop))
-				throw new IllegalArgumentException("Argument not regular !");
+				throw new IllegalArgumentException(Db3dSimpleResourceBundle
+						.getString("db3d.geom.argnotreg"));
 		}
 	}
 
@@ -121,8 +124,8 @@ public class Segment3D implements PersistentObject, SimpleGeoObj,
 			return this.end;
 		default:
 			// FIXME fix this weird switch(index) stuff
-			throw new IllegalStateException(
-					"A 3D Segment only has a start Point3D and an end Point3D!");
+			throw new IllegalStateException(Db3dSimpleResourceBundle
+					.getString("db3d.geom.segonlystartend"));
 		}
 	}
 
@@ -155,8 +158,8 @@ public class Segment3D implements PersistentObject, SimpleGeoObj,
 			break;
 		default:
 			// FIXME fix this weird switch(index) stuff
-			throw new IllegalStateException(
-					"A 3D Segment only has a start Point3D and an end Point3D!");
+			throw new IllegalStateException(Db3dSimpleResourceBundle
+					.getString("db3d.geom.segonlystartend"));
 		}
 	}
 
@@ -690,7 +693,8 @@ public class Segment3D implements PersistentObject, SimpleGeoObj,
 					// P0 -> seg must contain P1
 					if (!(segContainsP1))
 						throw new IllegalStateException(
-								"Segment.intersectionOnLine(): something went wrong here !?");
+								Db3dSimpleResourceBundle
+										.getString("db3d.geom.somewrong"));
 					else {
 						if (!(seg.getPoint(0).isEqual(this.getPoint(1), sop)))
 							return new Segment3D(seg.getPoint(0), this
@@ -725,7 +729,8 @@ public class Segment3D implements PersistentObject, SimpleGeoObj,
 					// P0 -> seg must contain P1
 					if (!(segContainsP1))
 						throw new IllegalStateException(
-								"Segment.intersectionOnLine(): something went wrong here !?");
+								Db3dSimpleResourceBundle
+										.getString("db3d.geom.somewrong"));
 					else {
 						if (!(seg.getPoint(1).isEqual(this.getPoint(1), sop))) {
 							return new Segment3D(seg.getPoint(1), this

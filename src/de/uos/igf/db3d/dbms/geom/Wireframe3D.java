@@ -15,10 +15,9 @@ import java.util.HashSet;
 import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
-import java.util.NoSuchElementException;
 import java.util.Set;
-import java.util.TreeSet;
 
+import de.uos.igf.db3d.dbms.api.Db3dSimpleResourceBundle;
 import de.uos.igf.db3d.dbms.structure.PersistentObject;
 import de.uos.igf.db3d.dbms.util.EquivalentableHashMap;
 import de.uos.igf.db3d.dbms.util.EquivalentableHashSet;
@@ -718,8 +717,8 @@ public class Wireframe3D implements SimpleGeoObj, PersistentObject {
 				}
 			}
 			if (index == 0) {
-				throw new IllegalStateException(
-						"Condition should not be reached - no Plane defineable!");
+				throw new IllegalStateException(Db3dSimpleResourceBundle
+						.getString("db3d.geom.noplanedef"));
 			}
 
 			Plane3D plane = new Plane3D(points[0], points[1], points[index],
@@ -732,8 +731,8 @@ public class Wireframe3D implements SimpleGeoObj, PersistentObject {
 		case 3: // already highest dimension
 			break;
 		default:
-			throw new IllegalStateException(
-					"Wrong dimension of wireframe. Dimension must be -1 or 0 or 1 or 2 or 3");
+			throw new IllegalStateException(Db3dSimpleResourceBundle
+					.getString("db3d.geom.wrongdimofwirefr"));
 		}
 	}
 

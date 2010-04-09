@@ -10,6 +10,8 @@ package de.uos.igf.db3d.dbms.geom;
 
 import java.io.Serializable;
 
+import de.uos.igf.db3d.dbms.api.Db3dSimpleResourceBundle;
+
 /**
  * Class Plane3D models an infinite plane in 3D space.<br>
  * The plane is defined through a position vector and the normal vector of the
@@ -435,8 +437,8 @@ public class Plane3D implements SimpleGeoObj, Serializable {
 		if (sop.equal(determinateD, 0)) {
 			// FIXME Should we really stop if determinate is equal 0, what does
 			// it mean for the algorithm?
-			throw new ArithmeticException(
-					"Determinate is equal 0 in epsilon range!");
+			throw new ArithmeticException(Db3dSimpleResourceBundle
+					.getString("db3d.geom.detequalzero"));
 		}
 
 		double determinateD1 = new Matrix3x3(new double[] { c1, n1.getY(),

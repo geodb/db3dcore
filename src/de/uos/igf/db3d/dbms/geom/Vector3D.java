@@ -15,6 +15,7 @@ import java.io.IOException;
 import java.io.ObjectInput;
 import java.io.ObjectOutput;
 
+import de.uos.igf.db3d.dbms.api.Db3dSimpleResourceBundle;
 import de.uos.igf.db3d.dbms.structure.PersistentObject;
 
 /**
@@ -202,8 +203,8 @@ public class Vector3D implements PersistentObject, SimpleGeoObj, Externalizable 
 	 */
 	public Vector3D div(double scalar, ScalarOperator sop) {
 		if (sop.equal(scalar, 0)) {
-			throw new ArithmeticException(
-					"Division through zero: Scalar is zero in epsilon range!");
+			throw new ArithmeticException(Db3dSimpleResourceBundle
+					.getString("db3d.geom.scdivzero"));
 		}
 		setX(getX() / scalar);
 		setY(getY() / scalar);
@@ -279,9 +280,8 @@ public class Vector3D implements PersistentObject, SimpleGeoObj, Externalizable 
 	public Vector3D getNormalized(ScalarOperator sop) {
 		double norm = this.getNorm();
 		if (sop.equal(norm, 0)) {
-			throw new ArithmeticException(
-					"Division through zero: Norm is zero in epsilon range!");
-
+			throw new ArithmeticException(Db3dSimpleResourceBundle
+					.getString("db3d.geom.normdivzero"));
 		}
 
 		return new Vector3D(getX() / norm, getY() / norm, getZ() / norm);
@@ -298,9 +298,8 @@ public class Vector3D implements PersistentObject, SimpleGeoObj, Externalizable 
 	public void normalize(ScalarOperator sop) {
 		double norm = this.getNorm();
 		if (sop.equal(norm, 0)) {
-			throw new ArithmeticException(
-					"Division through zero: Norm is zero in epsilon range!");
-
+			throw new ArithmeticException(Db3dSimpleResourceBundle
+					.getString("db3d.geom.normdivzero"));
 		}
 
 		setX(getX() / norm);
@@ -369,8 +368,8 @@ public class Vector3D implements PersistentObject, SimpleGeoObj, Externalizable 
 		case 2:
 			return this.z;
 		default:
-			throw new IllegalArgumentException(
-					"Wrong index: A Scalar does only have x or y or z .");
+			throw new IllegalArgumentException(Db3dSimpleResourceBundle
+					.getString("db3d.geom.wrindscxyz"));
 		}
 	}
 

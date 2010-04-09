@@ -16,6 +16,7 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
 
+import de.uos.igf.db3d.dbms.api.Db3dSimpleResourceBundle;
 import de.uos.igf.db3d.dbms.structure.PersistentObject;
 import de.uos.igf.db3d.dbms.util.EquivalentableHashSet;
 
@@ -60,9 +61,10 @@ public class MBB3D implements PersistentObject, SimpleGeoObj, Externalizable {
 	 */
 	public MBB3D(Point3D pMin, Point3D pMax) {
 		this.pMin = pMin;
-		if (!testMaxPoint(pMax))
-			throw new IllegalArgumentException(
-					"PMax is not greater than current PMin");
+		if (!testMaxPoint(pMax)) {
+			throw new IllegalArgumentException(Db3dSimpleResourceBundle
+					.getString("db3d.geom.pmaxpmin"));
+		}
 
 		this.pMax = pMax;
 	}
@@ -708,9 +710,10 @@ public class MBB3D implements PersistentObject, SimpleGeoObj, Externalizable {
 	 *             if the max point is less or equal to the current min point.
 	 */
 	public void setPMax(Point3D pMax) {
-		if (!testMaxPoint(pMax))
-			throw new IllegalArgumentException(
-					"PMax is not greater than current PMin");
+		if (!testMaxPoint(pMax)) {
+			throw new IllegalArgumentException(Db3dSimpleResourceBundle
+					.getString("db3d.geom.pmaxpmin"));
+		}
 
 		this.pMax = pMax;
 	}
@@ -725,10 +728,10 @@ public class MBB3D implements PersistentObject, SimpleGeoObj, Externalizable {
 	 *             point.
 	 */
 	public void setPMin(Point3D pMin) {
-		if (!testMinPoint(pMin))
-			throw new IllegalArgumentException(
-					"PMin is not smaller than current PMax");
-
+		if (!testMinPoint(pMin)) {
+			throw new IllegalArgumentException(Db3dSimpleResourceBundle
+					.getString("db3d.geom.pmaxpminsmall"));
+		}
 		this.pMin = pMin;
 	}
 

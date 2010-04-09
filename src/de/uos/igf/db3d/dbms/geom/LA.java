@@ -9,16 +9,15 @@
 package de.uos.igf.db3d.dbms.geom;
 
 import java.math.BigDecimal;
-import java.math.BigInteger;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.Locale;
 
 import org.netlib.lapack.DGESV;
-import org.netlib.lapack.DSPSV;
 import org.netlib.lapack.DSYSV;
-import org.netlib.util.doubleW;
 import org.netlib.util.intW;
+
+import de.uos.igf.db3d.dbms.api.Db3dSimpleResourceBundle;
 
 /**
  * This is some basic linear algebra without referring to the underlying
@@ -39,22 +38,6 @@ public class LA {
 
 	public static String toString(double d) {
 		return String.format(Locale.ENGLISH, "%.4f", d);
-	}
-
-	public static void main(String... args) {
-		double[][] a = { { -1, 0 }, { 1, 0 } };
-		double[][] b = { { 0, -7 } };
-
-		double[] aCoeffs = new double[a.length];
-		double[] bCoeffs = new double[b.length];
-
-		System.out.println("affine: "
-				+ GeomUtils.affineDistance(a, b, null, null,
-						new ScalarOperator()));
-		System.out.println("simplex: "
-				+ GeomUtils.simplexDistance(a, b, null, null,
-						new ScalarOperator()));
-
 	}
 
 	@SuppressWarnings("serial")
@@ -167,8 +150,8 @@ public class LA {
 	 */
 	public static int digits(final double d) throws IllegalArgumentException {
 		if (Double.isInfinite(d) || Double.isNaN(d)) {
-			throw new IllegalArgumentException(
-					"Infinity and NaN are not allowed.");
+			throw new IllegalArgumentException(Db3dSimpleResourceBundle
+					.getString("db3d.geom.infinandnan"));
 		}
 		if (d == 0.0d) {
 			return 0;
@@ -752,7 +735,8 @@ public class LA {
 	public static double[] cross(double[]... vecs) {
 
 		if (true) {
-			throw new UnsupportedOperationException("FIXMEFIRST!!!");
+			throw new UnsupportedOperationException(Db3dSimpleResourceBundle
+					.getString("db3d.geom.unsuppopcross"));
 		}
 
 		int nVecs = vecs.length;
@@ -978,7 +962,8 @@ public class LA {
 		int mCols = piCols.length;
 
 		if (mRows != mCols) {
-			throw new Exception("not a square Matrix");
+			throw new Exception(Db3dSimpleResourceBundle
+					.getString("db3d.geom.notsqmat"));
 		}
 
 		double[][] pM = new double[mRows][mCols + 1];
@@ -1025,7 +1010,8 @@ public class LA {
 		int mCols = piCols.length;
 
 		if (mRows != mCols) {
-			throw new Exception("not a square Matrix");
+			throw new Exception(Db3dSimpleResourceBundle
+					.getString("db3d.geom.notsqmat"));
 		}
 
 		double[][] pM = new double[mRows][mCols + 1];

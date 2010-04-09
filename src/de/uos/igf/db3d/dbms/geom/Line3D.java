@@ -10,6 +10,8 @@ package de.uos.igf.db3d.dbms.geom;
 
 import java.io.Serializable;
 
+import de.uos.igf.db3d.dbms.api.Db3dSimpleResourceBundle;
+
 /**
  * Class Line3D models a straight line in 3D space. It provides different
  * constructors for instantiation. It also provides different intersection test
@@ -347,8 +349,8 @@ public class Line3D implements SimpleGeoObj, Serializable {
 		case 1:
 			return this;
 		default:
-			throw new IllegalStateException(
-					"Check the return value of intersectsInt.");
+			throw new IllegalStateException(Db3dSimpleResourceBundle
+					.getString("db3d.geom.failureinterint"));
 		}
 	}
 
@@ -449,8 +451,8 @@ public class Line3D implements SimpleGeoObj, Serializable {
 				return null;
 
 		default:
-			throw new IllegalStateException(
-					"Check the return value of intersectsInt.");
+			throw new IllegalStateException(Db3dSimpleResourceBundle
+					.getString("db3d.geom.failureinterint"));
 		}
 	}
 

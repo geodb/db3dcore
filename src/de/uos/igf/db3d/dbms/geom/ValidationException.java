@@ -12,6 +12,8 @@ package de.uos.igf.db3d.dbms.geom;
 
 import org.apache.commons.lang.exception.NestableRuntimeException;
 
+import de.uos.igf.db3d.dbms.api.Db3dSimpleResourceBundle;
+
 /**
  * Signals an exception during validation of a SimpleGeoObj object.
  * 
@@ -124,9 +126,9 @@ public final class ValidationException extends NestableRuntimeException {
 	public String getMessage() {
 		if (super.getMessage() != null) {
 			if (execptionCause != null)
-				return super.getMessage() + "\n Cause:\n"
-						+ execptionCause.toString();
-
+				return super.getMessage() + "\n "
+						+ Db3dSimpleResourceBundle.getString("db3d.geom.cause")
+						+ ":\n" + execptionCause.toString();
 			return super.getMessage();
 		}
 		return null;

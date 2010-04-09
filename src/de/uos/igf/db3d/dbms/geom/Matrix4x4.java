@@ -10,6 +10,8 @@ package de.uos.igf.db3d.dbms.geom;
 
 import java.io.Serializable;
 
+import de.uos.igf.db3d.dbms.api.Db3dSimpleResourceBundle;
+
 /**
  * Matrix4x4 implements a Matrix with 4 rows and 4 columns.
  * 
@@ -41,9 +43,10 @@ public class Matrix4x4 implements Serializable {
 	 *             if length of array is != 16
 	 */
 	public Matrix4x4(double[] valueArray) {
-		if (valueArray.length != 16)
-			throw new IllegalArgumentException(
-					"Array must have length 16 ! (Matrix4x4)");
+		if (valueArray.length != 16) {
+			throw new IllegalArgumentException(Db3dSimpleResourceBundle
+					.getString("db3d.geom.arraylengthsixteen"));
+		}
 
 		v = new double[4][4];
 		for (int i = 0; i < 4; i++) {
@@ -213,9 +216,10 @@ public class Matrix4x4 implements Serializable {
 	private double[] transform(double x, double y, double z) {
 		// explanation: enhanced point = (wx,wy,wz,w)
 
-		if (this.v[3][3] != 1)
-			throw new IllegalStateException(
-					"IllegalState - Matrix4x4: point transformation expects w=1");
+		if (this.v[3][3] != 1) {
+			throw new IllegalStateException(Db3dSimpleResourceBundle
+					.getString("db3d.geom.expectswone"));
+		}
 
 		double[] vec = { x, y, z, 1 };
 		double wx = 0;
