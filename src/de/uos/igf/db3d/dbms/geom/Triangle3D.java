@@ -281,6 +281,7 @@ public class Triangle3D implements PersistentObject, SimpleGeoObj,
 	 */
 	public MBB3D getMBB() {
 		Point3D[] points = this.getPoints();
+		if(points[0] != null && points[1] != null && points[2] != null){
 		Point3D pMin = new Point3D(GeomUtils.getMin(points[0].getX(), points[1]
 				.getX(), points[2].getX()), GeomUtils.getMin(points[0].getY(),
 				points[1].getY(), points[2].getY()), GeomUtils.getMin(points[0]
@@ -290,6 +291,8 @@ public class Triangle3D implements PersistentObject, SimpleGeoObj,
 				points[1].getY(), points[2].getY()), GeomUtils.getMax(points[0]
 				.getZ(), points[1].getZ(), points[2].getZ()));
 		return new MBB3D(pMin, pMax);
+		}
+		else return null;
 	}
 
 	/**

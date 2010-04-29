@@ -14,6 +14,7 @@ package de.uos.igf.db3d.dbms.model3d;
 
 import de.uos.igf.db3d.dbms.geom.ScalarOperator;
 import de.uos.igf.db3d.dbms.structure.PersistentObject;
+import de.uos.igf.db3d.dbms.api.SRID;
 
 /**
  * The SpaceDefinition class holds all definitions and restrictions for the
@@ -56,6 +57,15 @@ public class SpaceDefinition implements PersistentObject {
 	 */
 	public int getSRID() {
 		return this.srid;
+	}
+
+	/**
+	 * Returns name for SRID code.
+	 * 
+	 * @return int - SRID
+	 */
+	public String getSridDescription() {
+		return SRID.getSridDescription(this.srid);
 	}
 
 }
