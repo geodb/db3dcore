@@ -1,11 +1,7 @@
 /*
- * University of Osnabrueck
- * Department for Geoinformatics and Remote Sensing
- *
- * Copyright (C) 2008 Researchgroup Prof. Dr. Martin Breunig
- *
- * File created on 28.08.2003
+ * Copyright (C) Prof. Martin Breunig
  */
+
 package de.uos.igf.db3d.dbms.geom;
 
 /**

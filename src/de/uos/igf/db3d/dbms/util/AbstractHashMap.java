@@ -1,14 +1,7 @@
 /*
- * FreeMarker: a tool that allows Java programs to use templates
- * to generate HTML or other text output that contains dynamic content.
- * Copyright (C) 1998,2002 Benjamin Geer
- * Email: beroul@users.sourceforge.net
- *
- * Class AbstractHashMap is derived from the source class IdentityHashMap of
- * the above project "FreeMarker" - author Attial Szegedi szegedia@freemail.hu
- * 
- * http://sourceforge.net/projects/freemarker
+ * Copyright (C) Prof. Martin Breunig
  */
+
 
 package de.uos.igf.db3d.dbms.util;
 

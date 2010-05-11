@@ -1,15 +1,7 @@
 /*
- * Sourcecode of the Researchproject
- * "Development of Component-Software for the Internet-Based
- * Access to Geo-Database Services"
- *
- * University of Osnabrueck
- * Research Center for Geoinformatics and Remote Sensing
- *
- * Copyright (C) 2002-2005 Researchgroup Prof. Dr. Martin Breunig
- *
- * File RStar.java - created on 05.02.2003
+ * Copyright (C) Prof. Martin Breunig
  */
+
 package de.uos.igf.db3d.dbms.util;
 
 import java.io.PrintStream;
