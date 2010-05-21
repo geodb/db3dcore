@@ -1,12 +1,7 @@
 /*
- * Sourcecode of the
- *
- * University of Osnabrueck
- * Institute for Geoinformatics and Remote Sensing
- *
- * Copyright (C) Researchgroup Prof. Dr. Martin Breunig
- *
+ * Copyright (C) Prof. Martin Breunig
  */
+
 package de.uos.igf.db3d.junittests.dbms.model3d;
 
 import junit.framework.TestCase;
@@ -91,8 +86,11 @@ public class SegmentNet3DCompTestCase extends TestCase {
 				new Point3D(6.0, 1.0, 1.0), sop);
 		segComp.addElt(newSeg1);
 
-		assertTrue(seg2.getNeighbour(0).isGeometryEquivalent(seg1, sop));
-		assertTrue(seg2.getNeighbour(1).isGeometryEquivalent(newSeg1, sop));
+		boolean geomEquiv = seg2.getNeighbour(0)
+				.isGeometryEquivalent(seg1, sop);
+		assertTrue(geomEquiv);
+		geomEquiv = seg2.getNeighbour(1).isGeometryEquivalent(newSeg1, sop);
+		assertTrue(geomEquiv);
 
 		// adding a fourth segment (adjacent to the segment net) afterwards:
 		/**

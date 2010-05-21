@@ -1,6 +1,7 @@
 /*
- * Created on 20.11.2003
+ * Copyright (C) Prof. Martin Breunig
  */
+
 package de.uos.igf.db3d.junittests.dbms;
 
 import java.util.Iterator;

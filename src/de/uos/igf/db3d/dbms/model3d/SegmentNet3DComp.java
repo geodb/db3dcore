@@ -1,15 +1,7 @@
 /*
- * Source Code of the Research Project
- * "Development of Component-Software for the Internet-Based
- * Access to Geo-Database Services"
- *
- * University of Osnabrueck
- * Research Center for Geoinformatics and Remote Sensing
- *
- * Copyright (C) 2002-2005 Research Group Prof. Dr. Martin Breunig
- *
- * File SegmentNet3DComp.java - created on 05.06.2003
+ * Copyright (C) Prof. Martin Breunig
  */
+
 package de.uos.igf.db3d.dbms.model3d;
 
 import java.io.ByteArrayInputStream;

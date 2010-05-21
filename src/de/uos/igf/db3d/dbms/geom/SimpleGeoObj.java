@@ -1,13 +1,7 @@
 /*
- * Sourcecode of the
- *
- * University of Osnabrueck
- * Institute for Geoinformatics and Remote Sensing
- *
- * Copyright (C) Researchgroup Prof. Dr. Martin Breunig
- *
- * File created on 06.03.2003
+ * Copyright (C) Prof. Martin Breunig
  */
+
 package de.uos.igf.db3d.dbms.geom;
 
 import de.uos.igf.db3d.dbms.structure.GeoObj;

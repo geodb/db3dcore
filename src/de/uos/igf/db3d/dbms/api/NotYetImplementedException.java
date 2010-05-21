@@ -1,13 +1,7 @@
 /*
- * Sourcecode of the
- *
- * University of Osnabrueck
- * Institute for Geoinformatics and Remote Sensing
- *
- * Copyright (C) Researchgroup Prof. Dr. Martin Breunig
- *
- * File created on 04.08.2003
+ * Copyright (C) Prof. Martin Breunig
  */
+
 package de.uos.igf.db3d.dbms.api;
 
 import org.apache.commons.lang.exception.NestableRuntimeException;

@@ -1,15 +1,7 @@
 /*
- * Source Code of the Research Project
- * "Development of Component-Software for the Internet-Based
- * Access to Geo-Database Services"
- *
- * University of Osnabrueck
- * Research Center for Geoinformatics and Remote Sensing
- *
- * Copyright (C) 2002-2005 Research Group Prof. Dr. Martin Breunig
- *
- * File FlagMap.java - created on  17.03.2004
+ * Copyright (C) Prof. Martin Breunig
  */
+
 package de.uos.igf.db3d.dbms.util;
 
 import java.util.HashMap;

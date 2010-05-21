@@ -1,3 +1,7 @@
+/*
+ * Copyright (C) Prof. Martin Breunig
+ */
+
 package de.uos.igf.db3d.junittests.dbms.geom;
 
 import junit.framework.TestCase;
