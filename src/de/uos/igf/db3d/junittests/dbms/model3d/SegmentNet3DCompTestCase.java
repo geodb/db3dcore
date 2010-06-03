@@ -86,10 +86,10 @@ public class SegmentNet3DCompTestCase extends TestCase {
 				new Point3D(6.0, 1.0, 1.0), sop);
 		segComp.addElt(newSeg1);
 
-		boolean geomEquiv = seg2.getNeighbour(0)
+		boolean geomEquiv = seg2.getNeighbour(1)
 				.isGeometryEquivalent(seg1, sop);
 		assertTrue(geomEquiv);
-		geomEquiv = seg2.getNeighbour(1).isGeometryEquivalent(newSeg1, sop);
+		geomEquiv = seg2.getNeighbour(0).isGeometryEquivalent(newSeg1, sop);
 		assertTrue(geomEquiv);
 
 		// adding a fourth segment (adjacent to the segment net) afterwards:
@@ -103,8 +103,8 @@ public class SegmentNet3DCompTestCase extends TestCase {
 				new Point3D(1.0, 1.0, 1.0), sop);
 		segComp.addElt(newSeg2);
 
-		assertTrue(seg1.getNeighbour(0).isGeometryEquivalent(newSeg2, sop));
-		assertTrue(seg1.getNeighbour(1).isGeometryEquivalent(seg2, sop));
+		assertTrue(seg1.getNeighbour(1).isGeometryEquivalent(newSeg2, sop));
+		assertTrue(seg1.getNeighbour(0).isGeometryEquivalent(seg2, sop));
 
 		/**
 		 * <tt>
@@ -187,8 +187,8 @@ public class SegmentNet3DCompTestCase extends TestCase {
 				new Point3D(2.0, 0.0, 1.0), sop);
 		newSeg4 = segComp.addElt(newSeg4);
 
-		assertTrue(newSeg4.getNeighbour(0) == null);
-		assertTrue(newSeg4.getNeighbour(1).isGeometryEquivalent(seg2, sop));
+		assertTrue(newSeg4.getNeighbour(1) == null);
+		assertTrue(newSeg4.getNeighbour(0).isGeometryEquivalent(seg2, sop));
 
 	}
 
