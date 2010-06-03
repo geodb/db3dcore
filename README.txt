@@ -18,8 +18,15 @@ The DB4GeO Core API can be used in several kinds of geometric
 computation settings such as in geoscientific information
 systems.
 
-The licence and terms of use can be found in the LICENCE.txt
-file in the root folder of this Eclipse project.
+The licence and terms of use concerning this API can be found
+in the LICENCE.txt file in the root folder of this Eclipse
+project. This API uses the libraries
+ - "Apache Commons Collections" (Copyright The Apache Software
+   Foundation, Apache License Version 2.0)
+ - "Apache Commons Lang" (Copyright The Apache Software
+   Foundation, Apache License Version 2.0)
+ - "Linear Algebra PACK, LAPACK" (Copyright The University of
+   Tennessee. LAPACK License)
 
 A basic documentation (basic functionality overview) and
 information on where to find more documentation is spotted

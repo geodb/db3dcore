@@ -113,7 +113,8 @@ public class SegmentNetBuilder {
 	 *            this segment array.
 	 */
 	public void addComponent(SegmentElt3D[] elements) {
-		SegmentNet3DComp comp = new SegmentNet3DComp(wsSOP.copy(), elements);
+		SegmentNet3DComp comp = new SegmentNet3DComp(
+				getScalarOperator().copy(), elements);
 
 		for (int i = 0; i < elements.length; i++) {
 			elements[i].setID(counter++);
