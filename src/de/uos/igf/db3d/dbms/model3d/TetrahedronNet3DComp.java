@@ -200,14 +200,18 @@ public class TetrahedronNet3DComp implements PersistentObject, ComplexGeoObj,
 				case SimpleGeoObj.POINT3D:
 					Point3D p = (Point3D) sgo;
 					if (!(element.hasCorner(p, this.getScalarOperator()) || tetraElt
-							.hasCorner(p, this.getScalarOperator())))
+							.hasCorner(p, this.getScalarOperator()))) {
 						return null;
+					}
+					break;
 
 				case SimpleGeoObj.SEGMENT3D:
 					Segment3D seg = (Segment3D) sgo;
 					if (!(element.hasEdge(seg, this.getScalarOperator()) || tetraElt
-							.hasEdge(seg, this.getScalarOperator())))
+							.hasEdge(seg, this.getScalarOperator()))) {
 						return null;
+					}
+					break;
 
 				case SimpleGeoObj.TRIANGLE3D:
 					Triangle3D tri = (Triangle3D) sgo;
@@ -224,6 +228,7 @@ public class TetrahedronNet3DComp implements PersistentObject, ComplexGeoObj,
 							return null; // tri is not a face of tetraElt
 					} else
 						return null; // tri is not a face of this
+					break;
 				}
 			}
 		}
@@ -285,7 +290,7 @@ public class TetrahedronNet3DComp implements PersistentObject, ComplexGeoObj,
 				this.setEntryElement(null);
 			} else {
 				TetrahedronElt3D[] neighbour = removable.getNeighbours();
-				switch (neighbour.length) {
+				switch (removable.countNeighbours()) {
 
 				case 1: // only one neighbour -> smooth removal
 					neighbour[0].setNeighbourNull(removable, this
