@@ -21,7 +21,7 @@ import de.uos.igf.db3d.dbms.structure.Space3D;
  * @author Revision: Edgar Butwilowski
  * 
  */
-public class Object3DSimpleImpl implements Object3D, PersistentObject {
+public class Object3DImpl implements Object3D, PersistentObject {
 
 	/* reference to spatial part */
 	private SpatialObject3D spatial;
@@ -41,7 +41,7 @@ public class Object3DSimpleImpl implements Object3D, PersistentObject {
 	/**
 	 * Default Constructor.
 	 */
-	public Object3DSimpleImpl() {
+	public Object3DImpl() {
 		this.spatial = null;
 		this.oid = null;
 		this.space = null;
@@ -64,6 +64,24 @@ public class Object3DSimpleImpl implements Object3D, PersistentObject {
 	 */
 	public boolean hasThematicPart() {
 		return false;
+	}
+
+	/**
+	 * Not implemented for this class.
+	 * 
+	 * @return always returns <code>null</code>.
+	 */
+	public Object getThematic3D() {
+		return null;
+	}
+
+	/**
+	 * Sets the thematic part of this.
+	 * 
+	 * @param thematic
+	 *            - Object
+	 */
+	public void setThematicPart(Object thematic) {
 	}
 
 	/**

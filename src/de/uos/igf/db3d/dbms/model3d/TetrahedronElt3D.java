@@ -4,11 +4,7 @@
 
 package de.uos.igf.db3d.dbms.model3d;
 
-import java.util.Locale;
-import java.util.ResourceBundle;
-
 import de.uos.igf.db3d.dbms.api.DB3DException;
-import de.uos.igf.db3d.dbms.api.DB3DRuntimeException;
 import de.uos.igf.db3d.dbms.api.Db3dSimpleResourceBundle;
 import de.uos.igf.db3d.dbms.geom.Point3D;
 import de.uos.igf.db3d.dbms.geom.ScalarOperator;
@@ -383,20 +379,24 @@ public class TetrahedronElt3D extends Tetrahedron3D implements NetElement3D {
 	 * @return int - index for removed neighbour.
 	 */
 	public int setNeighbourNull(TetrahedronElt3D element, ScalarOperator sop) {
-
-		if (this.getNeighbour(0).isGeometryEquivalent(element, sop)) {
+		
+		TetrahedronElt3D neighbour = this.getNeighbour(0);
+		if (neighbour != null && neighbour.isGeometryEquivalent(element, sop)) {
 			this.eltZero = null;
 			return 0;
 		}
-		if (this.getNeighbour(1).isGeometryEquivalent(element, sop)) {
+		neighbour = this.getNeighbour(1);
+		if (neighbour != null && neighbour.isGeometryEquivalent(element, sop)) {
 			this.eltOne = null;
 			return 1;
 		}
-		if (this.getNeighbour(2).isGeometryEquivalent(element, sop)) {
+		neighbour = this.getNeighbour(2);
+		if (neighbour != null && neighbour.isGeometryEquivalent(element, sop)) {
 			this.eltTwo = null;
 			return 2;
 		}
-		if (this.getNeighbour(3).isGeometryEquivalent(element, sop)) {
+		neighbour = this.getNeighbour(3);
+		if (neighbour != null && neighbour.isGeometryEquivalent(element, sop)) {
 			this.eltThree = null;
 			return 3;
 		}

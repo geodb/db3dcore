@@ -6,7 +6,6 @@ package de.uos.igf.db3d.dbms.model3d;
 
 import java.util.LinkedHashMap;
 
-import de.uos.igf.db3d.dbms.api.DB3DException;
 import de.uos.igf.db3d.dbms.structure.OID;
 import de.uos.igf.db3d.dbms.structure.Space3D;
 
@@ -37,6 +36,14 @@ public interface Object3D {
 	public Spatial3D getSpatial3D();
 
 	/**
+	 * Sets the thematic part of this.
+	 * 
+	 * @param thematic
+	 *            - Object
+	 */
+	public void setThematicPart(Object thematic);
+
+	/**
 	 * Returns the timestamp of this.<br>
 	 * Value interpreted as defined in Space3D.
 	 * 
@@ -65,6 +72,13 @@ public interface Object3D {
 	 * @return OID - object id.
 	 */
 	public OID getOID();
+
+	/**
+	 * Returns the thematic part of this.
+	 * 
+	 * @return Object
+	 */
+	public Object getThematic3D();
 
 	/**
 	 * Returns a hash map with thematic information of this.
