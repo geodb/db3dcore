@@ -5,7 +5,6 @@
 package de.uos.igf.db3d.dbms.structure;
 
 import java.util.List;
-import java.util.Map;
 import java.util.Set;
 
 import de.uos.igf.db3d.dbms.geom.MBB3D;
@@ -282,15 +281,6 @@ public interface Space3D {
 	 * @return Set of all SpaceConstraints.
 	 */
 	public Set getSpaceConstraints();
-
-	/**
-	 * Returns all ThematicConstraints as Map.<br>
-	 * The returned Map contains the the constraints mapped by the ThematicGroup
-	 * name as key.
-	 * 
-	 * @return Map with all ThematicConstrains.
-	 */
-	public Map getThematicGroupConstraints();
 
 	/**
 	 * Persistent initialization.
