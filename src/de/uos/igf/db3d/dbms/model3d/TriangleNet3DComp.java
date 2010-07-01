@@ -1960,6 +1960,7 @@ public class TriangleNet3DComp implements PersistentObject, ComplexGeoObj,
 	 * @return HashSet with outer segments.
 	 * @throws IllegalStateException
 	 *             - if this TIN component is empty
+	 * @author Daria Golovko
 	 */
 	public Set<Segment3D> findTinBorder1() {
 		if (this.isEmpty())
@@ -1996,6 +1997,7 @@ public class TriangleNet3DComp implements PersistentObject, ComplexGeoObj,
 	 *             - if index of a triangle point is not 0, 1 or 2. The
 	 *             exception originates in the method getPoint(int) of the class
 	 *             Triangle3D.
+	 * @author Daria Golovko
 	 */
 
 	public Set<Segment3D> findTinBorder2() {
