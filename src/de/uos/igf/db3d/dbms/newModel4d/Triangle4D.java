@@ -49,7 +49,21 @@ public class Triangle4D {
 		this(new Integer[] { pointID1, pointID2, pointID3 }, ID);
 	}
 	
+	// Getter methods for the fields:
+	
 	public int getID() {
 		return id;
+	}
+
+	public int getIDzero() {
+		return IDzero;
+	}
+
+	public int getIDone() {
+		return IDone;
+	}
+
+	public int getIDtwo() {
+		return IDtwo;
 	}
 }

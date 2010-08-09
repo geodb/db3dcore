@@ -11,31 +11,61 @@ import java.util.Vector;
 
 import de.uos.igf.db3d.dbms.geom.Point3D;
 
+/**
+ * This class represents an 4D object. The user has to call the function
+ * addTimestep() to add the Point information for the PointTubes this Object4D
+ * is working with. After that the user has to call the function addGeometry()
+ * to add the geometry informations for the last added timestep. This procedure
+ * must be done for every timestep with a changing net topology.
+ * 
+ * @author Paul Vincent Kuper (pkuper@uni-osnabrueck.de)
+ */
 public class Object4D {
 
 	// The pointTubes of this 4D Object
 	// <ID, <Zeitschritt, Point3D>>
-	Map<Integer, Map<Integer, Point3D>> pointTubes;
-	
-	// contains the spatial of this object 
-	// spatial objects only consists of the ID information of its Point3D elements
+	private Map<Integer, Map<Integer, Point3D>> pointTubes;
+
+	// contains the spatial of this object
+	// spatial objects only consists of the ID information of its Point3D
+	// elements
 	// every SpatialObject4D object has its own timeinterval
-	List<SpatialObject4D> geometry;
+	private List<SpatialObject4D> geometry;
 
 	// List of timesteps with their effective date
-	LinkedList<Date> timesteps;
+	private LinkedList<Date> timesteps;
 
+	private int postobjectCNT;
+
+	/**
+	 * Constructor
+	 * 
+	 */
 	public Object4D() {
 		super();
 		pointTubes = new HashMap<Integer, Map<Integer, Point3D>>();
 		timesteps = new LinkedList<Date>();
-		geometry = new Vector<SpatialObject4D>();
+		postobjectCNT = 0;
 	}
 
+	/**
+	 * Add one new timestep. This function will only add the Points for the
+	 * PointTubes at this timestep. You need to add the geometry for this
+	 * timestep after you called this function.
+	 * 
+	 * @param newPoints
+	 * @param date
+	 */
 	public void addTimestep(HashMap<Integer, Point3D> newPoints, Date date) {
 
 		// check if it is the first timestep
 		if (timesteps.isEmpty()) {
+
+			// initialize the geometry vector:
+			geometry = new Vector<SpatialObject4D>();
+
+			// first object, geometry informations are needed, increment counter
+			postobjectCNT++;
 
 			// add the effective date as first timestep
 			timesteps.add(date);
@@ -60,12 +90,22 @@ public class Object4D {
 			// timestep is higher than the last one
 		} else if (!date.before(timesteps.getLast())) {
 
+			// Now we need to know if the user already added the geometry for
+			// the last Postobject (can be whether the first object or the
+			// Postobject of a new interval)
+			if (postobjectCNT != geometry.size())
+				throw new IllegalArgumentException(
+						"The net topology changed. You need to add the geometrydata for the last Postobject first. Call the addGeometry() function.");
+
 			// this is the Polthier und Rumpf model
 			// do we have a change of topology?
 			// check if this is an Post-object!
 			if (timesteps.getLast().equals(date)) {
 
 				timesteps.add(date);
+
+				// new Postobject, increment counter
+				postobjectCNT++;
 
 				Iterator<Integer> it = newPoints.keySet().iterator();
 
@@ -138,8 +178,55 @@ public class Object4D {
 			}
 		}
 	}
-	
+
+	/**
+	 * Function to add the information of the geometry for an object.
+	 * 
+	 * We check if the geometry will be added at the right place of the geometry
+	 * List.
+	 * 
+	 * @param spatial
+	 *            - the spatial information for the last added timestep.
+	 */
 	public void addGeometry(SpatialObject4D spatial) {
-		geometry.add(spatial);
+		if (postobjectCNT == geometry.size() + 1)
+			geometry.add(spatial);
+		else
+			throw new IllegalArgumentException(
+					"You can not add the geometry. You already have the geometry information for the actual step.");
+	}
+
+	/**
+	 * This function creates a Map of Point3D objects which contains the
+	 * information of the location of the Points at the specified date with the
+	 * help of linear interpolation.
+	 * 
+	 * @return Map - contains the Point3D objects and their IDs at the specified date
+	 */
+	public Map<Integer, Point3D> getPointTubesAtInstance(Date date) {
+		
+		HashMap<Integer, Point3D> points = new HashMap<Integer, Point3D>();
+		
+		// TODO: Methode auslagern und so aufbauen: 
+		// Interpoliert wird zwischen dem interval was gerade aktuell ist. Date anschauen und so... 
+		// am besten mal in das alte 4D Ding gucken.
+		
+		return points;
+	}
+
+	public Map<Integer, Map<Integer, Point3D>> getPointTubes() {
+		return pointTubes;
+	}
+
+	public List<SpatialObject4D> getGeometry() {
+		return geometry;
+	}
+
+	public LinkedList<Date> getTimesteps() {
+		return timesteps;
+	}
+
+	public int getPostobjectCNT() {
+		return postobjectCNT;
 	}
 }
