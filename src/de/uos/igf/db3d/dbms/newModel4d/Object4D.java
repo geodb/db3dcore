@@ -35,9 +35,6 @@ public class Object4D {
 	// List of timesteps with their effective date
 	private LinkedList<Date> timesteps;
 
-	// counts the number of topology changes
-	private int postobjectCNT;
-
 	/**
 	 * Constructor
 	 * 
@@ -46,7 +43,6 @@ public class Object4D {
 		super();
 		pointTubes = new HashMap<Integer, Map<Integer, Point3D>>();
 		timesteps = new LinkedList<Date>();
-		postobjectCNT = 0;
 	}
 
 	/**
@@ -64,9 +60,6 @@ public class Object4D {
 
 			// initialize the geometry vector:
 			geometry = new Vector<SpatialObject4D>();
-
-			// first object, geometry informations are needed, increment counter
-			postobjectCNT++;
 
 			// add the effective date as first timestep
 			timesteps.add(date);
@@ -94,7 +87,7 @@ public class Object4D {
 			// Now we need to know if the user already added the geometry for
 			// the last Postobject (can be whether the first object or the
 			// Postobject of a new interval)
-			if (postobjectCNT != geometry.size())
+			if (geometry.size() < timesteps.size())
 				throw new IllegalArgumentException(
 						"The net topology changed. You need to add the geometrydata for the last Postobject first. Call the addGeometry() function.");
 
@@ -104,9 +97,6 @@ public class Object4D {
 			if (timesteps.getLast().equals(date)) {
 
 				timesteps.add(date);
-
-				// new Postobject, increment counter
-				postobjectCNT++;
 
 				Iterator<Integer> it = newPoints.keySet().iterator();
 
@@ -123,13 +113,13 @@ public class Object4D {
 					// Point.
 					if (!pointTubes.containsKey(id)) {
 						HashMap<Integer, Point3D> newTube = new HashMap<Integer, Point3D>();
-						newTube.put(timesteps.size(), newPoints.get(id));
+						newTube.put(timesteps.size()-1, newPoints.get(id));
 
 						pointTubes.put(id, newTube);
 					} else {
 						// If the id already exists in the PointTubes extend its
 						// timeinterval by the new point.
-						pointTubes.get(id).put(timesteps.size(),
+						pointTubes.get(id).put(timesteps.size()-1,
 								newPoints.get(id));
 					}
 				}
@@ -142,7 +132,7 @@ public class Object4D {
 				Iterator<Integer> it = newPoints.keySet().iterator();
 
 				while (it.hasNext()) {
-					if (pointTubes.get(it.next()).get(timesteps.size()) == null)
+					if (pointTubes.get(it.next()).get(timesteps.size()-1) == null)
 						throw new IllegalArgumentException(
 								"New Object is neither a Postobject nor it fits the size of the last object");
 
@@ -153,7 +143,7 @@ public class Object4D {
 				Set<Integer> ids = pointTubes.keySet();
 				int cnt = 0;
 				for (final Integer id : ids) {
-					if (pointTubes.get(id).get(timesteps.size()) != null)
+					if (pointTubes.get(id).get(timesteps.size()-1) != null)
 						cnt++;
 				}
 				if (cnt != newPoints.size())
@@ -174,7 +164,7 @@ public class Object4D {
 
 					// we know that we extend our pointTubes without building
 					// new one, so lets do so:
-					pointTubes.get(id).put(timesteps.size(), newPoints.get(id));
+					pointTubes.get(id).put(timesteps.size()-1, newPoints.get(id));
 				}
 			}
 		}
@@ -190,7 +180,7 @@ public class Object4D {
 	 *            - the spatial information for the last added timestep.
 	 */
 	public void addGeometry(SpatialObject4D spatial) {
-		if (postobjectCNT == geometry.size() + 1)
+		if (timesteps.size() == geometry.size() + 1)
 			geometry.add(spatial);
 		else
 			throw new IllegalArgumentException(
@@ -247,8 +237,13 @@ public class Object4D {
 			// for all Points which are active in this timeinterval we need to
 			// interpolate a new point with the help of the computed factor.
 			int intervalStartStep = timesteps.indexOf(intervalStart);
-			for (int id = 0; id < pointTubes.size(); id++) {
-				
+			
+			Iterator<Integer> ids = pointTubes.keySet().iterator();
+			
+			while(ids.hasNext()) {
+
+				Integer id = ids.next();
+
 				// check if this ID is active in this timeinterval
 				if (pointTubes.get(id).containsKey(intervalStartStep)) {
 
@@ -292,9 +287,5 @@ public class Object4D {
 
 	public LinkedList<Date> getTimesteps() {
 		return timesteps;
-	}
-
-	public int getPostobjectCNT() {
-		return postobjectCNT;
 	}
 }

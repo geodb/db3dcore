@@ -2,6 +2,7 @@ package de.uos.igf.db3d.dbms.newModel4d;
 
 import java.util.Date;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.Map;
 import java.util.Vector;
 
@@ -38,27 +39,23 @@ public class ServicesFor4DObjects {
 			return null;
 		else {
 
-			// check if this is an object with different net topologies.
-			if (!(object.getPostobjectCNT() == 1)) {
-
-				// if there are different topologies, find out which is the one
-				// for this specified date:
-				Date lastDate = object.getTimesteps().get(0);
-				Date actualDate = object.getTimesteps().get(1);
-				int cnt = 2;
-				while (actualDate.before(date)) {
-					if (actualDate == lastDate)
-						indexOfGeometry++;
-					lastDate = actualDate;
-					actualDate = object.getTimesteps().get(cnt);
-					cnt++;
-				}
+			// find out which is the right topology for this specified date:
+			Date lastDate = object.getTimesteps().get(0);
+			Date actualDate = object.getTimesteps().get(1);
+			int cnt = 2;
+			while (actualDate.before(date)) {
+				if (actualDate == lastDate)
+					indexOfGeometry++;
+				lastDate = actualDate;
+				actualDate = object.getTimesteps().get(cnt);
+				cnt++;
 			}
 
 			// now we have the index of the right topology for this date.
 			// so get the right points:
-			Map<Integer, Point3D> interpolatedPoints = object.getPointTubesAtInstance(date);
-			
+			Map<Integer, Point3D> interpolatedPoints = object
+					.getPointTubesAtInstance(date);
+
 			// create a Object3DBuilder with the right ScalarOperator
 			Object3DBuilder builder = new Object3DBuilder(object.getGeometry()
 					.get(indexOfGeometry).getScalarOperator());
@@ -68,48 +65,65 @@ public class ServicesFor4DObjects {
 			SegmentNetBuilder sNB = builder.getSegmentNetBuilder();
 			TriangleNetBuilder tNB = builder.getTriangleNetBuilder();
 			TetrahedronNetBuilder tetraNB = builder.getTetrahedronNetBuilder();
-			
-			
+
 			// get all the geometry of this object at the specified date and
 			// create 3D components with this information.
 			SpatialObject4D geometry = object.getGeometry()
 					.get(indexOfGeometry);
-			
+
 			// create all the Point3D objects
-			for(int i = 0; i < geometry.getPoints().size(); i++) {
+			for (int i = 0; i < geometry.getPoints().size(); i++) {
 				// TODO implement
 			}
-			
+
 			// create all the Segments3D objects
-			for(int i = 0; i < geometry.getSegmentNets().size(); i++) {
+			for (int i = 0; i < geometry.getSegmentNets().size(); i++) {
 				// TODO implement
 			}
-			
+
 			// create all the Triangel3D objects
 			// for every component:
-			for(int i = 0; i < geometry.getTriangleNets().size(); i++) {
+			
+			Iterator<Integer> keys = geometry.getTriangleNets().keySet().iterator();
+			
+			while(keys.hasNext()) {
 				
-				TriangleElt3D[] elements = new TriangleElt3D[geometry.getTriangleNets().get(i).getElements().size()];
-				
+				Integer id = keys.next();
+							
+				TriangleElt3D[] elements = new TriangleElt3D[geometry
+						.getTriangleNets().get(id).getElements().size()];
+
 				// for every Triangle of this component
-				for(int j = 0; j < geometry.getTriangleNets().get(i).getElements().size(); j++) {
+				
+				Iterator<Integer> ids = geometry.getTriangleNets().get(id)
+				.getElements().keySet().iterator();
+				
+				while(ids.hasNext()) {
 					
-					Triangle4D tmp = geometry.getTriangleNets().get(i).getElements().get(j);
-					
-					TriangleElt3D triangle = new TriangleElt3D(interpolatedPoints.get(tmp.getIDzero()), interpolatedPoints.get(tmp.getIDone()), interpolatedPoints.get(tmp.getIDtwo()), null);
-					
-					elements[j] = triangle;
+					Integer triangleID = ids.next(); 
+
+					Triangle4D tmp = geometry.getTriangleNets().get(id)
+							.getElements().get(triangleID);
+
+					TriangleElt3D triangle = new TriangleElt3D(
+							interpolatedPoints.get(tmp.getIDzero()),
+							interpolatedPoints.get(tmp.getIDone()),
+							interpolatedPoints.get(tmp.getIDtwo()), null);
+
+					elements[triangleID] = triangle;
 				}
 				// add the component to the TriangleNetBuilder
-				tNB.addComponent(elements, i);
+				tNB.addComponent(elements, id);
 			}
 			
+			builder.setSpatialPart(tNB.getTriangleNet());
+
 			// create all the Tetrahedron3D objects
-			for(int i = 0; i < geometry.getTetrahedronNets().size(); i++) {
+			for (int i = 0; i < geometry.getTetrahedronNets().size(); i++) {
 				// TODO implement
 			}
-			
-			// return the Object3D 
+
+			// return the Object3D
 			return builder.getObject3D();
 		}
 	}

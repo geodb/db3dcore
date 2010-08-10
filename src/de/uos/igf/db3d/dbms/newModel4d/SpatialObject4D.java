@@ -9,7 +9,7 @@ import de.uos.igf.db3d.dbms.geom.ScalarOperator;
  * SpatialObject4D is the abstract superclass of all geometric objects in 4D.
  * It represents the geometric part of an Object4D for one Interval ([Post,Pre])
  */
-public abstract class SpatialObject4D {
+public class SpatialObject4D {
 
 	// back reference to Object4D 
 	private Object4D object;
@@ -28,7 +28,7 @@ public abstract class SpatialObject4D {
 	/**
 	 * Constructor.
 	 */
-	protected SpatialObject4D() {
+	public SpatialObject4D() {
 		this.object = null;
 		tetrahedronNets = new HashMap<Integer, TetrahedronNet4D>();
 		triangleNets = new HashMap<Integer, TriangleNet4D>();
@@ -71,7 +71,7 @@ public abstract class SpatialObject4D {
 	 * @param sop
 	 *            ScalarOperator
 	 */
-	protected void setScalarOperator(ScalarOperator sop) {
+	public void setScalarOperator(ScalarOperator sop) {
 		this.sop = sop;
 	}
 
