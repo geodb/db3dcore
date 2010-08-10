@@ -35,6 +35,7 @@ public class Object4D {
 	// List of timesteps with their effective date
 	private LinkedList<Date> timesteps;
 
+	// counts the number of topology changes
 	private int postobjectCNT;
 
 	/**
@@ -201,17 +202,84 @@ public class Object4D {
 	 * information of the location of the Points at the specified date with the
 	 * help of linear interpolation.
 	 * 
-	 * @return Map - contains the Point3D objects and their IDs at the specified date
+	 * @return Map - contains the Point3D objects and their IDs at the specified
+	 *         date
 	 */
 	public Map<Integer, Point3D> getPointTubesAtInstance(Date date) {
-		
+
 		HashMap<Integer, Point3D> points = new HashMap<Integer, Point3D>();
-		
-		// TODO: Methode auslagern und so aufbauen: 
-		// Interpoliert wird zwischen dem interval was gerade aktuell ist. Date anschauen und so... 
-		// am besten mal in das alte 4D Ding gucken.
-		
-		return points;
+
+		// the case that the date is similar to a date of one timestep we only
+		// need to get the right Points from the PointTube
+		if (timesteps.contains(date)) {
+
+			// It always returns the Pre object if this is a timestep with a change of topology
+			int timestep = timesteps.indexOf(date);
+
+			for (int id = 0; id < pointTubes.size(); id++) {
+				if (pointTubes.get(id).containsKey(timestep))
+					points.put(id, pointTubes.get(id).get(timestep));
+			}
+			return points;
+			// otherwise we need to check if the date is in the interval of the
+			// timesteps and interpolate all Points for this date.
+		} else if (timesteps.getFirst().before(date)
+				&& timesteps.getLast().after(date)) {
+
+			// check which two dates of the timesteps build the interval of the
+			// specified date 
+			// within this interval the topology will not change
+			Date intervalStart = timesteps.get(0);
+			Date intervalEnd = timesteps.get(1);
+			int cnt = 2;
+
+			while (!intervalEnd.after(date)) {
+				intervalStart = intervalEnd;
+				intervalEnd = timesteps.get(cnt);
+				cnt++;
+			}
+
+			// Compute the factor which indicates the position of the desired
+			// point. 0 corresponds to the first support point, 1 to the second.
+			double factor = (intervalStart.getTime() - intervalEnd.getTime())
+					/ (date.getTime() - intervalStart.getTime());
+
+			// for all Points which are active in this timeinterval we need to
+			// interpolate a new point with the help of the computed factor.
+			int intervalStartStep = timesteps.indexOf(intervalStart);
+			for (int id = 0; id < pointTubes.size(); id++) {
+				
+				// check if this ID is active in this timeinterval
+				if (pointTubes.get(id).containsKey(intervalStartStep)) {
+
+					// get the Point of the start
+					Point3D intervalStartPoint = pointTubes.get(id).get(
+							intervalStartStep);
+
+					double x = intervalStartPoint.getX();
+					double y = intervalStartPoint.getY();
+					double z = intervalStartPoint.getZ();
+
+					// get the end Point
+					Point3D intervalEndPoint = pointTubes.get(id).get(
+							intervalStartStep + 1);
+
+					// create a new interpolated point and add it to the point Map
+					points.put(id, new Point3D(x
+							+ (intervalEndPoint.getX() - x) * factor, y
+							+ (intervalEndPoint.getY() - y) * factor, z
+							+ (intervalEndPoint.getZ() - z) * factor));
+				}
+
+			}		
+			// return the new Map with interpolated points.
+			return points;
+
+			// if the date is not in the closed interval of the timesteps return
+			// null
+		} else {
+			return null;
+		}
 	}
 
 	public Map<Integer, Map<Integer, Point3D>> getPointTubes() {
