@@ -35,4 +35,8 @@ public class TriangleNet4D {
 	public void createEndOfExistenceInterval(Date end) {
 		this.end = end;
 	}
+
+	public Map<Integer, Triangle4D> getElements() {
+		return elements;
+	}
 }

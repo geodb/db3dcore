@@ -11,7 +11,9 @@ public class GocadImporter4D {
 
 	public GocadImporter4D(BufferedReader reader) {
 
-		this.reader = reader;
+
+		
+		// TODO
 		
 	}
 

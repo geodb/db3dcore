@@ -1,11 +1,9 @@
 package de.uos.igf.db3d.dbms.newModel4d;
 
+import java.util.HashMap;
 import java.util.Map;
 
-import de.uos.igf.db3d.dbms.geom.MBB3D;
 import de.uos.igf.db3d.dbms.geom.ScalarOperator;
-import de.uos.igf.db3d.dbms.structure.PersistentObject;
-import de.uos.igf.db3d.dbms.util.SAM;
 
 /**
  * SpatialObject4D is the abstract superclass of all geometric objects in 4D.
@@ -32,6 +30,10 @@ public abstract class SpatialObject4D {
 	 */
 	protected SpatialObject4D() {
 		this.object = null;
+		tetrahedronNets = new HashMap<Integer, TetrahedronNet4D>();
+		triangleNets = new HashMap<Integer, TriangleNet4D>();
+		segmentNets = new HashMap<Integer, SegmentNet4D>();
+		points = new HashMap<Integer, Point4D>();
 	}
 
 	/**
@@ -45,9 +47,9 @@ public abstract class SpatialObject4D {
 	}
 
 	/**
-	 * Returns the Object3D aggregation object.
+	 * Returns the Object4D aggregation object.
 	 * 
-	 * @return Object3D.
+	 * @return Object4D.
 	 */
 	public Object4D getObject4D() {
 		return this.object;

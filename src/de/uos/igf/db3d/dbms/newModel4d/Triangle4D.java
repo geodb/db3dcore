@@ -1,8 +1,5 @@
 package de.uos.igf.db3d.dbms.newModel4d;
 
-import de.uos.igf.db3d.dbms.geom.Point3D;
-import de.uos.igf.db3d.dbms.geom.ScalarOperator;
-import de.uos.igf.db3d.dbms.model3d.TriangleElt3D;
 
 public class Triangle4D {	
 
