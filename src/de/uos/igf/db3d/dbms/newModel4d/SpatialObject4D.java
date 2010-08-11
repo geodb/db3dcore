@@ -15,6 +15,8 @@ public class SpatialObject4D {
 	private Object4D object;
 	
 	// Geometry information for all kind of simplices and their components (componentID = key)
+	// TODO Netze zu Components!
+	// TODO TreeMap nehmen!
 	private Map<Integer, TetrahedronNet4D> tetrahedronNets;
 	private Map<Integer, TriangleNet4D> triangleNets;
 	private Map<Integer, SegmentNet4D> segmentNets;

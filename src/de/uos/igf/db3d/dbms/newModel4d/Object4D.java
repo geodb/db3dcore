@@ -10,6 +10,7 @@ import java.util.Set;
 import java.util.Vector;
 
 import de.uos.igf.db3d.dbms.geom.Point3D;
+import de.uos.igf.db3d.dbms.geom.ScalarOperator;
 
 /**
  * This class represents an 4D object. The user has to call the function
@@ -34,6 +35,8 @@ public class Object4D {
 
 	// List of timesteps with their effective date
 	private LinkedList<Date> timesteps;
+	
+	private ScalarOperator sop;
 
 	/**
 	 * Constructor
@@ -43,6 +46,7 @@ public class Object4D {
 		super();
 		pointTubes = new HashMap<Integer, Map<Integer, Point3D>>();
 		timesteps = new LinkedList<Date>();
+		sop = new ScalarOperator();
 	}
 
 	/**
@@ -113,13 +117,13 @@ public class Object4D {
 					// Point.
 					if (!pointTubes.containsKey(id)) {
 						HashMap<Integer, Point3D> newTube = new HashMap<Integer, Point3D>();
-						newTube.put(timesteps.size()-1, newPoints.get(id));
+						newTube.put(timesteps.size() - 1, newPoints.get(id));
 
 						pointTubes.put(id, newTube);
 					} else {
 						// If the id already exists in the PointTubes extend its
 						// timeinterval by the new point.
-						pointTubes.get(id).put(timesteps.size()-1,
+						pointTubes.get(id).put(timesteps.size() - 1,
 								newPoints.get(id));
 					}
 				}
@@ -132,7 +136,7 @@ public class Object4D {
 				Iterator<Integer> it = newPoints.keySet().iterator();
 
 				while (it.hasNext()) {
-					if (pointTubes.get(it.next()).get(timesteps.size()-1) == null)
+					if (pointTubes.get(it.next()).get(timesteps.size() - 1) == null)
 						throw new IllegalArgumentException(
 								"New Object is neither a Postobject nor it fits the size of the last object");
 
@@ -140,10 +144,12 @@ public class Object4D {
 
 				// are there more points at the last timestep than in the new
 				// one?
+				
+				// TODO: entrys nehmen
 				Set<Integer> ids = pointTubes.keySet();
 				int cnt = 0;
 				for (final Integer id : ids) {
-					if (pointTubes.get(id).get(timesteps.size()-1) != null)
+					if (pointTubes.get(id).get(timesteps.size() - 1) != null)
 						cnt++;
 				}
 				if (cnt != newPoints.size())
@@ -158,13 +164,20 @@ public class Object4D {
 				// add all Points with their ID to the pointTube Map
 				while (it.hasNext()) {
 
-					// TODO: Code for the Deltaspeicherung:
-
 					Integer id = it.next();
 
-					// we know that we extend our pointTubes without building
-					// new one, so lets do so:
-					pointTubes.get(id).put(timesteps.size()-1, newPoints.get(id));
+					if (pointTubes.get(id).get(timesteps.size() - 2).isEqual(
+							newPoints.get(id), sop)) {
+						pointTubes.get(id).put(timesteps.size() - 1,
+								pointTubes.get(id).get(timesteps.size() - 2));
+					} else {
+
+						// we know that we extend our pointTubes without
+						// building
+						// new one, so lets do so:
+						pointTubes.get(id).put(timesteps.size() - 1,
+								newPoints.get(id));
+					}
 				}
 			}
 		}
@@ -203,7 +216,8 @@ public class Object4D {
 		// need to get the right Points from the PointTube
 		if (timesteps.contains(date)) {
 
-			// It always returns the Pre object if this is a timestep with a change of topology
+			// It always returns the Pre object if this is a timestep with a
+			// change of topology
 			int timestep = timesteps.indexOf(date);
 
 			for (int id = 0; id < pointTubes.size(); id++) {
@@ -217,7 +231,7 @@ public class Object4D {
 				&& timesteps.getLast().after(date)) {
 
 			// check which two dates of the timesteps build the interval of the
-			// specified date 
+			// specified date
 			// within this interval the topology will not change
 			Date intervalStart = timesteps.get(0);
 			Date intervalEnd = timesteps.get(1);
@@ -237,10 +251,10 @@ public class Object4D {
 			// for all Points which are active in this timeinterval we need to
 			// interpolate a new point with the help of the computed factor.
 			int intervalStartStep = timesteps.indexOf(intervalStart);
-			
+
 			Iterator<Integer> ids = pointTubes.keySet().iterator();
-			
-			while(ids.hasNext()) {
+
+			while (ids.hasNext()) {
 
 				Integer id = ids.next();
 
@@ -259,14 +273,15 @@ public class Object4D {
 					Point3D intervalEndPoint = pointTubes.get(id).get(
 							intervalStartStep + 1);
 
-					// create a new interpolated point and add it to the point Map
+					// create a new interpolated point and add it to the point
+					// Map
 					points.put(id, new Point3D(x
 							+ (intervalEndPoint.getX() - x) * factor, y
 							+ (intervalEndPoint.getY() - y) * factor, z
 							+ (intervalEndPoint.getZ() - z) * factor));
 				}
 
-			}		
+			}
 			// return the new Map with interpolated points.
 			return points;
 

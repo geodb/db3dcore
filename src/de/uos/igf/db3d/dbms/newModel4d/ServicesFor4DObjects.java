@@ -95,6 +95,8 @@ public class ServicesFor4DObjects {
 
 				// for every Triangle of this component
 				
+				// TODO über die einträge iterieren. (Entryset)
+				
 				Iterator<Integer> ids = geometry.getTriangleNets().get(id)
 				.getElements().keySet().iterator();
 				
