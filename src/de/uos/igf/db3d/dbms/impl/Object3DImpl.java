@@ -47,6 +47,7 @@ public class Object3DImpl implements Object3D, PersistentObject {
 		this.space = null;
 		this.thematicinfos = new LinkedHashMap<String, String>();
 	}
+	
 
 	/**
 	 * Tests if this has a spatial part.
