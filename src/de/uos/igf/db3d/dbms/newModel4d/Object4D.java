@@ -2,6 +2,7 @@ package de.uos.igf.db3d.dbms.newModel4d;
 
 import java.util.Date;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
@@ -33,9 +34,13 @@ public class Object4D {
 	// every SpatialObject4D object has its own timeinterval
 	private List<SpatialObject4D> geometry;
 
+	// TODO: Von Date auf das DB4GeO Format umstellen --> Java.util.Date nicht
+	// flexibel genug. Update: Wahrscheinlich ist es doch besser als
+	// SpaceTimeDefinition!
+
 	// List of timesteps with their effective date
 	private LinkedList<Date> timesteps;
-	
+
 	private ScalarOperator sop;
 
 	/**
@@ -62,27 +67,7 @@ public class Object4D {
 		// check if it is the first timestep
 		if (timesteps.isEmpty()) {
 
-			// initialize the geometry vector:
-			geometry = new Vector<SpatialObject4D>();
-
-			// add the effective date as first timestep
-			timesteps.add(date);
-
-			Iterator<Integer> it = newPoints.keySet().iterator();
-
-			// add all Points with their ID to the pointTube Map
-			while (it.hasNext()) {
-
-				Integer id = it.next();
-
-				// It is the initial step, so we have to create a new HashMap
-				// for
-				// every Point.
-				HashMap<Integer, Point3D> newTube = new HashMap<Integer, Point3D>();
-				newTube.put(0, newPoints.get(id));
-
-				pointTubes.put(id, newTube);
-			}
+			firstStep(newPoints, date);
 
 			// if there are already some timesteps in the Map, check if the new
 			// timestep is higher than the last one
@@ -100,86 +85,176 @@ public class Object4D {
 			// check if this is an Post-object!
 			if (timesteps.getLast().equals(date)) {
 
-				timesteps.add(date);
-
-				Iterator<Integer> it = newPoints.keySet().iterator();
-
-				// add all Points with their ID to the pointTube Map
-				while (it.hasNext()) {
-
-					// TODO: Code for the Deltaspeicherung:
-
-					Integer id = it.next();
-
-					// It is the initial step of a new interval defined by the
-					// Postobject and the next Preobject/Lastobject, so we have
-					// to create a new HashMap for every not already existing
-					// Point.
-					if (!pointTubes.containsKey(id)) {
-						HashMap<Integer, Point3D> newTube = new HashMap<Integer, Point3D>();
-						newTube.put(timesteps.size() - 1, newPoints.get(id));
-
-						pointTubes.put(id, newTube);
-					} else {
-						// If the id already exists in the PointTubes extend its
-						// timeinterval by the new point.
-						pointTubes.get(id).put(timesteps.size() - 1,
-								newPoints.get(id));
-					}
-				}
+				polthierAndRumpf(newPoints, date);
 
 				// no Post-object, should be the same topology
 			} else {
 
-				// check if the new step has the same ids of points as the last
-				// step:
-				Iterator<Integer> it = newPoints.keySet().iterator();
+				addTimeStep(newPoints, date);
+			}
+		}
+	}
 
-				while (it.hasNext()) {
-					if (pointTubes.get(it.next()).get(timesteps.size() - 1) == null)
-						throw new IllegalArgumentException(
-								"New Object is neither a Postobject nor it fits the size of the last object");
+	/**
+	 * Adds a new timestep to the Object4D object. This method checks if the new
+	 * data has the same topology as the last timestep. Checks the correlation
+	 * of partitions between the actual and the last timestep.
+	 * 
+	 * @param newPoints
+	 * @param date
+	 */
+	private void addTimeStep(HashMap<Integer, Point3D> newPoints, Date date) {
+		// check if the new step has the same ids of points as the last
+		// step:
+		Iterator<Integer> it = newPoints.keySet().iterator();
 
+		while (it.hasNext()) {
+			if (pointTubes.get(it.next()).get(timesteps.size() - 1) == null)
+				throw new IllegalArgumentException(
+						"New Object is neither a Postobject nor it fits the size of the last object");
+
+		}
+
+		// are there more points at the last timestep than in the new
+		// one?
+
+		// TODO: entrys nehmen
+		Set<Integer> ids = pointTubes.keySet();
+		int cnt = 0;
+		for (final Integer id : ids) {
+			if (pointTubes.get(id).get(timesteps.size() - 1) != null)
+				cnt++;
+		}
+		if (cnt != newPoints.size())
+			throw new IllegalArgumentException(
+					"New Object is neither a Postobject nor it fits the size of the last object");
+
+		// everything is alright? Add the new Points!
+		timesteps.add(date);
+
+		it = newPoints.keySet().iterator();
+
+		// add all Points with their ID to the pointTube Map
+		while (it.hasNext()) {
+
+			Integer id = it.next();
+
+			// Deltaspeicherung:
+			if (pointTubes.get(id).get(timesteps.size() - 2)
+					.isEqual(newPoints.get(id), sop)) {
+				pointTubes.get(id).put(timesteps.size() - 1,
+						pointTubes.get(id).get(timesteps.size() - 2));
+			} else {
+
+				// we know that we extend our pointTubes without
+				// building
+				// new one, so lets do so:
+				pointTubes.get(id).put(timesteps.size() - 1, newPoints.get(id));
+			}
+		}
+	}
+
+	/**
+	 * Adds a Postobject based on the concept of Polthier und Rumpf.
+	 * Checks the correlation of partitions between the
+	 * actual and the last timestep.
+	 * 
+	 * 
+	 * @param newPoints
+	 * @param date
+	 */
+	private void polthierAndRumpf(HashMap<Integer, Point3D> newPoints, Date date) {
+		timesteps.add(date);
+
+		Iterator<Integer> it = newPoints.keySet().iterator();
+
+		// TODO: Code for the Deltaspeicherung:
+
+		HashSet<Point3D> oldPoints = new HashSet<Point3D>();
+
+		HashMap<Integer, Point3D> correlation = new HashMap<Integer, Point3D>();
+
+		Iterator<Integer> it2 = pointTubes.keySet().iterator();
+
+		while (it2.hasNext()) {
+			oldPoints.add(pointTubes.get(it2.next()).get(timesteps.size() - 1));
+		}
+
+		while (it.hasNext()) {
+			Integer id = it.next();
+			if (oldPoints.contains(newPoints.get(id)))
+				correlation.put(id, newPoints.get(id));
+		}
+
+		// TODO: End of Deltaspeicherung
+
+		// add all Points with their ID to the pointTube Map
+		// reset iterator
+		it = newPoints.keySet().iterator();
+
+		while (it.hasNext()) {
+
+			Integer id = it.next();
+
+			// It is the initial step of a new interval defined by the
+			// Postobject and the next Preobject/Lastobject, so we have
+			// to create a new HashMap for every not already existing
+			// Point.
+			if (!pointTubes.containsKey(id)) {
+
+				HashMap<Integer, Point3D> newTube = new HashMap<Integer, Point3D>();
+
+				// Deltaspeicherung:
+				if (correlation.containsKey(id)) {
+					newTube.put(timesteps.size() - 1, correlation.get(id));
+				} else {
+					newTube.put(timesteps.size() - 1, newPoints.get(id));
 				}
 
-				// are there more points at the last timestep than in the new
-				// one?
-				
-				// TODO: entrys nehmen
-				Set<Integer> ids = pointTubes.keySet();
-				int cnt = 0;
-				for (final Integer id : ids) {
-					if (pointTubes.get(id).get(timesteps.size() - 1) != null)
-						cnt++;
-				}
-				if (cnt != newPoints.size())
-					throw new IllegalArgumentException(
-							"New Object is neither a Postobject nor it fits the size of the last object");
+				pointTubes.put(id, newTube);
+			} else {
+				// If the id already exists in the PointTubes extend its
+				// timeinterval by the new point.
 
-				// everything is alright? Add the new Points!
-				timesteps.add(date);
-
-				it = newPoints.keySet().iterator();
-
-				// add all Points with their ID to the pointTube Map
-				while (it.hasNext()) {
-
-					Integer id = it.next();
-
-					if (pointTubes.get(id).get(timesteps.size() - 2).isEqual(
-							newPoints.get(id), sop)) {
-						pointTubes.get(id).put(timesteps.size() - 1,
-								pointTubes.get(id).get(timesteps.size() - 2));
-					} else {
-
-						// we know that we extend our pointTubes without
-						// building
-						// new one, so lets do so:
-						pointTubes.get(id).put(timesteps.size() - 1,
-								newPoints.get(id));
-					}
+				// Deltaspeicherung:
+				if (correlation.containsKey(id)) {
+					pointTubes.get(id).put(timesteps.size() - 1,
+							correlation.get(id));
+				} else {
+					pointTubes.get(id).put(timesteps.size() - 1,
+							newPoints.get(id));
 				}
 			}
+		}
+	}
+
+	/**
+	 * Adds the first step of a Object4D object.
+	 * 
+	 * @param newPoints
+	 * @param date
+	 */
+	private void firstStep(HashMap<Integer, Point3D> newPoints, Date date) {
+		// initialize the geometry vector:
+		geometry = new Vector<SpatialObject4D>();
+
+		// add the effective date as first timestep
+		timesteps.add(date);
+
+		Iterator<Integer> it = newPoints.keySet().iterator();
+
+		// add all Points with their ID to the pointTube Map
+		while (it.hasNext()) {
+
+			Integer id = it.next();
+
+			// It is the initial step, so we have to create a new HashMap
+			// for
+			// every Point.
+			HashMap<Integer, Point3D> newTube = new HashMap<Integer, Point3D>();
+			newTube.put(0, newPoints.get(id));
+
+			pointTubes.put(id, newTube);
 		}
 	}
 
