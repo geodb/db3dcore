@@ -7,6 +7,7 @@ import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
+import java.util.Map.Entry;
 import java.util.Set;
 import java.util.Vector;
 
@@ -164,6 +165,7 @@ public class Object4D {
 	 * @param date
 	 */
 	private void polthierAndRumpf(HashMap<Integer, Point3D> newPoints, Date date) {
+		
 		timesteps.add(date);
 
 		Iterator<Integer> it = newPoints.keySet().iterator();
@@ -177,14 +179,33 @@ public class Object4D {
 		Iterator<Integer> it2 = pointTubes.keySet().iterator();
 
 		while (it2.hasNext()) {
-			oldPoints.add(pointTubes.get(it2.next()).get(timesteps.size() - 1));
+			oldPoints.add(pointTubes.get(it2.next()).get(timesteps.size() - 2));
 		}
 
-		while (it.hasNext()) {
-			Integer id = it.next();
-			if (oldPoints.contains(newPoints.get(id)))
-				correlation.put(id, newPoints.get(id));
+		double time = System.currentTimeMillis();
+
+		// works, but takes to much time
+		while(it.hasNext()) {
+			int id = it.next();
+			if(oldPoints.contains(newPoints.get(id))) {
+				Iterator<Point3D> itOldPoints = oldPoints.iterator(); 
+				while(itOldPoints.hasNext()) {
+					Point3D tmp = itOldPoints.next();
+					if(tmp.equals(newPoints.get(id))) {
+						correlation.put(id, tmp);
+						break;
+					}
+				}
+			}
 		}
+		
+		System.out.println();
+		System.out.println("Zeitverbrauch: " + (System.currentTimeMillis() - time));
+		System.out.println();
+
+		System.out.println(oldPoints.size());
+		System.out.println(newPoints.size());
+		System.out.println(correlation.size());
 
 		// TODO: End of Deltaspeicherung
 
