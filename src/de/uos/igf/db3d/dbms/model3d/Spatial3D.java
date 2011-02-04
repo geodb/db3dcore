@@ -30,6 +30,9 @@ public interface Spatial3D {
 	/** constants for a Solid3D object */
 	public static final byte SOLID_3D = 5;
 
+	/** constants for a Grid3D object */
+	public static final byte GRID_3D = 6;
+
 	/**
 	 * Returns the ScalarOperator of this.
 	 * 
