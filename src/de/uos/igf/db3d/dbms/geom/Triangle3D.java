@@ -456,15 +456,17 @@ public class Triangle3D implements PersistentObject, SimpleGeoObj,
 		 * Alternative: 1/2 of the vector product of two vectors of this: area =
 		 * ( this.getVectors()[0].crossproduct(this.getVectors()[1]) ).getNorm()
 		 * / 2;
-		 * 
-		 * Heron's formula F = root of ( s * (s-a) * (s-b) * (s-c) ) ; where: s
-		 * = (a + b + c)/2 (half perimeter)
 		 */
-		double s = (getSegment(0).getLength() + getSegment(1).getLength() + getSegment(
-				2).getLength()) / 2;
-		return java.lang.Math.sqrt(s * (s - getSegment(0).getLength())
-				* (s - getSegment(1).getLength())
-				* (s - getSegment(2).getLength()));
+
+		/*
+		 * Heron's formula F = sqrt( s * (s-a) * (s-b) * (s-c) ); where: s = (a
+		 * + b + c)/2 (half perimeter)
+		 */
+		double a = getSegment(0).getLength();
+		double b = getSegment(1).getLength();
+		double c = getSegment(2).getLength();
+		double s = (a + b + c) / 2;
+		return java.lang.Math.sqrt(s * (s - a) * (s - b) * (s - c));
 	}
 
 	/**

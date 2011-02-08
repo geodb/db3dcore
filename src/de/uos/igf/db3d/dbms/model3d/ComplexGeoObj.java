@@ -31,6 +31,9 @@ public interface ComplexGeoObj extends GeoObj {
 
 	/** constant for a TetrahedronNet3D object */
 	public static final byte TETRAHEDRON_NET_3D = 24;
+	
+	/** constant for a RegularDeformedGrid3D object */
+	public static final byte REGULAR_DEFORMED_GRID_3D = 19;
 
 	// complex objects (4D)
 	/** constant for a 4D point net object */
@@ -44,7 +47,7 @@ public interface ComplexGeoObj extends GeoObj {
 
 	/** constant for a 4D tetrahedron sequence */
 	public static final byte TETRAHEDRONNET4D = 53;
-
+	
 	/** constant for a ResultObject3D object */
 	public static final byte RESULT_OBJECT_3D = 28;
 
@@ -63,7 +66,7 @@ public interface ComplexGeoObj extends GeoObj {
 
 	/** constant for a ClosedHull3DComp object */
 	public static final byte COMP_CLOSED_HULL_3D = 30;
-
+	
 	// net components (4D)
 	/** constant for a 4D point component */
 	public static final byte POINTNET4DCOMPONENT = 60;
