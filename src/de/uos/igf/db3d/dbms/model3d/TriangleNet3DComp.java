@@ -17,6 +17,7 @@ import java.util.Locale;
 import java.util.ResourceBundle;
 import java.util.Set;
 import java.util.Stack;
+import java.util.logging.Level;
 
 import de.uos.igf.db3d.dbms.api.ContainmentException;
 import de.uos.igf.db3d.dbms.api.Db3dSimpleResourceBundle;
@@ -139,15 +140,31 @@ public class TriangleNet3DComp implements PersistentObject, ComplexGeoObj,
 		// }
 		//		
 		// this.sam = new Octree((short)10, XXMBB, sop);
+		System.out.println("Insert data into SAM");
+		double time = System.currentTimeMillis();
 		loadSAM(elements);
+		System.out.println("took " + (System.currentTimeMillis() - time));
+		 time = System.currentTimeMillis();
 		// Here an IllegalArgumentException can be thrown.
 		this.mbb = sam.getMBB();
 		// Here an IllegalArgumentException can be thrown.
+		System.out.println("Build Topology");
 		this.buildNetTopology(elements);
+		System.out.println("took " + (System.currentTimeMillis() - time));
+		 time = System.currentTimeMillis();
 		this.connected = true;
+		System.out.println("Update Entry element");
 		updateEntryElement();
+		System.out.println("took " + (System.currentTimeMillis() - time));
+		 time = System.currentTimeMillis();
+		System.out.println("Update Euler statistics");
 		updateEulerStatistics();
+		System.out.println("took " + (System.currentTimeMillis() - time));
+		 time = System.currentTimeMillis();
+		System.out.println("Make orientation consistent");
 		this.makeOrientationConsistent(sop);
+		System.out.println("took " + (System.currentTimeMillis() - time));
+		System.out.println("DONE");
 	}
 
 	/**
@@ -1916,15 +1933,31 @@ public class TriangleNet3DComp implements PersistentObject, ComplexGeoObj,
 	 */
 	protected void updateEulerStatistics() {
 		Set<?> set = this.getSAM().getEntries();
-		Set<Point3D> vert = new EquivalentableHashSet((int) (set.size() * 1.5),
-				getScalarOperator(), Equivalentable.GEOMETRY_EQUIVALENT);
-		Set<Segment3D> edg = new EquivalentableHashSet(
-				(int) (set.size() * 1.5), getScalarOperator(),
-				Equivalentable.GEOMETRY_EQUIVALENT);
+		// TODO: Check if it is okay to use normal HashSets instead of EquivalentableHashSets
+		
+//		Set<Point3D> vert = new EquivalentableHashSet((int) (set.size() * 1.5),
+//				getScalarOperator(), Equivalentable.GEOMETRY_EQUIVALENT);
+//		Set<Segment3D> edg = new EquivalentableHashSet(
+//				(int) (set.size() * 1.5), getScalarOperator(),
+//				Equivalentable.GEOMETRY_EQUIVALENT);
+		
+		// new:
+		// TODO: Adapt equal method of Point3D and Segment3D to fit GEOMETRY_EQUIVALENT pattern
+		HashSet<Point3D> vert = new HashSet<Point3D>();				
+		HashSet<Segment3D> edg = new HashSet<Segment3D>();
 
 		Iterator<?> it = set.iterator();
 		TriangleElt3D trielt = null;
+		int cnt = 0;
+		double time = System.currentTimeMillis();
+		int size = set.size();
 		while (it.hasNext()) {
+			cnt++;
+			if(cnt%1000 == 0) { 
+				System.out.println("1000 Einträge = " + (System.currentTimeMillis() - time));	
+				System.out.println("Es braucht noch ca. " + ((size - cnt)/ 1000 )*(System.currentTimeMillis() - time));
+				time = System.currentTimeMillis();
+			}
 			trielt = (TriangleElt3D) it.next();
 			for (int j = 0; j < 3; j++) {
 				vert.add(trielt.getPoint(j));
