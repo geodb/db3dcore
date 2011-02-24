@@ -38,6 +38,8 @@ import de.uos.igf.db3d.dbms.util.FlagMap;
 import de.uos.igf.db3d.dbms.util.IdentityHashSet;
 import de.uos.igf.db3d.dbms.util.RStar;
 import de.uos.igf.db3d.dbms.util.SAM;
+import de.uos.igf.db3d.resources.DB3DLogger;
+import de.uos.igf.db3d.resources.i18n.DB3DLang;
 
 /**
  * TriangleNet3DComp represents a single triangle net component. All
@@ -140,31 +142,40 @@ public class TriangleNet3DComp implements PersistentObject, ComplexGeoObj,
 		// }
 		//		
 		// this.sam = new Octree((short)10, XXMBB, sop);
-		System.out.println("Insert data into SAM");
+		DB3DLogger.logger.log(
+				Level.FINEST, "Insert data into SAM");
 		double time = System.currentTimeMillis();
 		loadSAM(elements);
-		System.out.println("took " + (System.currentTimeMillis() - time));
+		DB3DLogger.logger.log(
+				Level.FINEST, "took " + (System.currentTimeMillis() - time));
 		 time = System.currentTimeMillis();
 		// Here an IllegalArgumentException can be thrown.
 		this.mbb = sam.getMBB();
 		// Here an IllegalArgumentException can be thrown.
-		System.out.println("Build Topology");
+		DB3DLogger.logger.log(
+				Level.FINEST, "Build Topology");
 		this.buildNetTopology(elements);
-		System.out.println("took " + (System.currentTimeMillis() - time));
+		DB3DLogger.logger.log(
+				Level.FINEST, "took " + (System.currentTimeMillis() - time));
 		 time = System.currentTimeMillis();
 		this.connected = true;
-		System.out.println("Update Entry element");
+		DB3DLogger.logger.log(
+				Level.FINEST, "Update Entry element");
 		updateEntryElement();
-		System.out.println("took " + (System.currentTimeMillis() - time));
-		 time = System.currentTimeMillis();
-		System.out.println("Update Euler statistics");
+		DB3DLogger.logger.log(
+				Level.FINEST, "took " + (System.currentTimeMillis() - time));
+		time = System.currentTimeMillis();
+		DB3DLogger.logger.log(
+				Level.FINEST, "Update Euler statistics");
 		updateEulerStatistics();
-		System.out.println("took " + (System.currentTimeMillis() - time));
-		 time = System.currentTimeMillis();
-		System.out.println("Make orientation consistent");
+		DB3DLogger.logger.log(
+				Level.FINEST, "took " + (System.currentTimeMillis() - time));
+		time = System.currentTimeMillis();
+		DB3DLogger.logger.log(
+				Level.FINEST, "Make orientation consistent");
 		this.makeOrientationConsistent(sop);
-		System.out.println("took " + (System.currentTimeMillis() - time));
-		System.out.println("DONE");
+		DB3DLogger.logger.log(
+				Level.FINEST, "took " + (System.currentTimeMillis() - time));
 	}
 
 	/**
@@ -1953,9 +1964,12 @@ public class TriangleNet3DComp implements PersistentObject, ComplexGeoObj,
 		int size = set.size();
 		while (it.hasNext()) {
 			cnt++;
-			if(cnt%1000 == 0) { 
-				System.out.println("1000 Einträge = " + (System.currentTimeMillis() - time));	
-				System.out.println("Es braucht noch ca. " + ((size - cnt)/ 1000 )*(System.currentTimeMillis() - time));
+			if(cnt%10000 == 0) { 
+				
+				DB3DLogger.logger.log(
+						Level.FINEST, "10.000 entries = " + (System.currentTimeMillis() - time) + "\n" +	
+						"Rest takes about: " + ((size - cnt)/ 10000 )*(System.currentTimeMillis() - time));
+				
 				time = System.currentTimeMillis();
 			}
 			trielt = (TriangleElt3D) it.next();
