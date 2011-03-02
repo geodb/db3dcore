@@ -16,6 +16,7 @@ import de.uos.igf.db3d.dbms.geom.ScalarOperator;
 import de.uos.igf.db3d.dbms.geom.Segment3D;
 import de.uos.igf.db3d.dbms.geom.SimpleGeoObj;
 import de.uos.igf.db3d.dbms.geom.Triangle3D;
+import de.uos.igf.db3d.dbms.model3d.TriangleNet3DComp.TriangleElt3DIterator;
 import de.uos.igf.db3d.dbms.util.SAM;
 
 /**
@@ -123,14 +124,17 @@ public class TriangleNet3D extends SpatialObject3D implements Surface3D,
 	 * Adds a new component to the net.
 	 * 
 	 * @param comp
-	 *            TriangleNet3DComp to be added
+	 *            TriangleNet3DComp to be added 
 	 * @throws IllegalArgumentException
 	 *             if an attempt is made to construct a MBB3D whose maximum
 	 *             point is not greater than its minimum point.
 	 */
 	public void addComponent(TriangleNet3DComp comp) {
 		// set the element ids for this net
-		Iterator it = comp.getElementsViaRecursion().iterator();
+//		Iterator it = comp.getElementsViaRecursion().iterator();
+		
+		Iterator it = comp.getElementsViaSAM().iterator();
+		
 		while (it.hasNext())
 			((TriangleElt3D) it.next()).setID(this.nextElementID());
 
