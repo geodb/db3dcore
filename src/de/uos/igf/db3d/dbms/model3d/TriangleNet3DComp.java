@@ -17,6 +17,7 @@ import java.util.Locale;
 import java.util.ResourceBundle;
 import java.util.Set;
 import java.util.Stack;
+import java.util.logging.Level;
 
 import de.uos.igf.db3d.dbms.api.ContainmentException;
 import de.uos.igf.db3d.dbms.api.Db3dSimpleResourceBundle;
@@ -37,6 +38,8 @@ import de.uos.igf.db3d.dbms.util.FlagMap;
 import de.uos.igf.db3d.dbms.util.IdentityHashSet;
 import de.uos.igf.db3d.dbms.util.RStar;
 import de.uos.igf.db3d.dbms.util.SAM;
+import de.uos.igf.db3d.resources.DB3DLogger;
+import de.uos.igf.db3d.resources.i18n.DB3DLang;
 
 /**
  * TriangleNet3DComp represents a single triangle net component. All
@@ -139,15 +142,40 @@ public class TriangleNet3DComp implements PersistentObject, ComplexGeoObj,
 		// }
 		//		
 		// this.sam = new Octree((short)10, XXMBB, sop);
+		DB3DLogger.logger.log(
+				Level.FINEST, "Insert data into SAM");
+		double time = System.currentTimeMillis();
 		loadSAM(elements);
+		DB3DLogger.logger.log(
+				Level.FINEST, "took " + (System.currentTimeMillis() - time));
+		 time = System.currentTimeMillis();
 		// Here an IllegalArgumentException can be thrown.
 		this.mbb = sam.getMBB();
 		// Here an IllegalArgumentException can be thrown.
+		DB3DLogger.logger.log(
+				Level.FINEST, "Build Topology");
 		this.buildNetTopology(elements);
+		DB3DLogger.logger.log(
+				Level.FINEST, "took " + (System.currentTimeMillis() - time));
+		 time = System.currentTimeMillis();
 		this.connected = true;
+		DB3DLogger.logger.log(
+				Level.FINEST, "Update Entry element");
 		updateEntryElement();
+		DB3DLogger.logger.log(
+				Level.FINEST, "took " + (System.currentTimeMillis() - time));
+		time = System.currentTimeMillis();
+		DB3DLogger.logger.log(
+				Level.FINEST, "Update Euler statistics");
 		updateEulerStatistics();
+		DB3DLogger.logger.log(
+				Level.FINEST, "took " + (System.currentTimeMillis() - time));
+		time = System.currentTimeMillis();
+		DB3DLogger.logger.log(
+				Level.FINEST, "Make orientation consistent");
 		this.makeOrientationConsistent(sop);
+		DB3DLogger.logger.log(
+				Level.FINEST, "took " + (System.currentTimeMillis() - time));
 	}
 
 	/**
@@ -1916,15 +1944,34 @@ public class TriangleNet3DComp implements PersistentObject, ComplexGeoObj,
 	 */
 	protected void updateEulerStatistics() {
 		Set<?> set = this.getSAM().getEntries();
-		Set<Point3D> vert = new EquivalentableHashSet((int) (set.size() * 1.5),
-				getScalarOperator(), Equivalentable.GEOMETRY_EQUIVALENT);
-		Set<Segment3D> edg = new EquivalentableHashSet(
-				(int) (set.size() * 1.5), getScalarOperator(),
-				Equivalentable.GEOMETRY_EQUIVALENT);
+		// TODO: Check if it is okay to use normal HashSets instead of EquivalentableHashSets
+		
+//		Set<Point3D> vert = new EquivalentableHashSet((int) (set.size() * 1.5),
+//				getScalarOperator(), Equivalentable.GEOMETRY_EQUIVALENT);
+//		Set<Segment3D> edg = new EquivalentableHashSet(
+//				(int) (set.size() * 1.5), getScalarOperator(),
+//				Equivalentable.GEOMETRY_EQUIVALENT);
+		
+		// new:
+		// TODO: Adapt equal method of Point3D and Segment3D to fit GEOMETRY_EQUIVALENT pattern
+		HashSet<Point3D> vert = new HashSet<Point3D>();				
+		HashSet<Segment3D> edg = new HashSet<Segment3D>();
 
 		Iterator<?> it = set.iterator();
 		TriangleElt3D trielt = null;
+		int cnt = 0;
+		double time = System.currentTimeMillis();
+		int size = set.size();
 		while (it.hasNext()) {
+			cnt++;
+			if(cnt%10000 == 0) { 
+				
+				DB3DLogger.logger.log(
+						Level.FINEST, "10.000 entries = " + (System.currentTimeMillis() - time) + "\n" +	
+						"Rest takes about: " + ((size - cnt)/ 10000 )*(System.currentTimeMillis() - time));
+				
+				time = System.currentTimeMillis();
+			}
 			trielt = (TriangleElt3D) it.next();
 			for (int j = 0; j < 3; j++) {
 				vert.add(trielt.getPoint(j));

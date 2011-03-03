@@ -565,10 +565,6 @@ public class Point3D implements PersistentObject, SimpleGeoObj, Equivalentable,
 	}
 
 	@Override
-	/**
-	 * Returns the hash code of this.
-	 * @return int - hash code of this.
-	 */
 	public int hashCode() {
 		final int prime = 31;
 		int result = 1;
@@ -582,6 +578,11 @@ public class Point3D implements PersistentObject, SimpleGeoObj, Equivalentable,
 		return result;
 	}
 
+	/**
+	 * Equals method! 
+	 * TODO: Use the scalarOperator from the actual space! 
+	 * 
+	 */
 	@Override
 	public boolean equals(Object obj) {
 		if (this == obj)
@@ -590,13 +591,15 @@ public class Point3D implements PersistentObject, SimpleGeoObj, Equivalentable,
 			return false;
 		if (getClass() != obj.getClass())
 			return false;
-		Point3D other = (Point3D) obj;
-		if (Double.doubleToLongBits(x) != Double.doubleToLongBits(other.x))
-			return false;
-		if (Double.doubleToLongBits(y) != Double.doubleToLongBits(other.y))
-			return false;
-		if (Double.doubleToLongBits(z) != Double.doubleToLongBits(other.z))
-			return false;
+		
+		double[] objcoords = ((Point3D) obj).getCoordinates();
+
+		ScalarOperator sop = new ScalarOperator();
+		
+		for (int i = 0; i < 3; i++) {
+			if (!(sop.equal(this.getCoord(i), objcoords[i])))
+				return false;
+		}
 		return true;
-	}	
+	}
 }

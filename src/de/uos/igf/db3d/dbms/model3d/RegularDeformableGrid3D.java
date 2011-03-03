@@ -64,8 +64,7 @@ public class RegularDeformableGrid3D extends SpatialObject3D implements
 
 	// stores whether the thematic data is aligned at corner-points (otherwise
 	// it is aligned at cell-centers):
-	public boolean isThematicDataAtPoints; // Export: PROP_ALIGNMENT POINTS |
-											// CELLS
+	public boolean isThematicDataAtPoints; 
 
 	/**
 	 * Stadnard constructor for RegularDeformedGrid3D. This is a conviniency
@@ -234,6 +233,12 @@ public class RegularDeformableGrid3D extends SpatialObject3D implements
 		return 0;
 	}
 
+	/**
+	 * Returns the spatial type of this.
+	 * 
+	 * @return byte - spatial type.
+	 * @see db3d.dbms.model3d.Spatial3D#getSpatial3DType()
+	 */
 	public byte getSpatial3DType() {
 		return Spatial3D.GRID_3D;
 	}

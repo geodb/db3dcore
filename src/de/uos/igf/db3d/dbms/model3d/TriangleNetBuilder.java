@@ -118,6 +118,7 @@ public class TriangleNetBuilder {
 
 		for (int i = 0; i < elements.length; i++) {
 			// set ID
+			// TODO: do we need to set the id if we got one from the import process?
 			elements[i].setID(counter++);
 			// set the reference to the component
 			elements[i].setNetComponent(comp);

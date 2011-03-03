@@ -1046,10 +1046,6 @@ public class Segment3D implements PersistentObject, SimpleGeoObj,
 	}
 
 	@Override
-	/**
-	 * Returns the hash code of this.
-	 * @return int - hash code of this.
-	 */
 	public int hashCode() {
 		final int prime = 31;
 		int result = 1;
@@ -1058,4 +1054,25 @@ public class Segment3D implements PersistentObject, SimpleGeoObj,
 		return result;
 	}
 
+	@Override
+	public boolean equals(Object obj) {
+		if (this == obj)
+			return true;
+		if (obj == null)
+			return false;
+		if (getClass() != obj.getClass())
+			return false;
+		Segment3D other = (Segment3D) obj;
+		if (end == null) {
+			if (other.end != null)
+				return false;
+		} else if (!end.equals(other.end) && !end.equals(other.start))
+			return false;
+		if (start == null) {
+			if (other.start != null)
+				return false;
+		} else if (!start.equals(other.start) && !start.equals(other.end))
+			return false;
+		return true;
+	}
 }
