@@ -316,7 +316,9 @@ public class Object4D {
 			// change of topology
 			int timestep = timesteps.indexOf(date);
 
-			for (int id = 0; id < pointTubes.size(); id++) {
+//			for (int id = 1; id <= pointTubes.size(); id++) {
+			for (int id : pointTubes.keySet()) {
+
 				if (pointTubes.get(id).containsKey(timestep))
 					points.put(id, pointTubes.get(id).get(timestep));
 			}

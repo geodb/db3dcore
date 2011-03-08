@@ -39,16 +39,20 @@ public class ServicesFor4DObjects {
 			return null;
 		else {
 
-			// find out which is the right topology for this specified date:
-			Date lastDate = object.getTimesteps().get(0);
-			Date actualDate = object.getTimesteps().get(1);
-			int cnt = 2;
-			while (actualDate.before(date)) {
-				if (actualDate == lastDate)
-					indexOfGeometry++;
-				lastDate = actualDate;
-				actualDate = object.getTimesteps().get(cnt);
-				cnt++;
+			// check if there are more than one timestep:
+			if (object.getTimesteps().size() > 1) {
+
+				// find out which is the right topology for this specified date:
+				Date lastDate = object.getTimesteps().get(0);
+				Date actualDate = object.getTimesteps().get(1);
+				int cnt = 2;
+				while (actualDate.before(date)) {
+					if (actualDate == lastDate)
+						indexOfGeometry++;
+					lastDate = actualDate;
+					actualDate = object.getTimesteps().get(cnt);
+					cnt++;
+				}
 			}
 
 			// now we have the index of the right topology for this date.
@@ -59,7 +63,7 @@ public class ServicesFor4DObjects {
 			// create a Object3DBuilder with the right ScalarOperator
 			Object3DBuilder builder = new Object3DBuilder(object.getGeometry()
 					.get(indexOfGeometry).getScalarOperator());
-			
+
 			// one builder for every type
 			PointNetBuilder pNB = builder.getPointNetBuilder();
 			SegmentNetBuilder sNB = builder.getSegmentNetBuilder();
@@ -83,26 +87,27 @@ public class ServicesFor4DObjects {
 
 			// create all the Triangel3D objects
 			// for every component:
-			
-			Iterator<Integer> keys = geometry.getTriangleNets().keySet().iterator();
-			
-			while(keys.hasNext()) {
-				
+
+			Iterator<Integer> keys = geometry.getTriangleNets().keySet()
+					.iterator();
+
+			while (keys.hasNext()) {
+
 				Integer id = keys.next();
-							
+
 				TriangleElt3D[] elements = new TriangleElt3D[geometry
 						.getTriangleNets().get(id).getElements().size()];
 
 				// for every Triangle of this component
-				
-				// TODO über die einträge iterieren. (Entryset)
-				
+
+				// TODO über die eintraege iterieren. (Entryset)
+
 				Iterator<Integer> ids = geometry.getTriangleNets().get(id)
-				.getElements().keySet().iterator();
-				
-				while(ids.hasNext()) {
-					
-					Integer triangleID = ids.next(); 
+						.getElements().keySet().iterator();
+
+				while (ids.hasNext()) {
+
+					Integer triangleID = ids.next();
 
 					Triangle4D tmp = geometry.getTriangleNets().get(id)
 							.getElements().get(triangleID);
@@ -117,7 +122,7 @@ public class ServicesFor4DObjects {
 				// add the component to the TriangleNetBuilder
 				tNB.addComponent(elements, id);
 			}
-			
+
 			builder.setSpatialPart(tNB.getTriangleNet());
 
 			// create all the Tetrahedron3D objects
