@@ -2351,8 +2351,7 @@ public class TriangleNet3DComp implements PersistentObject, ComplexGeoObj,
 	 */
 	public TriangleElt3D getElement(int id) {
 
-//		Iterator<TriangleElt3D> it = getElementsViaRecursion().iterator();
-		Iterator<TriangleElt3D> it = (Iterator<TriangleElt3D>) getElementsViaSAM().iterator();
+		Iterator<TriangleElt3D> it = getElementsViaRecursion().iterator();
 		while (it.hasNext()) {
 			TriangleElt3D t = it.next();
 			if (t.getID() == id)

@@ -4,6 +4,8 @@
 
 package de.uos.igf.db3d.dbms.model3d;
 
+import java.util.Set;
+
 import de.uos.igf.db3d.dbms.geom.MBB3D;
 import de.uos.igf.db3d.dbms.geom.ScalarOperator;
 import de.uos.igf.db3d.dbms.structure.PersistentObject;
@@ -233,6 +235,17 @@ public abstract class SpatialObject3D implements Spatial3D, PersistentObject {
 	 */
 	public int getComponentIDCounter() {
 		return this.componentID;
+	}
+	
+	/**
+	 *Returns the set of objects which are inside the given MBB3D.
+	 * 
+	 * @param mbb
+	 *            - the MBB3D object for test
+	 * @return Set - a Set object containing the result
+	 */
+	public Set inside(MBB3D mbb) {
+		return getSAM().inside(mbb);
 	}
 
 	public static class HoldNeighbourStructure {
