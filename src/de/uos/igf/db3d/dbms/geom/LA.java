@@ -28,7 +28,6 @@ import de.uos.igf.db3d.dbms.api.Db3dSimpleResourceBundle;
  * http://www.netlib.org/java/f2j/
  * 
  * 
- * @author Paul Vincent Kuper
  */
 public class LA {
 
