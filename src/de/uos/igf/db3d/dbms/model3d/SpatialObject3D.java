@@ -237,17 +237,6 @@ public abstract class SpatialObject3D implements Spatial3D, PersistentObject {
 		return this.componentID;
 	}
 	
-	/**
-	 *Returns the set of objects which are inside the given MBB3D.
-	 * 
-	 * @param mbb
-	 *            - the MBB3D object for test
-	 * @return Set - a Set object containing the result
-	 */
-	public Set inside(MBB3D mbb) {
-		return getSAM().inside(mbb);
-	}
-
 	public static class HoldNeighbourStructure {
 
 		/* first object */
