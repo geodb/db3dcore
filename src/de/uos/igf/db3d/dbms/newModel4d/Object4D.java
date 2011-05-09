@@ -343,9 +343,12 @@ public class Object4D {
 
 			// Compute the factor which indicates the position of the desired
 			// point. 0 corresponds to the first support point, 1 to the second.
-			double factor = (intervalStart.getTime() - intervalEnd.getTime())
-					/ (date.getTime() - intervalStart.getTime());
-
+			double factor = (double) (date.getTime() - intervalStart.getTime())/(intervalEnd.getTime() - intervalStart.getTime());
+			
+			System.out.println(date.getTime() - intervalStart.getTime());
+			System.out.println(intervalEnd.getTime() - intervalStart.getTime());
+			System.out.println(factor);
+			
 			// for all Points which are active in this timeinterval we need to
 			// interpolate a new point with the help of the computed factor.
 			int intervalStartStep = timesteps.indexOf(intervalStart);
@@ -388,6 +391,11 @@ public class Object4D {
 		} else {
 			return null;
 		}
+	}
+
+	private long Double(long l) {
+		// TODO Auto-generated method stub
+		return 0;
 	}
 
 	public Map<Integer, Map<Integer, Point3D>> getPointTubes() {

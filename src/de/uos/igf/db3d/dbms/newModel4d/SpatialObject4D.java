@@ -36,6 +36,7 @@ public class SpatialObject4D {
 		triangleNets = new HashMap<Integer, TriangleNet4D>();
 		segmentNets = new HashMap<Integer, SegmentNet4D>();
 		points = new HashMap<Integer, Point4D>();
+		sop = new ScalarOperator();
 	}
 
 	/**
