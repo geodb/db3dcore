@@ -5,10 +5,13 @@
 package de.uos.igf.db3d.dbms.geom;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Map;
+import java.util.Map.Entry;
 import java.util.Set;
 
 import de.uos.igf.db3d.dbms.api.Db3dSimpleResourceBundle;
@@ -659,6 +662,94 @@ public class Wireframe3D implements SimpleGeoObj, PersistentObject {
 	}
 
 	/**
+	 * Triangulates the wireframe which should be !!!planar and convex!!! So far
+	 * these conditions are met anywhere where a wireframe is constructed, i.e.
+	 * as a result of intersecting and projecting. (Proof of convexity:
+	 * the intersection of two convex sets is a convex set. Any simplex is
+	 * convex, therefore, the intersection of two simpices is also convex. A
+	 * projection of a simplex should also be convex.)
+	 * 
+	 * @author Daria Golovko
+	 * @return List of triangles that substite the wireframe.
+	 */
+	public List<Triangle3D> getTriangulatedInPlane() {
+		List<Triangle3D> result = new ArrayList<Triangle3D>();
+
+		if (this.countNodes() == 3) {
+			// end of recursion
+			Triangle3D tri = new Triangle3D(getPoints(), sop);
+			result.add(tri);
+			return result;
+		} else {
+
+			Map<Segment3D, Wireframe3DNode> mapSegsNodes = new HashMap<Segment3D, Wireframe3DNode>();
+			// map to store the length of the opposite segment for each node
+
+			Set<Entry<Point3D, Wireframe3DNode>> nodeSet = mapPointsNodes
+					.entrySet();
+			for (Entry<Point3D, Wireframe3DNode> entry : nodeSet) {
+				Wireframe3DNode currentNode = entry.getValue();
+				Set<Wireframe3DNode> connections = currentNode.getConnections();
+				Point3D[] nbPoints = new Point3D[connections.size()];
+				int count = 0;
+				for (Wireframe3DNode wfn : connections) {
+					nbPoints[count] = wfn.getPoint3D();
+					count++;
+				}
+
+				Segment3D seg = new Segment3D(nbPoints[0], nbPoints[1], sop);
+				mapSegsNodes.put(seg, currentNode);
+			}
+
+			// Looking for the shortest segment in the map:
+			Segment3D shortest = null;
+			// will store the shortest segment lying inside the wireframe
+			Set<Entry<Segment3D, Wireframe3DNode>> segNodeSet = mapSegsNodes
+					.entrySet();
+			for (Entry<Segment3D, Wireframe3DNode> entry : segNodeSet) {
+				if (shortest == null) {
+					shortest = entry.getKey();
+				} else {
+					if (entry.getKey().getLengthSQR() < shortest.getLengthSQR()) {
+						shortest = entry.getKey();
+					}
+				}
+			}
+
+			// now "shortest" is the shortest "inside"-segment in the wireframe
+			Wireframe3DNode oppositeNode = mapSegsNodes.get(shortest);
+			Triangle3D tri = new Triangle3D(oppositeNode.getPoint3D(),
+					shortest, sop);
+			Set<Wireframe3DNode> adjustentNodes = oppositeNode.getConnections();
+			Iterator<Wireframe3DNode> it = adjustentNodes.iterator();
+			Wireframe3DNode adjustentNode1 = it.next();
+			Wireframe3DNode adjustentNode2 = it.next();
+
+			result.add(tri);
+
+			// Relinking the remaining nodes:
+			Wireframe3D wf2 = new Wireframe3D(sop);
+			Segment3D[] segments = this.getSegments();
+			for (int i = 0; i < segments.length; i++) {
+				if (!segments[i].getPoint(0).isGeometryEquivalent(
+						mapSegsNodes.get(shortest).getPoint3D(), sop)
+						&& !segments[i].getPoint(1).isGeometryEquivalent(
+								mapSegsNodes.get(shortest).getPoint3D(), sop)) {
+					wf2.add(segments[i]);
+				}
+			}
+			wf2.add(new Segment3D(adjustentNode1.getPoint3D(), adjustentNode2
+					.getPoint3D(), sop));
+
+			result.addAll(wf2.getTriangulatedInPlane());
+
+		}
+
+		return result;
+
+	}
+
+	/**
 	 * Returns the class type of this (Wireframe3D).
 	 * 
 	 * @return WIREFRAME3D always.
@@ -711,8 +802,9 @@ public class Wireframe3D implements SimpleGeoObj, PersistentObject {
 				}
 			}
 			if (index == 0) {
-				throw new IllegalStateException(Db3dSimpleResourceBundle
-						.getString("db3d.geom.noplanedef"));
+				throw new IllegalStateException(
+						Db3dSimpleResourceBundle
+								.getString("db3d.geom.noplanedef"));
 			}
 
 			Plane3D plane = new Plane3D(points[0], points[1], points[index],
@@ -725,8 +817,9 @@ public class Wireframe3D implements SimpleGeoObj, PersistentObject {
 		case 3: // already highest dimension
 			break;
 		default:
-			throw new IllegalStateException(Db3dSimpleResourceBundle
-					.getString("db3d.geom.wrongdimofwirefr"));
+			throw new IllegalStateException(
+					Db3dSimpleResourceBundle
+							.getString("db3d.geom.wrongdimofwirefr"));
 		}
 	}
 
