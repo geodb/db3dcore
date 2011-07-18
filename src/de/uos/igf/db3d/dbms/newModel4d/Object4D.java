@@ -20,11 +20,9 @@ import de.uos.igf.db3d.dbms.geom.ScalarOperator;
  * to add the geometry informations for the last added timestep. This procedure
  * must be done for every timestep with a changing net topology.
  * 
- * @author Paul Vincent Kuper (pkuper@uni-osnabrueck.de)
+ * @author Paul Vincent Kuper (kuper@kit.edu)
  */
 public class Object4D {
-
-	private TriangleNet4D triangleNet4D;
 
 	// The pointTubes of this 4D Object
 	// <ID, <Zeitschritt, Point3D>>
@@ -36,10 +34,6 @@ public class Object4D {
 	// every SpatialObject4D object has its own timeinterval
 	private List<SpatialObject4D> geometry;
 
-	// TODO: Von Date auf das DB4GeO Format umstellen --> Java.util.Date nicht
-	// flexibel genug. Update: Wahrscheinlich ist es doch besser als
-	// SpaceTimeDefinition!
-
 	// List of timesteps with their effective date
 	private LinkedList<Date> timesteps;
 
@@ -49,12 +43,11 @@ public class Object4D {
 	 * Constructor
 	 * 
 	 */
-	public Object4D(TriangleNet4D triangleNet4D2) {
+	public Object4D() {
 		super();
 		pointTubes = new HashMap<Integer, Map<Integer, Point3D>>();
 		timesteps = new LinkedList<Date>();
 		sop = new ScalarOperator();
-		triangleNet4D = triangleNet4D2;
 	}
 
 	/**
@@ -395,11 +388,8 @@ public class Object4D {
 		}
 	}
 
-	private long Double(long l) {
-		// TODO Auto-generated method stub
-		return 0;
-	}
-
+	// Getter methods
+	
 	public Map<Integer, Map<Integer, Point3D>> getPointTubes() {
 		return pointTubes;
 	}

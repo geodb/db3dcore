@@ -6,25 +6,26 @@ import java.util.Map;
 import de.uos.igf.db3d.dbms.geom.ScalarOperator;
 
 /**
- * SpatialObject4D is the abstract superclass of all geometric objects in 4D.
- * It represents the geometric part of an Object4D for one Interval ([Post,Pre])
+ * SpatialObject4D is the abstract superclass of all geometric objects in 4D. It
+ * represents the geometric part of an Object4D for one Interval ([Post,Pre])
  */
 public class SpatialObject4D {
 
-	// back reference to Object4D 
+	// back reference to Object4D
 	private Object4D object;
-	
-	// Geometry information for all kind of simplices and their components (componentID = key)
+
+	// Geometry information for all kind of simplices and their components
+	// (componentID = key)
 	// TODO Netze zu Components!
 	// TODO TreeMap nehmen!
 	private Map<Integer, TetrahedronNet4D> tetrahedronNets;
 	private Map<Integer, TriangleNet4D> triangleNets;
 	private Map<Integer, SegmentNet4D> segmentNets;
-	
+
 	// TODO: do we need components for points?
 	private Map<Integer, Point4D> points;
-	
-    // ScalarOperator
+
+	// ScalarOperator
 	private ScalarOperator sop;
 
 	/**
@@ -68,12 +69,8 @@ public class SpatialObject4D {
 		this.object = object;
 	}
 
-	/**
-	 * Sets the ScalarOperator of this.
-	 * 
-	 * @param sop
-	 *            ScalarOperator
-	 */
+	// Getter and Setter methods
+
 	public void setScalarOperator(ScalarOperator sop) {
 		this.sop = sop;
 	}
@@ -82,7 +79,8 @@ public class SpatialObject4D {
 		return tetrahedronNets;
 	}
 
-	public void setTetrahedronNets(Map<Integer, TetrahedronNet4D> tetrahedronNets) {
+	public void setTetrahedronNets(
+			Map<Integer, TetrahedronNet4D> tetrahedronNets) {
 		this.tetrahedronNets = tetrahedronNets;
 	}
 

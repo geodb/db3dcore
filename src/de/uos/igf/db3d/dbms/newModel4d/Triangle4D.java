@@ -1,6 +1,10 @@
 package de.uos.igf.db3d.dbms.newModel4d;
 
-
+/**
+ * This class represents a 4D Triangle object. 
+ * 
+ * @author Paul Vincent Kuper (kuper@kit.edu)
+ */
 public class Triangle4D {	
 
 

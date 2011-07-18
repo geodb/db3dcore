@@ -27,6 +27,7 @@ public class ServicesFor4DObjects {
 	 *            - the effective date for the object3D which will be created
 	 * @return the Object3D object which represents the Object4D at the
 	 *         specified date
+	 * @author Paul Vincent Kuper (kuper@kit.edu)
 	 */
 	public Object3D getInstanceAt(Object4D object, Date date) {
 

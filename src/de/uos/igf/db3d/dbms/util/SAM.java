@@ -17,7 +17,7 @@ import de.uos.igf.db3d.dbms.structure.GeoObj;
  * system have to implement this interface and all of its methods. All
  * implementations must be Serializable !
  * 
- * @author Wolfgang B�r / University of Osnabrueck
+ * @author Wolfgang Baer / University of Osnabrueck
  */
 public interface SAM extends Serializable {
 
