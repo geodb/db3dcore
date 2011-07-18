@@ -24,6 +24,7 @@ public class Point3D implements PersistentObject, SimpleGeoObj, Equivalentable,
 	private double x;
 	private double y;
 	private double z;
+//      private String[] str;
 
 	/**
 	 * Default constructor. Constructs a Point3D object with x,y,z = 0.0
