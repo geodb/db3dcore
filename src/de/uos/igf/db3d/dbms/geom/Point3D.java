@@ -8,9 +8,13 @@ import java.io.Externalizable;
 import java.io.IOException;
 import java.io.ObjectInput;
 import java.io.ObjectOutput;
+import java.util.Arrays;
+import java.util.List;
+import java.util.logging.Level;
 
 import de.uos.igf.db3d.dbms.api.Db3dSimpleResourceBundle;
 import de.uos.igf.db3d.dbms.structure.PersistentObject;
+import de.uos.igf.db3d.resources.DB3DLogger;
 
 /**
  * Point3D is the geometric representation of a point in the 3rd dimension.
@@ -24,8 +28,249 @@ public class Point3D implements PersistentObject, SimpleGeoObj, Equivalentable,
 	private double x;
 	private double y;
 	private double z;
-//      private String[] str;
+	private String[][] attributes;
 
+	private String attributesToString() {
+		String attrString = "";
+		if (this.attributes != null) {
+			if (this.attributes.length != 0) {
+				for (int i = 0; i < this.attributes.length; i++) {
+					attrString = attrString + this.attributes[i][0] + ":"
+							+ this.attributes[i][1] + ", ";
+				}
+				int lastIndex = attrString.lastIndexOf(", ");
+				attrString = attrString.substring(0, lastIndex);
+			} else {
+				attrString = "Attributes initialized with count 0, i.e. no names and values provided!";
+			}
+		} else {
+			attrString = "No attributes initialized!";
+		}
+		return attrString;
+	}
+	
+	/**
+	 * Initializer for attributes and their values. Initializes and sets the attributes of a Point3D object with
+	 * given values.
+	 * 
+	 */
+	private void AttributeInitializer(int numOfAttributes, String[][] attributesArray){
+		if (numOfAttributes >= attributesArray.length){
+			initNumOfAttributes(numOfAttributes);
+			initAttributes(attributesArray);
+		}
+		else {
+			DB3DLogger.logger.log(
+					Level.FINER, "Info Warning: Too much attributes provided for initialized number of attributes.");
+		}
+	}
+		
+	private void initNumOfAttributes(int numOfAttributes) {
+		this.attributes = new String[numOfAttributes][2];
+	}
+	
+	private void initAttributes(String[][] attributesArray){
+		
+		for (int i = 0; i < attributesArray.length; i++){
+			
+			try {
+				this.attributes[i][0] = attributesArray[i][0].toLowerCase();
+				this.attributes[i][1] = attributesArray[i][1].toLowerCase();
+			} catch (Exception e) {
+				// TODO Auto-generated catch block
+//				e.printStackTrace();
+			}
+		}
+		
+	}
+	
+	public String getAttributeValue(String attributeName) {
+		if (this.attributes != null) {
+			for (int i = 0; i < this.attributes.length; i++) {
+				if (attributeName.toLowerCase().equals(this.attributes[i][0])) {
+					return this.attributes[i][1];
+				}				
+			}
+			DB3DLogger.logger.log(Level.FINER,
+					"Info Warning: No attribute named " + attributeName.toLowerCase()
+					+ " found. Returned null!");
+			return null;
+		} else {
+			DB3DLogger.logger
+			.log(Level.FINER,
+					"Info Warning: No attributes initialized. Returned null!!!");
+			return null;
+		}
+	}
+
+	public void setAttribute(String attributeName, String attributeValue){
+		if (this.attributes != null) {
+
+			int indexOfNull = -2;
+			for (int i = 0; i < this.attributes.length; i++){
+				if (this.attributes[i][0] == null) {
+					indexOfNull = i;
+					break;
+				} else if (this.attributes[i][0].equals(attributeName.toLowerCase())) {
+					indexOfNull = -1;
+					break;
+				}
+			}
+			switch (indexOfNull) {
+			case -1:
+				DB3DLogger.logger.log(Level.FINER,
+				"Info Warning: Attribute already exists.");
+			case -2:
+				DB3DLogger.logger.log(Level.FINER,
+				"Info Warning: All attribute names are set.");
+			default:
+				this.attributes[indexOfNull][0] = attributeName.toLowerCase();
+				this.attributes[indexOfNull][1] = attributeValue.toLowerCase();
+			}
+
+		} else {
+			DB3DLogger.logger.log(Level.FINER,
+			"Info Warning: No attributes initialized.");
+		}
+	}
+	
+	private void initAttributeNames(String[] names) {
+		if (names.length == this.attributes.length) {
+			for (int i = 0; i < names.length; i++) {
+				this.attributes[i][0] = names[i];
+			}
+		} else if (names.length > this.attributes.length) {
+			System.out.println("Too much names provided for given count");
+		} else if (names.length < this.attributes.length) {
+			System.out.println("Too view names provided for given count");
+		}
+
+	}
+	
+	/*public String[][] getAttributes(){
+		return this.attributes;
+	}*/
+	
+	
+	/*private void initAttributeValues(String[] values) {
+	if (values.length == this.attributes.length) {
+		for (int i = 0; i < values.length; i++) {
+			this.attributes[i][1] = values[i];
+		}
+	} else if (values.length > this.attributes.length) {
+		System.out.println("Too much values provided for given count");
+	} else if (values.length < this.attributes.length) {
+		System.out.println("Too view values provided for given count");
+	}
+
+	}*/
+	
+	/*private void updateAttribute(int updateID, String oldString, String newString){
+		Boolean nameTest = false;
+		for (int i = 0; i < this.attributes.length; i++) {
+			if (oldString.toLowerCase().equals(this.attributes[i][0])) {
+				nameTest = true;
+				this.attributes[i][updateID] = newString.toLowerCase();
+			}
+		}
+		if (!nameTest) {
+			DB3DLogger.logger.log(
+					Level.FINER, "Info Warning: Searched attribute does not exist!");
+		}
+	}*/
+	
+	/*public void updateAttributeValue(String name, String newValue) {
+		if (this.attributes != null) {
+			updateAttribute(1, name, newValue);
+		} else {
+			DB3DLogger.logger.log(Level.FINER,
+					"Info Warning: No attribute named " + name + "!");
+		}
+	}*/
+
+	/*public void updateAttributeName(String oldName, String newName) {
+		if (this.attributes != null) {
+			updateAttribute(0, oldName, newName);
+		} else {
+			DB3DLogger.logger.log(Level.FINER,
+					"Info Warning: No attribute named " + oldName + "!");
+		}
+	}*/
+
+	
+	
+	/**
+	 * Constructor for double coordinates and attributes. Constructs a Point3D object with
+	 * given x, y, z coordinates and the provided attributes and their values.
+	 *
+	 ** @param x
+	 *            double value of x axis
+	 * @param y
+	 *            double value of y axis
+	 * @param z
+	 *            double value of z axis
+	 */
+	public Point3D(double x, double y, double z, int numOfAttributes, String[][] attributesArray){
+		this(x, y, z);
+		if (numOfAttributes > 0){
+			AttributeInitializer(numOfAttributes, attributesArray);		
+		}
+	}
+	/**
+	 * Constructor for double coordinates and attributes. <br>
+	 * Constructs a Point3D object with given x, y, z coordinates and he provided attributes and their values.
+	 * 
+	 * @param coords
+	 *            double array with values x,y,z axis
+	 */
+	public Point3D(double[] coords, int numOfAttributes, String[][] attributesArray) {
+		this(coords[0], coords[1], coords[2]);
+		
+		if (numOfAttributes > 0){
+			AttributeInitializer(numOfAttributes, attributesArray);
+		}
+		
+	}
+	
+	/**
+	 * Constructor for double coordinates and initializing the number of attributes. Constructs a Point3D object with
+	 * given x, y, z coordinates and initializes a two-dimensional String array for the attributes.
+	 *
+	 ** @param x
+	 *            double value of x axis
+	 * @param y
+	 *            double value of y axis
+	 * @param z
+	 *            double value of z axis
+	 */
+	public Point3D(double x, double y, double z, int numOfAttributes){
+		this(x, y, z);
+		
+		if (numOfAttributes > 0){
+			initNumOfAttributes(numOfAttributes);
+		}
+	}
+	
+	/**
+	 * Constructor for double coordinates and initializing the number of attributes. Constructs a Point3D object with
+	 * given x, y, z coordinates and initializes a two-dimensional String array for the attributes.
+	 *
+	 ** @param x
+	 *            double value of x axis
+	 * @param y
+	 *            double value of y axis
+	 * @param z
+	 *            double value of z axis
+	 */
+	public Point3D(double[] coords, int numOfAttributes){
+		this(coords[0], coords[1], coords[2]);
+		
+		if (numOfAttributes > 0){
+			initNumOfAttributes(numOfAttributes);
+		}
+	}
+	
+		
 	/**
 	 * Default constructor. Constructs a Point3D object with x,y,z = 0.0
 	 */
@@ -556,14 +801,14 @@ public class Point3D implements PersistentObject, SimpleGeoObj, Equivalentable,
 		out.writeDouble(getZ());
 	}
 
-	@Override
-	/**
-	 * Converts this to string.
-	 * @return String with the information of this.
-	 */
-	public String toString() {
-		return "Point3D [x=" + x + ", y=" + y + ", z=" + z + "]";
-	}
+//	@Override
+//	/**
+//	 * Converts this to string.
+//	 * @return String with the information of this.
+//	 */
+//	public String toString() {
+//		return "Point3D [x=" + x + ", y=" + y + ", z=" + z + "]";
+//	}
 
 	@Override
 	public int hashCode() {
@@ -602,5 +847,11 @@ public class Point3D implements PersistentObject, SimpleGeoObj, Equivalentable,
 				return false;
 		}
 		return true;
+	}
+
+	@Override
+	public String toString() {
+		return "Point3D [x=" + x + ", y=" + y + ", z=" + z + ", attributes= "
+				+ attributesToString() + "]";
 	}
 }
