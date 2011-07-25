@@ -234,10 +234,14 @@ public class Point3D implements PersistentObject, SimpleGeoObj, Equivalentable,
 	 */
 	public Point3D(double x, double y, double z, int numOfAttributes,
 			String[][] attributesArray) {
-		this(x, y, z);
-		if (numOfAttributes > 0) {
-			AttributeInitializer(numOfAttributes, attributesArray);
-		}
+		
+			this.x = x;
+			this.y = y;
+			this.z = z;
+			if (numOfAttributes > 0) {
+				AttributeInitializer(numOfAttributes, attributesArray);
+			}
+		
 	}
 
 	/**
