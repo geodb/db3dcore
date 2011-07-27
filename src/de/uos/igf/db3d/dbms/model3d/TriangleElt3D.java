@@ -330,7 +330,7 @@ public class TriangleElt3D extends Triangle3D implements NetElement3D {
 	 * 
 	 * @return TriangleNet3D - enclosing net.
 	 */
-	public TriangleNet3D getNet() {
+	TriangleNet3D getNet() {
 		return comp.getNet();
 	}
 
