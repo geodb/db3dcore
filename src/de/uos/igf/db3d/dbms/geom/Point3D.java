@@ -236,7 +236,7 @@ public class Point3D implements PersistentObject, SimpleGeoObj, Equivalentable,
 			String[][] attributesArray) {
 		if (attributesArray.length > numOfAttributes)
 			DB3DLogger.logger.log(Level.WARNING,
-					"Info Warning: To many attributes!");
+					"Info Warning: Too many attributes!");
 
 		this.x = x;
 		this.y = y;
@@ -258,7 +258,14 @@ public class Point3D implements PersistentObject, SimpleGeoObj, Equivalentable,
 	 */
 	public Point3D(double[] coords, int numOfAttributes,
 			String[][] attributesArray) {
-		this(coords[0], coords[1], coords[2]);
+		
+		if (attributesArray.length > numOfAttributes)
+			DB3DLogger.logger.log(Level.WARNING,
+					"Info Warning: Too many attributes!");
+		
+		this.x = coords[0];
+		this.y = coords[1];
+		this.z = coords[2];
 
 		if (numOfAttributes > 0) {
 			AttributeInitializer(numOfAttributes, attributesArray);
