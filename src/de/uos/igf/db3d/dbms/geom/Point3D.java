@@ -234,14 +234,17 @@ public class Point3D implements PersistentObject, SimpleGeoObj, Equivalentable,
 	 */
 	public Point3D(double x, double y, double z, int numOfAttributes,
 			String[][] attributesArray) {
-		
-			this.x = x;
-			this.y = y;
-			this.z = z;
-			if (numOfAttributes > 0) {
-				AttributeInitializer(numOfAttributes, attributesArray);
-			}
-		
+		if (attributesArray.length > numOfAttributes)
+			DB3DLogger.logger.log(Level.WARNING,
+					"Info Warning: To many attributes!");
+
+		this.x = x;
+		this.y = y;
+		this.z = z;
+		if (numOfAttributes > 0) {
+			AttributeInitializer(numOfAttributes, attributesArray);
+		}
+
 	}
 
 	/**
