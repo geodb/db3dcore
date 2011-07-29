@@ -38,7 +38,6 @@ public class Point3DTestCase extends TestCase {
 	public final static Point3D P8 = new Point3D(-0.5, -1, -1.6);
 	public final static Point3D P9 = new Point3D(2.0, 4.0, 3.0, 1);
 	public final static String[][] attributesArray = {{"eins","1"},{"zwei","2"},{"drei","3"}};
-	public final static Point3D P10 = new Point3D(-1.3, 3.6, -4.8, 2, attributesArray);
 	public final static Point3D P11 = new Point3D(3.3, 7.1, 2.6, 3, attributesArray);
 	public final static Point3D P12 = new Point3D(-4.1, -1.3, -3.6, 4, attributesArray);
 	public final static Point3D P13 = new Point3D(1, -2.3, 3.9, 2);
@@ -167,11 +166,13 @@ public class Point3DTestCase extends TestCase {
 	
 	public void testSetAttribute() {
 		
-		assertTrue(P9.setAttribute("Grauwert", "128")); 			// test inserting attribute in initialized Point3D object
-		assertFalse(P9.setAttribute("GrAuWerT", "128"));			// test inserting attribute that already exists and test for non-case sensitive
-		assertFalse(P9.setAttribute("RGB-Wert", "128,240,23"));		// test inserting attribute in full full attributes array
-		assertFalse(P8.setAttribute("Grauwert", "128"));			// test inserting attribute in Point3D object without attributes initialized
-				
+		assertTrue(P9.setAttribute("Grauwert", "128")); 				// test inserting attribute in initialized Point3D object
+		assertFalse(P9.setAttribute("GrAuWerT", "128"));				// test inserting attribute that already exists and test for non-case sensitive
+		assertFalse(P9.setAttribute("RGB-Wert", "128,240,23"));			// test inserting attribute in full attributes array
+		assertFalse(P8.setAttribute("Grauwert", "128"));				// test inserting attribute in Point3D object without attributes initialized
+		assertTrue(P13.setAttribute("TestAttribut1", "TestWert1"));		// test inserting attribute in Point3D until array is full
+		assertTrue(P13.setAttribute("TestAttribut2", "TestWert2"));		// test inserting attribute in Point3D until array is full
+		assertFalse(P13.setAttribute("TestAttribut3", "TestWert3"));	// test inserting attribute in Point3D until array is full
 		}
 	
 	public void testGetAttributeValue(){
@@ -187,12 +188,13 @@ public class Point3DTestCase extends TestCase {
 	
 	public void testAttributesConstructor(){
 		
-		assertFalse(P10.setAttribute("Testwert", "wert"));			// test inserting attribute in not initialized attributes because of too many attributes
-		assertFalse(P11.setAttribute("Testwert", "wert"));			// test inserting attribute in full attributes array, filled by constructor
-		assertTrue(P12.setAttribute("Testwert", "wert"));			// test inserting attribute in attributes array, one free space in array 
+//		assertFalse(P10.setAttribute("Testwert", "wert"));				// test inserting attribute in not initialized attributes because of too many attributes
+		assertEquals(new Point3D(-1.3, 3.6, -4.8),new Point3D(-1.3, 3.6, -4.8, 2, attributesArray));	// test 
+		assertFalse(P11.setAttribute("Testwert", "wert"));				// test inserting attribute in full attributes array, filled by constructor
+		assertTrue(P12.setAttribute("Testwert", "wert"));				// test inserting attribute in attributes array, one free space in array 
 		
 		assertEquals(P11.toString(), "Point3D [x=3.3, y=7.1, z=2.6, attributes= eins:1, zwei:2, drei:3]");
-																	// test toString-method
+																		// test toString-method
 		
 	}
 	
