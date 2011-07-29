@@ -5,10 +5,13 @@
 package de.uos.igf.db3d.dbms.model3d;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 
+import de.uos.igf.db3d.dbms.geom.Point3D;
 import de.uos.igf.db3d.dbms.geom.ScalarOperator;
 import de.uos.igf.db3d.dbms.structure.Space3D;
+import de.uos.igf.db3d.dbms.util.TriangleServices;
 
 /**
  * TriangleNetBuilder is designed for constructing TriangleNet3D objects.<br>
@@ -197,6 +200,20 @@ public class TriangleNetBuilder {
 
 		// set element id
 		net.setElementID(counter);
+		
+//		// remove redundant points of this net
+//		TriangleServices service = new TriangleServices();
+//		service.initForPointClouds(net);
+//		
+//		HashMap<Integer, Point3D> points = service.getPoints();
+//		HashMap<Integer, int[]> triangles = service.getTriangles();
+//		
+//		for(int i = 0; i < net.countElements(); i++) {
+//				TriangleElt3D triangle = (TriangleElt3D) net.getElement(i);
+//				Point3D [] triPoints = triangle.getPoints();
+//				
+//		}
+		
 		return net;
 	}
 
