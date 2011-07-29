@@ -140,7 +140,7 @@ public class TriangleElt3D extends Triangle3D implements NetElement3D {
 	 *             class Vector3D.
 	 */
 	public TriangleElt3D(Triangle3D triangle) {
-		super(triangle);
+		super(triangle.getPoint(0),triangle.getPoint(1),triangle.getPoint(2), null);
 		this.eltZero = null;
 		this.eltOne = null;
 		this.eltTwo = null;
