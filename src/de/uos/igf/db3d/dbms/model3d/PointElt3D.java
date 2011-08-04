@@ -67,6 +67,23 @@ public class PointElt3D extends Point3D implements NetElement3D {
 	public PointElt3D(Point3D point) {
 		super(point);
 	}
+	
+	/**
+	 * Constructor for double coordinates and initializing the number of
+	 * attributes. Constructs a Point3DElt object with given x, y, z coordinates
+	 * and initializes a two-dimensional String array for the attributes.
+	 * 
+	 ** @param x
+	 *            double value of x axis
+	 * @param y
+	 *            double value of y axis
+	 * @param z
+	 *            double value of z axis
+	 */
+	public PointElt3D(double x, double y,
+			double z, int numberOfAttributes) {
+		super(x, y, z, numberOfAttributes);
+	}
 
 	/**
 	 * Returns the identifier of this.
