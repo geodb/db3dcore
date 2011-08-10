@@ -4,6 +4,8 @@
 
 package de.uos.igf.db3d.junittests.dbms.geom;
 
+import java.util.Arrays;
+
 import junit.framework.TestCase;
 import de.uos.igf.db3d.dbms.geom.Line3D;
 import de.uos.igf.db3d.dbms.geom.Plane3D;
@@ -34,6 +36,11 @@ public class Point3DTestCase extends TestCase {
 	public final static Point3D P6 = new Point3D(-14.3, 5, 1);
 	public final static Point3D P7 = new Point3D(0.345, 0.345, 0.345);
 	public final static Point3D P8 = new Point3D(-0.5, -1, -1.6);
+	public final static Point3D P9 = new Point3D(2.0, 4.0, 3.0, 1);
+	public final static String[][] attributesArray = {{"eins","1"},{"zwei","2"},{"drei","3"}};
+	public final static Point3D P11 = new Point3D(3.3, 7.1, 2.6, 3, attributesArray);
+	public final static Point3D P12 = new Point3D(-4.1, -1.3, -3.6, 4, attributesArray);
+	public final static Point3D P13 = new Point3D(1, -2.3, 3.9, 2);
 
 	ScalarOperator scalarOp = new ScalarOperator(TestConstants.EPSILON);
 	Line3D LINE1;
@@ -47,7 +54,7 @@ public class Point3DTestCase extends TestCase {
 		PLANE1 = new Plane3D(P2, P3, new Point3D(0, -1, 5), scalarOp);
 		PLANE2 = new Plane3D(new Point3D(1, 1, 1), new Point3D(-2.24, -3, 1),
 				new Point3D(5.1, 2.78, 1), scalarOp);
-		SEG1 = new Segment3D(P, P1, scalarOp);
+		SEG1 = new Segment3D(P, P1, scalarOp);		
 	}
 
 	public void testIntersectsPlane3D() {
@@ -156,7 +163,41 @@ public class Point3DTestCase extends TestCase {
 		assertTrue(point4.isEqual(point5, scalarOp));
 		assertEquals(point4.isEqualHC(10000), point5.isEqualHC(10000));
 	}
-
+	
+	public void testSetAttribute() {
+		
+		assertTrue(P9.setAttribute("Grauwert", "128")); 				// test inserting attribute in initialized Point3D object
+		assertFalse(P9.setAttribute("GrAuWerT", "128"));				// test inserting attribute that already exists and test for non-case sensitive
+		assertFalse(P9.setAttribute("RGB-Wert", "128,240,23"));			// test inserting attribute in full attributes array
+		assertFalse(P8.setAttribute("Grauwert", "128"));				// test inserting attribute in Point3D object without attributes initialized
+		assertTrue(P13.setAttribute("TestAttribut1", "TestWert1"));		// test inserting attribute in Point3D until array is full
+		assertTrue(P13.setAttribute("TestAttribut2", "TestWert2"));		// test inserting attribute in Point3D until array is full
+		assertFalse(P13.setAttribute("TestAttribut3", "TestWert3"));	// test inserting attribute in Point3D until array is full
+		}
+	
+	public void testGetAttributeValue(){
+		
+		assertEquals(P9.getAttributeValue("grauwert"), "128");		// test if right value is returned
+		assertEquals(P9.getAttributeValue("GRauWeRt"), "128");		// test for non-case sensitive
+		assertNull(P9.getAttributeValue("Farbwert"));				// test for non existing attribute name
+		assertNull(P8.getAttributeValue("grauwert"));				// test for not initialized attributes
+		
+		assertTrue(Arrays.deepEquals(P11.getAttributes(), attributesArray));			// test for getAttributes()
+		
+	}
+	
+	public void testAttributesConstructor(){
+		
+//		assertFalse(P10.setAttribute("Testwert", "wert"));				// test inserting attribute in not initialized attributes because of too many attributes
+		assertEquals(new Point3D(-1.3, 3.6, -4.8),new Point3D(-1.3, 3.6, -4.8, 2, attributesArray));	// test 
+		assertFalse(P11.setAttribute("Testwert", "wert"));				// test inserting attribute in full attributes array, filled by constructor
+		assertTrue(P12.setAttribute("Testwert", "wert"));				// test inserting attribute in attributes array, one free space in array 
+		
+		assertEquals(P11.toString(), "Point3D [x=3.3, y=7.1, z=2.6, attributes= eins:1, zwei:2, drei:3]");
+																		// test toString-method
+		
+	}
+	
 	public void tearDown() throws Exception {
 	}
 

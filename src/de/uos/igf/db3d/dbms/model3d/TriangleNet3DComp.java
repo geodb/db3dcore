@@ -11,10 +11,12 @@ import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.io.ObjectStreamField;
 import java.io.Serializable;
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
-import java.util.Locale;
-import java.util.ResourceBundle;
+import java.util.List;
+import java.util.Map;
 import java.util.Set;
 import java.util.Stack;
 import java.util.logging.Level;
@@ -33,13 +35,14 @@ import de.uos.igf.db3d.dbms.geom.Segment3D;
 import de.uos.igf.db3d.dbms.geom.SimpleGeoObj;
 import de.uos.igf.db3d.dbms.geom.Triangle3D;
 import de.uos.igf.db3d.dbms.structure.PersistentObject;
+import de.uos.igf.db3d.dbms.util.EquivalentableHashMap;
 import de.uos.igf.db3d.dbms.util.EquivalentableHashSet;
 import de.uos.igf.db3d.dbms.util.FlagMap;
 import de.uos.igf.db3d.dbms.util.IdentityHashSet;
 import de.uos.igf.db3d.dbms.util.RStar;
 import de.uos.igf.db3d.dbms.util.SAM;
+import de.uos.igf.db3d.dbms.util.SAM.NNResult;
 import de.uos.igf.db3d.resources.DB3DLogger;
-import de.uos.igf.db3d.resources.i18n.DB3DLang;
 
 /**
  * TriangleNet3DComp represents a single triangle net component. All
@@ -140,42 +143,37 @@ public class TriangleNet3DComp implements PersistentObject, ComplexGeoObj,
 		// for( int i=1; i < elements.length; i++) {
 		// XXMBB = XXMBB.union(elements[i].getMBB(), sop);
 		// }
-		//		
+		//
 		// this.sam = new Octree((short)10, XXMBB, sop);
-		DB3DLogger.logger.log(
-				Level.FINEST, "Insert data into SAM");
+		DB3DLogger.logger.log(Level.FINEST, "Insert data into SAM");
 		double time = System.currentTimeMillis();
 		loadSAM(elements);
-		DB3DLogger.logger.log(
-				Level.FINEST, "took " + (System.currentTimeMillis() - time));
-		 time = System.currentTimeMillis();
+		DB3DLogger.logger.log(Level.FINEST,
+				"took " + (System.currentTimeMillis() - time));
+		time = System.currentTimeMillis();
 		// Here an IllegalArgumentException can be thrown.
 		this.mbb = sam.getMBB();
 		// Here an IllegalArgumentException can be thrown.
-		DB3DLogger.logger.log(
-				Level.FINEST, "Build Topology");
+		DB3DLogger.logger.log(Level.FINEST, "Build Topology");
 		this.buildNetTopology(elements);
-		DB3DLogger.logger.log(
-				Level.FINEST, "took " + (System.currentTimeMillis() - time));
-		 time = System.currentTimeMillis();
+		DB3DLogger.logger.log(Level.FINEST,
+				"took " + (System.currentTimeMillis() - time));
+		time = System.currentTimeMillis();
 		this.connected = true;
-		DB3DLogger.logger.log(
-				Level.FINEST, "Update Entry element");
+		DB3DLogger.logger.log(Level.FINEST, "Update Entry element");
 		updateEntryElement();
-		DB3DLogger.logger.log(
-				Level.FINEST, "took " + (System.currentTimeMillis() - time));
+		DB3DLogger.logger.log(Level.FINEST,
+				"took " + (System.currentTimeMillis() - time));
 		time = System.currentTimeMillis();
-		DB3DLogger.logger.log(
-				Level.FINEST, "Update Euler statistics");
+		DB3DLogger.logger.log(Level.FINEST, "Update Euler statistics");
 		updateEulerStatistics();
-		DB3DLogger.logger.log(
-				Level.FINEST, "took " + (System.currentTimeMillis() - time));
+		DB3DLogger.logger.log(Level.FINEST,
+				"took " + (System.currentTimeMillis() - time));
 		time = System.currentTimeMillis();
-		DB3DLogger.logger.log(
-				Level.FINEST, "Make orientation consistent");
+		DB3DLogger.logger.log(Level.FINEST, "Make orientation consistent");
 		this.makeOrientationConsistent(sop);
-		DB3DLogger.logger.log(
-				Level.FINEST, "took " + (System.currentTimeMillis() - time));
+		DB3DLogger.logger.log(Level.FINEST,
+				"took " + (System.currentTimeMillis() - time));
 	}
 
 	/**
@@ -237,8 +235,8 @@ public class TriangleNet3DComp implements PersistentObject, ComplexGeoObj,
 
 		while (it.hasNext()) { // test for intersections
 			TriangleElt3D triElt = (TriangleElt3D) it.next();
-			SimpleGeoObj sgo = element.intersection(triElt, this
-					.getScalarOperator());
+			SimpleGeoObj sgo = element.intersection(triElt,
+					this.getScalarOperator());
 			// Here an IllegalStateException can be thrown signaling problems
 			// with the dimensions of the wireframe.
 
@@ -259,11 +257,11 @@ public class TriangleNet3DComp implements PersistentObject, ComplexGeoObj,
 					break;
 				case SimpleGeoObj.SEGMENT3D:
 					Segment3D seg = (Segment3D) sgo;
-					int index0 = element.getSegmentIndex(seg, this
-							.getScalarOperator());
+					int index0 = element.getSegmentIndex(seg,
+							this.getScalarOperator());
 					if (index0 != -1) {
-						int index1 = triElt.getSegmentIndex(seg, this
-								.getScalarOperator());
+						int index1 = triElt.getSegmentIndex(seg,
+								this.getScalarOperator());
 						if (index1 != -1) {
 							hns[neighbourCounter] = new SpatialObject3D.HoldNeighbourStructure(
 									element, index0, triElt, index1);
@@ -285,10 +283,12 @@ public class TriangleNet3DComp implements PersistentObject, ComplexGeoObj,
 		if (neighbourCounter > 0) {
 			for (int i = 0; i < neighbourCounter; i++) {
 				// set neighborly relations
-				((TriangleElt3D) hns[i].getObject(0)).setNeighbour(hns[i]
-						.getIndex(0), ((TriangleElt3D) hns[i].getObject(1)));
-				((TriangleElt3D) hns[i].getObject(1)).setNeighbour(hns[i]
-						.getIndex(1), ((TriangleElt3D) hns[i].getObject(0)));
+				((TriangleElt3D) hns[i].getObject(0)).setNeighbour(
+						hns[i].getIndex(0),
+						((TriangleElt3D) hns[i].getObject(1)));
+				((TriangleElt3D) hns[i].getObject(1)).setNeighbour(
+						hns[i].getIndex(1),
+						((TriangleElt3D) hns[i].getObject(0)));
 			}
 			// add element to SAM
 			this.getSAM().insert(element);
@@ -336,16 +336,16 @@ public class TriangleNet3DComp implements PersistentObject, ComplexGeoObj,
 
 				switch (neighbour.length) {
 				case 1: // only one neighbour -> smooth removal
-					neighbour[0].setNeighbourNull(removable, this
-							.getScalarOperator());
+					neighbour[0].setNeighbourNull(removable,
+							this.getScalarOperator());
 					break;
 
 				case 2:
 					// set new (potential) neighbourhood first
-					int index0 = neighbour[0].setNeighbourNull(removable, this
-							.getScalarOperator());
-					int index1 = neighbour[1].setNeighbourNull(removable, this
-							.getScalarOperator());
+					int index0 = neighbour[0].setNeighbourNull(removable,
+							this.getScalarOperator());
+					int index1 = neighbour[1].setNeighbourNull(removable,
+							this.getScalarOperator());
 					// check if net will still be connected
 
 					if (!isConnectedWith(neighbour[0], neighbour[1])) {
@@ -358,12 +358,12 @@ public class TriangleNet3DComp implements PersistentObject, ComplexGeoObj,
 
 				case 3:
 					// set new (potential) neighbourhood first
-					index0 = neighbour[0].setNeighbourNull(removable, this
-							.getScalarOperator());
-					index1 = neighbour[1].setNeighbourNull(removable, this
-							.getScalarOperator());
-					int index2 = neighbour[2].setNeighbourNull(removable, this
-							.getScalarOperator());
+					index0 = neighbour[0].setNeighbourNull(removable,
+							this.getScalarOperator());
+					index1 = neighbour[1].setNeighbourNull(removable,
+							this.getScalarOperator());
+					int index2 = neighbour[2].setNeighbourNull(removable,
+							this.getScalarOperator());
 					// check if net will still be connected
 					for (int i = 0; i < 2; i++) {
 						if (!isConnectedWith(neighbour[i], neighbour[(i + 1)])) {
@@ -377,8 +377,9 @@ public class TriangleNet3DComp implements PersistentObject, ComplexGeoObj,
 					break;
 
 				default:
-					throw new UpdateException(Db3dSimpleResourceBundle
-							.getString("db3d.model3d.intexc"));
+					throw new UpdateException(
+							Db3dSimpleResourceBundle
+									.getString("db3d.model3d.intexc"));
 				}
 				if (removable == this.getEntryElement()) {
 					this.setEntryElement(neighbour[0]);
@@ -446,12 +447,13 @@ public class TriangleNet3DComp implements PersistentObject, ComplexGeoObj,
 			break;
 
 		default:
-			throw new UpdateException(Db3dSimpleResourceBundle
-					.getString("db3d.model3d.intexc"));
+			throw new UpdateException(
+					Db3dSimpleResourceBundle.getString("db3d.model3d.intexc"));
 		}
 		if (removable == this.getEntryElement()) {
-			throw new UpdateException(Db3dSimpleResourceBundle
-					.getString("db3d.trianglenet.ohgod"));
+			throw new UpdateException(
+					Db3dSimpleResourceBundle
+							.getString("db3d.trianglenet.ohgod"));
 			// this.setEntryElement(neighbour[0]);
 		}
 
@@ -511,8 +513,9 @@ public class TriangleNet3DComp implements PersistentObject, ComplexGeoObj,
 		}
 
 		if (this.containsElt(elt))
-			throw new UpdateException(Db3dSimpleResourceBundle
-					.getString("db3d.trianglenet.duplicate"));
+			throw new UpdateException(
+					Db3dSimpleResourceBundle
+							.getString("db3d.trianglenet.duplicate"));
 		// throw new ContainmentException("Element already contained !");
 
 		// this.getSAM().insert(element);
@@ -527,8 +530,8 @@ public class TriangleNet3DComp implements PersistentObject, ComplexGeoObj,
 
 		while (it.hasNext()) { // test for intersections
 			TriangleElt3D triElt = (TriangleElt3D) it.next();
-			SimpleGeoObj sgo = element.intersection(triElt, this
-					.getScalarOperator());
+			SimpleGeoObj sgo = element.intersection(triElt,
+					this.getScalarOperator());
 			// Here an IllegalStateException can be thrown signaling problems
 			// with the dimensions of the wireframe.
 
@@ -547,11 +550,11 @@ public class TriangleNet3DComp implements PersistentObject, ComplexGeoObj,
 
 				case SimpleGeoObj.SEGMENT3D:
 					Segment3D seg = (Segment3D) sgo;
-					int index0 = element.getSegmentIndex(seg, this
-							.getScalarOperator());
+					int index0 = element.getSegmentIndex(seg,
+							this.getScalarOperator());
 					if (index0 != -1) {
-						int index1 = triElt.getSegmentIndex(seg, this
-								.getScalarOperator());
+						int index1 = triElt.getSegmentIndex(seg,
+								this.getScalarOperator());
 						if (index1 != -1 && neighbourCounter < 3) { // FIXME
 							// workaround
 							hns[neighbourCounter] = new SpatialObject3D.HoldNeighbourStructure(
@@ -573,10 +576,10 @@ public class TriangleNet3DComp implements PersistentObject, ComplexGeoObj,
 		// net
 		for (int i = 0; i < neighbourCounter; i++) {
 			// set neighborly relations
-			((TriangleElt3D) hns[i].getObject(0)).setNeighbour(hns[i]
-					.getIndex(0), ((TriangleElt3D) hns[i].getObject(1)));
-			((TriangleElt3D) hns[i].getObject(1)).setNeighbour(hns[i]
-					.getIndex(1), ((TriangleElt3D) hns[i].getObject(0)));
+			((TriangleElt3D) hns[i].getObject(0)).setNeighbour(
+					hns[i].getIndex(0), ((TriangleElt3D) hns[i].getObject(1)));
+			((TriangleElt3D) hns[i].getObject(1)).setNeighbour(
+					hns[i].getIndex(1), ((TriangleElt3D) hns[i].getObject(0)));
 		}
 		// add element to SAM
 		this.getSAM().insert(element);
@@ -911,7 +914,8 @@ public class TriangleNet3DComp implements PersistentObject, ComplexGeoObj,
 	 *             Triangle3D.
 	 */
 	public Set<Equivalentable> getPoints() { // Dag
-		return this.getPoints(this.getElementsViaRecursion());
+		Set points = this.getElementsViaSAM();
+		return this.getPoints(points);
 	}
 
 	/**
@@ -1423,8 +1427,8 @@ public class TriangleNet3DComp implements PersistentObject, ComplexGeoObj,
 		}
 		// check whether tri has no neighbour at edge seg -> is border edge
 		for (int i = 0; i < 3; i++)
-			if ((tri.getSegment(i).isGeometryEquivalent(seg, this
-					.getScalarOperator()))
+			if ((tri.getSegment(i).isGeometryEquivalent(seg,
+					this.getScalarOperator()))
 					&& (tri.getNeighbour(i) == null))
 				return true;
 
@@ -1649,9 +1653,7 @@ public class TriangleNet3DComp implements PersistentObject, ComplexGeoObj,
 												else
 													otind = 1;
 
-												oTE
-														.setNeighbour(otind,
-																elts[i]);
+												oTE.setNeighbour(otind, elts[i]);
 												it.remove();
 												break;
 											}
@@ -1815,9 +1817,7 @@ public class TriangleNet3DComp implements PersistentObject, ComplexGeoObj,
 													fl = FlagMap.F2;
 												}
 
-												oTE
-														.setNeighbour(otind,
-																elts[i]);
+												oTE.setNeighbour(otind, elts[i]);
 												flags.setFlag(oTE, fl);
 												query.remove(oTE);
 											}
@@ -1944,17 +1944,20 @@ public class TriangleNet3DComp implements PersistentObject, ComplexGeoObj,
 	 */
 	protected void updateEulerStatistics() {
 		Set<?> set = this.getSAM().getEntries();
-		// TODO: Check if it is okay to use normal HashSets instead of EquivalentableHashSets
-		
-//		Set<Point3D> vert = new EquivalentableHashSet((int) (set.size() * 1.5),
-//				getScalarOperator(), Equivalentable.GEOMETRY_EQUIVALENT);
-//		Set<Segment3D> edg = new EquivalentableHashSet(
-//				(int) (set.size() * 1.5), getScalarOperator(),
-//				Equivalentable.GEOMETRY_EQUIVALENT);
-		
+		// TODO: Check if it is okay to use normal HashSets instead of
+		// EquivalentableHashSets
+
+		// Set<Point3D> vert = new EquivalentableHashSet((int) (set.size() *
+		// 1.5),
+		// getScalarOperator(), Equivalentable.GEOMETRY_EQUIVALENT);
+		// Set<Segment3D> edg = new EquivalentableHashSet(
+		// (int) (set.size() * 1.5), getScalarOperator(),
+		// Equivalentable.GEOMETRY_EQUIVALENT);
+
 		// new:
-		// TODO: Adapt equal method of Point3D and Segment3D to fit GEOMETRY_EQUIVALENT pattern
-		HashSet<Point3D> vert = new HashSet<Point3D>();				
+		// TODO: Adapt equal method of Point3D and Segment3D to fit
+		// GEOMETRY_EQUIVALENT pattern
+		HashSet<Point3D> vert = new HashSet<Point3D>();
 		HashSet<Segment3D> edg = new HashSet<Segment3D>();
 
 		Iterator<?> it = set.iterator();
@@ -1964,12 +1967,13 @@ public class TriangleNet3DComp implements PersistentObject, ComplexGeoObj,
 		int size = set.size();
 		while (it.hasNext()) {
 			cnt++;
-			if(cnt%10000 == 0) { 
-				
-				DB3DLogger.logger.log(
-						Level.FINEST, "10.000 entries = " + (System.currentTimeMillis() - time) + "\n" +	
-						"Rest takes about: " + ((size - cnt)/ 10000 )*(System.currentTimeMillis() - time));
-				
+			if (cnt % 10000 == 0) {
+
+				DB3DLogger.logger.log(Level.FINEST, "10.000 entries = "
+						+ (System.currentTimeMillis() - time) + "\n"
+						+ "Rest takes about: " + ((size - cnt) / 10000)
+						* (System.currentTimeMillis() - time));
+
 				time = System.currentTimeMillis();
 			}
 			trielt = (TriangleElt3D) it.next();
@@ -2189,16 +2193,115 @@ public class TriangleNet3DComp implements PersistentObject, ComplexGeoObj,
 	 */
 	public Set<TriangleElt3D> getAllTrianglesWithPoint(Point3D point) {
 		Set<TriangleElt3D> resultSet = new HashSet<TriangleElt3D>();
-		TriangleElt3DIterator it = getElementsIterator();
-		// TODO make this more efficient with the use of
-		// getSAM().nearest(number, point) ...
-		TriangleElt3D tri;
-		while (it.hasNext()) {
-			tri = it.next();
-			if (tri.contains(point, sop))
-				resultSet.add(tri);
+
+		TriangleElt3D first = (TriangleElt3D) this.getSAM().nearest(1, point)[0]
+				.getObjectRef();
+		TriangleElt3D current = null;
+		TriangleElt3D prev = first;
+
+		// if current is null, then the selected point lies on the border, so
+		// all triangles will have to be searched
+		while (current != first && current != null) {
+
+			TriangleElt3D nb = null;
+			for (int i = 0; i < 3; i++) {
+				if (prev.getNeighbour(i) != null
+						&& prev.getNeighbour(i) != first
+						&& prev.getNeighbour(i).hasCorner(point, sop)) {
+					nb = prev.getNeighbour(i);
+				}
+			}
+
+			prev = current;
+			current = nb;
+			resultSet.add(current);
 		}
+
+		// IF THE SEARCHED POINT LIES ON THE COMPONENT BORDER:
+		if (current == null) {
+			resultSet = new HashSet<TriangleElt3D>();
+			boolean goon = true;
+			// goon is true until the next nearest neighbor does not contain
+			// point
+
+			int iterationNumber = 1;
+			while (goon) {
+				int end = 10 * iterationNumber;
+				int start = end - 10;
+
+				// get the next 10 nearest triangles:
+				NNResult[] nearestResult = this.getSAM().nearest(end, point);
+				TriangleElt3D[] nearestTris = new TriangleElt3D[nearestResult.length];
+				for (int i = 0; i < nearestResult.length; i++) {
+					nearestTris[i] = (TriangleElt3D) nearestResult[i]
+							.getObjectRef();
+				}
+
+				// check if the found nearest triangles contain the point (if
+				// not, break the loop):
+				for (int i = start; i < end && goon; i++) {
+					if (nearestTris[i].hasCorner(point, sop)) {
+						resultSet.add(nearestTris[i]);
+					} else {
+						goon = false;
+					}
+				}
+				iterationNumber++;
+			}
+		}
+
 		return resultSet;
+	}
+
+	/**
+	 * Creates index of direct connections of the vertices of this component in
+	 * the form of a map.
+	 * 
+	 * @return a map where each vertex is mapped to a list of vertices which are
+	 *         its direct connections
+	 */
+	public Map<Point3D, List<Point3D>> createPointIndex() {
+		
+		Map<Point3D, List<Point3D>> map = new HashMap<Point3D, List<Point3D>>();
+
+		Set elements = this.getElementsViaSAM();
+		int count = 0;
+		for (Object el : elements) {
+			TriangleElt3D tri = (TriangleElt3D) el;
+			count++;
+//			System.out.println("element number " + count );
+			
+			for (int i = 0; i < 3; i++) {
+				for (int j = 0; j < 3 && j != i; j++) {
+
+					if (map.containsKey(tri.getPoint(i))) {
+						List<Point3D> list = (List<Point3D>) map.get(tri
+								.getPoint(i));
+						if (!list.contains(tri.getPoint(j))) {
+							list.add(tri.getPoint(j));
+						}
+					} else {
+						List<Point3D> list = new ArrayList<Point3D>();
+						list.add(tri.getPoint(j));
+						map.put(tri.getPoint(i), list);
+					}
+
+					if (map.containsKey(tri.getPoint(j))) {
+						List<Point3D> list = (List<Point3D>) map.get(tri
+								.getPoint(j));
+						if (!list.contains(tri.getPoint(i))) {
+							list.add(tri.getPoint(i));
+						}
+					} else {
+						List<Point3D> list = new ArrayList<Point3D>();
+						list.add(tri.getPoint(i));
+						map.put(tri.getPoint(j), list);
+					}
+				}
+			}
+		}
+
+		return map;
 	}
 
 	/**
@@ -2359,6 +2462,7 @@ public class TriangleNet3DComp implements PersistentObject, ComplexGeoObj,
 		}
 		return null;
 	}
+
 	
 	/**
 	 *Returns the set of objects which are inside the given MBB3D.

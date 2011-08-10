@@ -56,8 +56,9 @@ public class Triangle3D implements PersistentObject, SimpleGeoObj,
 	public Triangle3D(Point3D[] pts, ScalarOperator sop)
 			throws IllegalArgumentException {
 		if (pts == null || pts.length != 3)
-			throw new IllegalArgumentException(Db3dSimpleResourceBundle
-					.getString("db3d.geom.trionlythree"));
+			throw new IllegalArgumentException(
+					Db3dSimpleResourceBundle
+							.getString("db3d.geom.trionlythree"));
 
 		this.zero = pts[0];
 		this.one = pts[1];
@@ -68,14 +69,17 @@ public class Triangle3D implements PersistentObject, SimpleGeoObj,
 		// validate
 		if (sop != null) {
 			if (!isValid(sop))
-				throw new IllegalArgumentException(Db3dSimpleResourceBundle
-						.getString("db3d.geom.argnotval"));
+				throw new IllegalArgumentException(
+						Db3dSimpleResourceBundle
+								.getString("db3d.geom.argnotval"));
 			if (!isRegular(sop))
-				throw new IllegalArgumentException(Db3dSimpleResourceBundle
-						.getString("db3d.geom.argnotreg"));
+				throw new IllegalArgumentException(
+						Db3dSimpleResourceBundle
+								.getString("db3d.geom.argnotreg"));
 			if (!isBeautiful(sop))
-				throw new IllegalArgumentException(Db3dSimpleResourceBundle
-						.getString("db3d.geom.argnotbeau"));
+				throw new IllegalArgumentException(
+						Db3dSimpleResourceBundle
+								.getString("db3d.geom.argnotbeau"));
 		}
 	}
 
@@ -111,14 +115,17 @@ public class Triangle3D implements PersistentObject, SimpleGeoObj,
 		// validate
 		if (sop != null) {
 			if (!isValid(sop))
-				throw new IllegalArgumentException(Db3dSimpleResourceBundle
-						.getString("db3d.geom.argnotval"));
+				throw new IllegalArgumentException(
+						Db3dSimpleResourceBundle
+								.getString("db3d.geom.argnotval"));
 			if (!isRegular(sop))
-				throw new IllegalArgumentException(Db3dSimpleResourceBundle
-						.getString("db3d.geom.argnotreg"));
+				throw new IllegalArgumentException(
+						Db3dSimpleResourceBundle
+								.getString("db3d.geom.argnotreg"));
 			if (!isBeautiful(sop))
-				throw new IllegalArgumentException(Db3dSimpleResourceBundle
-						.getString("db3d.geom.argnotbeau"));
+				throw new IllegalArgumentException(
+						Db3dSimpleResourceBundle
+								.getString("db3d.geom.argnotbeau"));
 		}
 	}
 
@@ -214,8 +221,9 @@ public class Triangle3D implements PersistentObject, SimpleGeoObj,
 		case 2:
 			return this.two;
 		default:
-			throw new IllegalArgumentException(Db3dSimpleResourceBundle
-					.getString("db3d.geom.wrongindtrionlythree"));
+			throw new IllegalArgumentException(
+					Db3dSimpleResourceBundle
+							.getString("db3d.geom.wrongindtrionlythree"));
 		}
 	}
 
@@ -241,8 +249,9 @@ public class Triangle3D implements PersistentObject, SimpleGeoObj,
 			this.two = point;
 			break;
 		default:
-			throw new IllegalArgumentException(Db3dSimpleResourceBundle
-					.getString("db3d.geom.wrongindtrionlythree"));
+			throw new IllegalArgumentException(
+					Db3dSimpleResourceBundle
+							.getString("db3d.geom.wrongindtrionlythree"));
 		}
 		this.lines = null;
 		this.normvec = null;
@@ -275,18 +284,20 @@ public class Triangle3D implements PersistentObject, SimpleGeoObj,
 	 */
 	public MBB3D getMBB() {
 		Point3D[] points = this.getPoints();
-		if(points[0] != null && points[1] != null && points[2] != null){
-		Point3D pMin = new Point3D(GeomUtils.getMin(points[0].getX(), points[1]
-				.getX(), points[2].getX()), GeomUtils.getMin(points[0].getY(),
-				points[1].getY(), points[2].getY()), GeomUtils.getMin(points[0]
-				.getZ(), points[1].getZ(), points[2].getZ()));
-		Point3D pMax = new Point3D(GeomUtils.getMax(points[0].getX(), points[1]
-				.getX(), points[2].getX()), GeomUtils.getMax(points[0].getY(),
-				points[1].getY(), points[2].getY()), GeomUtils.getMax(points[0]
-				.getZ(), points[1].getZ(), points[2].getZ()));
-		return new MBB3D(pMin, pMax);
-		}
-		else return null;
+		if (points[0] != null && points[1] != null && points[2] != null) {
+			Point3D pMin = new Point3D(GeomUtils.getMin(points[0].getX(),
+					points[1].getX(), points[2].getX()), GeomUtils.getMin(
+					points[0].getY(), points[1].getY(), points[2].getY()),
+					GeomUtils.getMin(points[0].getZ(), points[1].getZ(),
+							points[2].getZ()));
+			Point3D pMax = new Point3D(GeomUtils.getMax(points[0].getX(),
+					points[1].getX(), points[2].getX()), GeomUtils.getMax(
+					points[0].getY(), points[1].getY(), points[2].getY()),
+					GeomUtils.getMax(points[0].getZ(), points[1].getZ(),
+							points[2].getZ()));
+			return new MBB3D(pMin, pMax);
+		} else
+			return null;
 	}
 
 	/**
@@ -644,15 +655,16 @@ public class Triangle3D implements PersistentObject, SimpleGeoObj,
 			Point3D centroid = wf.getCentroid();
 			int length = segs.length;
 			for (int i = 0; i < length; i++) {
-				Triangle3D triangle = new Triangle3D(centroid, segs[i]
-						.getPoint(0), segs[i].getPoint(1), sop);
+				Triangle3D triangle = new Triangle3D(centroid,
+						segs[i].getPoint(0), segs[i].getPoint(1), sop);
 				if (this.intersects(triangle, sop))
 					return true;
 			}
 			return false;
 		default:
-			throw new IllegalStateException(Db3dSimpleResourceBundle
-					.getString("db3d.geom.resnotsimplex"));
+			throw new IllegalStateException(
+					Db3dSimpleResourceBundle
+							.getString("db3d.geom.resnotsimplex"));
 		}
 	}
 
@@ -742,8 +754,9 @@ public class Triangle3D implements PersistentObject, SimpleGeoObj,
 			}
 			return false;
 		default:
-			throw new IllegalStateException(Db3dSimpleResourceBundle
-					.getString("db3d.geom.resnotsimplex"));
+			throw new IllegalStateException(
+					Db3dSimpleResourceBundle
+							.getString("db3d.geom.resnotsimplex"));
 		}
 	}
 
@@ -943,7 +956,7 @@ public class Triangle3D implements PersistentObject, SimpleGeoObj,
 						.intersects(this.getPlane(sop), sop)))
 					return false;
 				else { // this intersects argumentPlane AND argument intersects
-					// thisPlane
+						// thisPlane
 
 					switch (this.intersection(triangle.getPlane(sop), sop)
 							.getType()) {
@@ -980,8 +993,9 @@ public class Triangle3D implements PersistentObject, SimpleGeoObj,
 								return false;
 						}
 						default:
-							throw new IllegalStateException(Db3dSimpleResourceBundle
-									.getString("db3d.geom.resnotsimplex"));
+							throw new IllegalStateException(
+									Db3dSimpleResourceBundle
+											.getString("db3d.geom.resnotsimplex"));
 
 						}
 					}
@@ -1018,14 +1032,16 @@ public class Triangle3D implements PersistentObject, SimpleGeoObj,
 								return false;
 						}
 						default:
-							throw new IllegalStateException(Db3dSimpleResourceBundle
-									.getString("db3d.geom.resnotsimplex"));
+							throw new IllegalStateException(
+									Db3dSimpleResourceBundle
+											.getString("db3d.geom.resnotsimplex"));
 
 						}
 					}
 					default:
-						throw new IllegalStateException(Db3dSimpleResourceBundle
-								.getString("db3d.geom.resnotsimplex"));
+						throw new IllegalStateException(
+								Db3dSimpleResourceBundle
+										.getString("db3d.geom.resnotsimplex"));
 
 					}
 				}
@@ -1532,8 +1548,8 @@ public class Triangle3D implements PersistentObject, SimpleGeoObj,
 	public boolean contains(Triangle3D triangle, ScalarOperator sop) { // Dag
 
 		if (triangle.getMBB().inside(this.getMBB(), sop)) {
-			if ((sop.equal(new Plane3D(this, sop)
-					.distance(triangle.getPoint(0)), 0))
+			if ((sop.equal(
+					new Plane3D(this, sop).distance(triangle.getPoint(0)), 0))
 					&& (sop.equal(new Plane3D(this, sop).distance(triangle
 							.getPoint(1)), 0))
 					&& (sop.equal(new Plane3D(this, sop).distance(triangle
@@ -1634,12 +1650,14 @@ public class Triangle3D implements PersistentObject, SimpleGeoObj,
 			return this.containsInPlane(((Segment3D) projectionObj), sop);
 		case SimpleGeoObj.POINT3D:
 			// never should happen
-			throw new IllegalStateException(Db3dSimpleResourceBundle
-					.getString("db3d.geom.resprojnotpoint"));
+			throw new IllegalStateException(
+					Db3dSimpleResourceBundle
+							.getString("db3d.geom.resprojnotpoint"));
 
 		default:
-			throw new IllegalStateException(Db3dSimpleResourceBundle
-					.getString("db3d.geom.resprojnotsimplex"));
+			throw new IllegalStateException(
+					Db3dSimpleResourceBundle
+							.getString("db3d.geom.resprojnotsimplex"));
 		}
 	}
 
@@ -2540,7 +2558,7 @@ public class Triangle3D implements PersistentObject, SimpleGeoObj,
 	 *             class Vector3D.
 	 */
 	public boolean isValid(ScalarOperator sop) {
-		// test of geometric equality between all points
+		
 		if (this.zero.isEqual(this.one, sop)
 				|| this.zero.isEqual(this.two, sop)
 				|| this.one.isEqual(this.two, sop))

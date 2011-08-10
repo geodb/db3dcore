@@ -5,10 +5,15 @@
 package de.uos.igf.db3d.dbms.model3d;
 
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Iterator;
 import java.util.List;
+import java.util.Set;
 
+import de.uos.igf.db3d.dbms.geom.Point3D;
 import de.uos.igf.db3d.dbms.geom.ScalarOperator;
 import de.uos.igf.db3d.dbms.structure.Space3D;
+import de.uos.igf.db3d.dbms.util.TriangleServices;
 
 /**
  * TriangleNetBuilder is designed for constructing TriangleNet3D objects.<br>
@@ -112,13 +117,16 @@ public class TriangleNetBuilder {
 	 *             Triangle3D.
 	 */
 	public void addComponent(TriangleElt3D[] elements) {
+
+		// Build a new Component and fill the SAM
 		TriangleNet3DComp comp = new TriangleNet3DComp(getScalarOperator(),
 				elements);
 		// Here an IllegalArgumentException can be thrown.
 
 		for (int i = 0; i < elements.length; i++) {
 			// set ID
-			// TODO: do we need to set the id if we got one from the import process?
+			// TODO: do we need to set the id if we got one from the import
+			// process?
 			elements[i].setID(counter++);
 			// set the reference to the component
 			elements[i].setNetComponent(comp);
@@ -197,6 +205,25 @@ public class TriangleNetBuilder {
 
 		// set element id
 		net.setElementID(counter);
+
+		// remove redundant points of this net
+		// TODO: Are there redundant points? Try following code:
+//		TriangleServices service = new TriangleServices();
+//		service.initForPointClouds(net);
+//
+//		HashMap<Integer, Point3D> points = service.getPoints();
+//		HashMap<Integer, int[]> triangles = service.getTriangles();
+//
+//		Set elements = net.getComponent(0).getElementsViaSAM();
+//		Iterator it = elements.iterator();
+//		while (it.hasNext()) {
+//			TriangleElt3D triangle = (TriangleElt3D) it.next();
+//			int[] triPoints = triangles.get(triangle.getID());
+//			triangle.setPoint(0, points.get(triPoints[0]));
+//			triangle.setPoint(1, points.get(triPoints[1]));
+//			triangle.setPoint(2, points.get(triPoints[2]));
+//		}
+
 		return net;
 	}
 
