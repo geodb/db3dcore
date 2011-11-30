@@ -21,6 +21,7 @@ import java.io.ObjectStreamField;
 import java.io.Serializable;
 import java.util.HashSet;
 import java.util.Iterator;
+import java.util.LinkedList;
 import java.util.Locale;
 import java.util.ResourceBundle;
 import java.util.Set;
@@ -1679,21 +1680,32 @@ public class TriangleNet3DComp implements PersistentObject, ComplexGeoObj,
 	}
 
 	/*
-	 * Recursive method to collect all elements starting at the given element.
+	 * Method to collect all elements starting at the given element.
 	 * 
 	 * @param set Set to collect elements
 	 * 
-	 * @param elt TriangleElt3D to start recursion
+	 * @param elt TriangleElt3D to start collection process
 	 */
 	private void makeSet(Set<Equivalentable> set, TriangleElt3D elt) {
-		// make visited
-		set.add(elt);
 
-		for (int i = 0; i < 3; i++) {
-			TriangleElt3D nb = elt.getNeighbour(i);
-			if (nb != null && !set.contains(nb)) // if not already visited
-				makeSet(set, nb);
+		LinkedList<TriangleElt3D> toVisit = new LinkedList<TriangleElt3D>();
+		toVisit.add(elt);
+
+		TriangleElt3D currTri;
+		TriangleElt3D nb;
+		// while still triangles "to visit":
+		while (!toVisit.isEmpty()) {
+			currTri = toVisit.pollFirst();
+			set.add(currTri);
+			for (int i = 0; i < 3; i++) {
+				nb = currTri.getNeighbour(i);
+				// if not already visited:
+				if (nb != null && !set.contains(nb)) {
+					toVisit.add(nb);
+				}
+			}
 		}
+
 	}
 
 	/**
