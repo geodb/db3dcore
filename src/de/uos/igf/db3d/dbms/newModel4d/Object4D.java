@@ -177,30 +177,30 @@ public class Object4D {
 			oldPoints.add(pointTubes.get(it2.next()).get(timesteps.size() - 2));
 		}
 
-		double time = System.currentTimeMillis();
+//		double time = System.currentTimeMillis();
 
-		// works, but takes to much time
-		while(it.hasNext()) {
-			int id = it.next();
-			if(oldPoints.contains(newPoints.get(id))) {
-				Iterator<Point3D> itOldPoints = oldPoints.iterator(); 
-				while(itOldPoints.hasNext()) {
-					Point3D tmp = itOldPoints.next();
-					if(tmp.equals(newPoints.get(id))) {
-						correlation.put(id, tmp);
-						break;
-					}
-				}
-			}
-		}
+		// quite expansive... 
+//		while(it.hasNext()) {
+//			int id = it.next();
+//			if(oldPoints.contains(newPoints.get(id))) {
+//				Iterator<Point3D> itOldPoints = oldPoints.iterator(); 
+//				while(itOldPoints.hasNext()) {
+//					Point3D tmp = itOldPoints.next();
+//					if(tmp.equals(newPoints.get(id))) {
+//						correlation.put(id, tmp);
+//						break;
+//					}
+//				}
+//			}
+//		}
 		
-		System.out.println();
-		System.out.println("Zeitverbrauch: " + (System.currentTimeMillis() - time));
-		System.out.println();
+//		System.out.println();
+//		System.out.println("Zeitverbrauch: " + (System.currentTimeMillis() - time));
+//		System.out.println();
 
-		System.out.println(oldPoints.size());
-		System.out.println(newPoints.size());
-		System.out.println(correlation.size());
+//		System.out.println(oldPoints.size());
+//		System.out.println(newPoints.size());
+//		System.out.println(correlation.size());
 
 		// TODO: End of Deltaspeicherung
 
