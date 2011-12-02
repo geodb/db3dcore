@@ -165,21 +165,21 @@ public class Object4D {
 
 		Iterator<Integer> it = newPoints.keySet().iterator();
 
+		HashMap<Integer, Point3D> correlation = new HashMap<Integer, Point3D>();
+		
 		// TODO: Code for the Deltaspeicherung:
 
-		HashSet<Point3D> oldPoints = new HashSet<Point3D>();
-
-		HashMap<Integer, Point3D> correlation = new HashMap<Integer, Point3D>();
-
-		Iterator<Integer> it2 = pointTubes.keySet().iterator();
-
-		while (it2.hasNext()) {
-			oldPoints.add(pointTubes.get(it2.next()).get(timesteps.size() - 2));
-		}
-
+//		HashSet<Point3D> oldPoints = new HashSet<Point3D>();
+//
+//		Iterator<Integer> it2 = pointTubes.keySet().iterator();
+//
+//		while (it2.hasNext()) {
+//			oldPoints.add(pointTubes.get(it2.next()).get(timesteps.size() - 2));
+//		}
+//
 //		double time = System.currentTimeMillis();
-
-		// quite expansive... 
+//
+//		 quite expansive... 
 //		while(it.hasNext()) {
 //			int id = it.next();
 //			if(oldPoints.contains(newPoints.get(id))) {
@@ -347,9 +347,17 @@ public class Object4D {
 			// for all Points which are active in this timeinterval we need to
 			// interpolate a new point with the help of the computed factor.
 			int intervalStartStep = timesteps.indexOf(intervalStart);
+			
+			Set<Integer> allIDs = new HashSet<Integer>();
+			
+			for (int id : pointTubes.keySet()) {
 
-			Iterator<Integer> ids = pointTubes.keySet().iterator();
+				if (pointTubes.get(id).containsKey(intervalStartStep+1))
+					allIDs.add(id);
+			}
 
+			Iterator<Integer> ids = allIDs.iterator();
+			
 			while (ids.hasNext()) {
 
 				Integer id = ids.next();
@@ -364,7 +372,7 @@ public class Object4D {
 					double x = intervalStartPoint.getX();
 					double y = intervalStartPoint.getY();
 					double z = intervalStartPoint.getZ();
-
+					
 					// get the end Point
 					Point3D intervalEndPoint = pointTubes.get(id).get(
 							intervalStartStep + 1);

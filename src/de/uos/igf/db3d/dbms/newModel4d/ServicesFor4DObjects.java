@@ -73,7 +73,7 @@ public class ServicesFor4DObjects {
 			// create 3D components with this information.
 			SpatialObject4D geometry = object.getGeometry()
 					.get(indexOfGeometry);
-
+			
 			// create all the Point3D objects
 			for (int i = 0; i < geometry.getPoints().size(); i++) {
 				// TODO implement
@@ -93,7 +93,7 @@ public class ServicesFor4DObjects {
 			while (keys.hasNext()) {
 
 				Integer id = keys.next();
-
+				
 				TriangleElt3D[] elements = new TriangleElt3D[geometry
 						.getTriangleNets().get(id).getElements().size()];
 
@@ -107,7 +107,7 @@ public class ServicesFor4DObjects {
 				while (ids.hasNext()) {
 
 					Integer triangleID = ids.next();
-
+					
 					Triangle4D tmp = geometry.getTriangleNets().get(id)
 							.getElements().get(triangleID);
 
@@ -116,6 +116,10 @@ public class ServicesFor4DObjects {
 							interpolatedPoints.get(tmp.getIDone()),
 							interpolatedPoints.get(tmp.getIDtwo()), null);
 
+					System.out.println();
+					System.out.println(tmp.getIDzero());
+					System.out.println(tmp.getIDone());
+					
 					elements[triangleID] = triangle;
 				}
 				// add the component to the TriangleNetBuilder
