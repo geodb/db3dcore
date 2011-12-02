@@ -15,6 +15,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -35,7 +36,6 @@ import de.uos.igf.db3d.dbms.geom.Segment3D;
 import de.uos.igf.db3d.dbms.geom.SimpleGeoObj;
 import de.uos.igf.db3d.dbms.geom.Triangle3D;
 import de.uos.igf.db3d.dbms.structure.PersistentObject;
-import de.uos.igf.db3d.dbms.util.EquivalentableHashMap;
 import de.uos.igf.db3d.dbms.util.EquivalentableHashSet;
 import de.uos.igf.db3d.dbms.util.FlagMap;
 import de.uos.igf.db3d.dbms.util.IdentityHashSet;
@@ -1987,22 +1987,34 @@ public class TriangleNet3DComp implements PersistentObject, ComplexGeoObj,
 	}
 
 	/*
-	 * Recursive method to collect all elements starting at the given element.
+	 * Method to collect all elements starting at the given element.
 	 * 
 	 * @param set Set to collect elements
 	 * 
-	 * @param elt TriangleElt3D to start recursion
+	 * @param elt TriangleElt3D to start collection process
 	 */
 	private void makeSet(Set<Equivalentable> set, TriangleElt3D elt) {
-		// make visited
-		set.add(elt);
 
-		for (int i = 0; i < 3; i++) {
-			TriangleElt3D nb = elt.getNeighbour(i);
-			if (nb != null && !set.contains(nb)) // if not already visited
-				makeSet(set, nb);
+		LinkedList<TriangleElt3D> toVisit = new LinkedList<TriangleElt3D>();
+		toVisit.add(elt);
+
+		TriangleElt3D currTri;
+		TriangleElt3D nb;
+		// while still triangles "to visit":
+		while (!toVisit.isEmpty()) {
+			currTri = toVisit.pollFirst();
+			set.add(currTri);
+			for (int i = 0; i < 3; i++) {
+				nb = currTri.getNeighbour(i);
+				// if not already visited:
+				if (nb != null && !set.contains(nb)) {
+					toVisit.add(nb);
+				}
+			}
 		}
+
 	}
+
 
 	/**
 	 * Finds the outer boundary of a tin. Runs over all triangles and records
