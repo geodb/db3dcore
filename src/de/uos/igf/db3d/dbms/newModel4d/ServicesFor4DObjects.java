@@ -116,10 +116,6 @@ public class ServicesFor4DObjects {
 							interpolatedPoints.get(tmp.getIDone()),
 							interpolatedPoints.get(tmp.getIDtwo()), null);
 
-					System.out.println();
-					System.out.println(tmp.getIDzero());
-					System.out.println(tmp.getIDone());
-					
 					elements[triangleID] = triangle;
 				}
 				// add the component to the TriangleNetBuilder

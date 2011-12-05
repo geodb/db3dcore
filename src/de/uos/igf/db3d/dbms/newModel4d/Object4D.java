@@ -72,7 +72,7 @@ public class Object4D {
 			// Now we need to know if the user already added the geometry for
 			// the last Postobject (can be whether the first object or the
 			// Postobject of a new interval)
-			if (geometry.size() < timesteps.size())
+			if (geometry.size() < countToplogogyChanges())
 				throw new IllegalArgumentException(
 						"The net topology changed. You need to add the geometrydata for the last Postobject first. Call the addGeometry() function.");
 
@@ -151,56 +151,56 @@ public class Object4D {
 	}
 
 	/**
-	 * Adds a Postobject based on the concept of Polthier und Rumpf.
-	 * Checks the correlation of partitions between the
-	 * actual and the last timestep.
+	 * Adds a Postobject based on the concept of Polthier und Rumpf. Checks the
+	 * correlation of partitions between the actual and the last timestep.
 	 * 
 	 * 
 	 * @param newPoints
 	 * @param date
 	 */
 	private void polthierAndRumpf(HashMap<Integer, Point3D> newPoints, Date date) {
-		
+
 		timesteps.add(date);
 
 		Iterator<Integer> it = newPoints.keySet().iterator();
 
 		HashMap<Integer, Point3D> correlation = new HashMap<Integer, Point3D>();
-		
+
 		// TODO: Code for the Deltaspeicherung:
 
-//		HashSet<Point3D> oldPoints = new HashSet<Point3D>();
-//
-//		Iterator<Integer> it2 = pointTubes.keySet().iterator();
-//
-//		while (it2.hasNext()) {
-//			oldPoints.add(pointTubes.get(it2.next()).get(timesteps.size() - 2));
-//		}
-//
-//		double time = System.currentTimeMillis();
-//
-//		 quite expansive... 
-//		while(it.hasNext()) {
-//			int id = it.next();
-//			if(oldPoints.contains(newPoints.get(id))) {
-//				Iterator<Point3D> itOldPoints = oldPoints.iterator(); 
-//				while(itOldPoints.hasNext()) {
-//					Point3D tmp = itOldPoints.next();
-//					if(tmp.equals(newPoints.get(id))) {
-//						correlation.put(id, tmp);
-//						break;
-//					}
-//				}
-//			}
-//		}
-		
-//		System.out.println();
-//		System.out.println("Zeitverbrauch: " + (System.currentTimeMillis() - time));
-//		System.out.println();
+		// HashSet<Point3D> oldPoints = new HashSet<Point3D>();
+		//
+		// Iterator<Integer> it2 = pointTubes.keySet().iterator();
+		//
+		// while (it2.hasNext()) {
+		// oldPoints.add(pointTubes.get(it2.next()).get(timesteps.size() - 2));
+		// }
+		//
+		// double time = System.currentTimeMillis();
+		//
+		// quite expansive...
+		// while(it.hasNext()) {
+		// int id = it.next();
+		// if(oldPoints.contains(newPoints.get(id))) {
+		// Iterator<Point3D> itOldPoints = oldPoints.iterator();
+		// while(itOldPoints.hasNext()) {
+		// Point3D tmp = itOldPoints.next();
+		// if(tmp.equals(newPoints.get(id))) {
+		// correlation.put(id, tmp);
+		// break;
+		// }
+		// }
+		// }
+		// }
 
-//		System.out.println(oldPoints.size());
-//		System.out.println(newPoints.size());
-//		System.out.println(correlation.size());
+		// System.out.println();
+		// System.out.println("Zeitverbrauch: " + (System.currentTimeMillis() -
+		// time));
+		// System.out.println();
+
+		// System.out.println(oldPoints.size());
+		// System.out.println(newPoints.size());
+		// System.out.println(correlation.size());
 
 		// TODO: End of Deltaspeicherung
 
@@ -284,11 +284,14 @@ public class Object4D {
 	 *            - the spatial information for the last added timestep.
 	 */
 	public void addGeometry(SpatialObject4D spatial) {
-		if (timesteps.size() == geometry.size() + 1)
+		int changes = countToplogogyChanges();
+		if (changes == geometry.size() + 1)
 			geometry.add(spatial);
-		else
-			throw new IllegalArgumentException(
-					"You can not add the geometry. You already have the geometry information for the actual step.");
+		// else {
+		// if (!spatial.equals(geometry.get(geometry.size() - 1)))
+		// throw new IllegalArgumentException(
+		// "You can not add the geometry. You already have the geometry information for the actual step.");
+		// }
 	}
 
 	/**
@@ -311,7 +314,7 @@ public class Object4D {
 			// change of topology
 			int timestep = timesteps.indexOf(date);
 
-//			for (int id = 1; id <= pointTubes.size(); id++) {
+			// for (int id = 1; id <= pointTubes.size(); id++) {
 			for (int id : pointTubes.keySet()) {
 
 				if (pointTubes.get(id).containsKey(timestep))
@@ -338,26 +341,27 @@ public class Object4D {
 
 			// Compute the factor which indicates the position of the desired
 			// point. 0 corresponds to the first support point, 1 to the second.
-			double factor = (double) (date.getTime() - intervalStart.getTime())/(intervalEnd.getTime() - intervalStart.getTime());
-			
-			System.out.println(date.getTime() - intervalStart.getTime());
-			System.out.println(intervalEnd.getTime() - intervalStart.getTime());
-			System.out.println(factor);
-			
+			double factor = (double) (date.getTime() - intervalStart.getTime())
+					/ (intervalEnd.getTime() - intervalStart.getTime());
+
+//			System.out.println(date.getTime() - intervalStart.getTime());
+//			System.out.println(intervalEnd.getTime() - intervalStart.getTime());
+//			System.out.println(factor);
+
 			// for all Points which are active in this timeinterval we need to
 			// interpolate a new point with the help of the computed factor.
 			int intervalStartStep = timesteps.indexOf(intervalStart);
-			
+
 			Set<Integer> allIDs = new HashSet<Integer>();
-			
+
 			for (int id : pointTubes.keySet()) {
 
-				if (pointTubes.get(id).containsKey(intervalStartStep+1))
+				if (pointTubes.get(id).containsKey(intervalStartStep + 1))
 					allIDs.add(id);
 			}
 
 			Iterator<Integer> ids = allIDs.iterator();
-			
+
 			while (ids.hasNext()) {
 
 				Integer id = ids.next();
@@ -372,7 +376,7 @@ public class Object4D {
 					double x = intervalStartPoint.getX();
 					double y = intervalStartPoint.getY();
 					double z = intervalStartPoint.getZ();
-					
+
 					// get the end Point
 					Point3D intervalEndPoint = pointTubes.get(id).get(
 							intervalStartStep + 1);
@@ -396,8 +400,19 @@ public class Object4D {
 		}
 	}
 
+	private int countToplogogyChanges() {
+		int cnt = 0;
+		Date oldDate = timesteps.getFirst();
+		for (Date d : timesteps) {
+			if (oldDate.equals(d))
+				cnt++;
+			oldDate = d;
+		}
+		return cnt;
+	}
+
 	// Getter methods
-	
+
 	public Map<Integer, Map<Integer, Point3D>> getPointTubes() {
 		return pointTubes;
 	}

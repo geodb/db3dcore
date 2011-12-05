@@ -106,5 +106,5 @@ public class SpatialObject4D {
 
 	public void setPoints(Map<Integer, Point4D> points) {
 		this.points = points;
-	}
+	}	
 }
