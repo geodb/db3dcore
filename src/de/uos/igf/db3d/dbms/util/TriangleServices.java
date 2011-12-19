@@ -39,6 +39,9 @@ public class TriangleServices {
 	// The Map "triangles" is a Map of TriangleIDs with an Integer Array of 3
 	// PointIDs.
 	HashMap<Integer, int[]> triangles;
+	
+	// This Map contains all componentIDs accessible by their triangleID (componentID, triangleID)
+	HashMap<Integer, Integer> components;
 
 	/**
 	 * Constructor creates Maps and calls init function.
@@ -50,6 +53,7 @@ public class TriangleServices {
 		points = new HashMap<Integer, Point3D>();
 		pointIDs = new HashMap<Point3D, Integer>();
 		triangles = new HashMap<Integer, int[]>();
+		components = new HashMap<Integer, Integer>();
 	}
 
 	/**
@@ -67,16 +71,14 @@ public class TriangleServices {
 
 		// save the IDs of Points to create the Triangles:
 		Set<Point3D> unique = new HashSet<Point3D>();
-
+		
 		for (TriangleNet3DComp tri : comp) {
 
 			Set s = tri.getElementsViaSAM();
 			Iterator<Equivalentable> it = s.iterator();
 
-			int cnt = 0;
-
 			while (it.hasNext()) {
-				cnt++;
+
 				triangle = (TriangleElt3D) it.next();
 
 				p = triangle.getPoints();
@@ -96,6 +98,7 @@ public class TriangleServices {
 					}
 				}
 				triangles.put(triangle.getID(), pointsForTriangles);
+				components.put(triangle.getID(), tri.getID());
 			}
 		}
 	}
@@ -127,5 +130,14 @@ public class TriangleServices {
 	 */
 	public HashMap<Integer, int[]> getTriangles() {
 		return triangles;
+	}
+
+	/**
+	 * This Map contains all componentIDs accessible by their triangleID (componentID, triangleID)
+	 * 
+	 * @return the components
+	 */
+	public HashMap<Integer, Integer> getComponents() {
+		return components;
 	}
 }
