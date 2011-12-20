@@ -40,7 +40,7 @@ public class TriangleServices {
 	// PointIDs.
 	HashMap<Integer, int[]> triangles;
 	
-	// This Map contains all componentIDs accessible by their triangleID (componentID, triangleID)
+	// This Map contains all componentIDs accessible by their triangleID (triangleID, componentID)
 	HashMap<Integer, Integer> components;
 
 	/**
@@ -133,7 +133,7 @@ public class TriangleServices {
 	}
 
 	/**
-	 * This Map contains all componentIDs accessible by their triangleID (componentID, triangleID)
+	 * This Map contains all componentIDs accessible by their triangleID (triangleID, componentID)
 	 * 
 	 * @return the components
 	 */
