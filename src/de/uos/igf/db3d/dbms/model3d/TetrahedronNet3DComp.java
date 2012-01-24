@@ -2622,4 +2622,11 @@ public class TetrahedronNet3DComp implements PersistentObject, ComplexGeoObj,
 		}
 		return null;
 	}
+	
+	/**
+	 * @return the id
+	 */
+	public int getID() {
+		return id;
+	}
 }

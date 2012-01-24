@@ -101,7 +101,7 @@ public class Point3D implements PersistentObject, SimpleGeoObj, Equivalentable,
 	public String getAttributeValue(String attributeName) {
 		if (this.attributes != null) {
 			for (int i = 0; i < this.attributes.length; i++) {
-				if (attributeName.toLowerCase().equals(this.attributes[i][0])) {
+				if (attributeName.trim().toLowerCase().equals(this.attributes[i][0])) {
 					return this.attributes[i][1];
 				}
 			}
@@ -131,12 +131,12 @@ public class Point3D implements PersistentObject, SimpleGeoObj, Equivalentable,
 			int indexOfNull = -2;
 			for (int i = 0; i < this.attributes.length; i++) {
 				if (this.attributes[i][0] == null) {
-					this.attributes[i][0] = attributeName.toLowerCase();
-					this.attributes[i][1] = attributeValue.toLowerCase();
+					this.attributes[i][0] = attributeName.toLowerCase().trim();
+					this.attributes[i][1] = attributeValue.toLowerCase().trim();
 					indexOfNull = i;
 					return true;
 				} else if (this.attributes[i][0].equals(attributeName
-						.toLowerCase())) {
+						.toLowerCase().trim())) {
 					DB3DLogger.logger.log(Level.FINER,
 							"Info Warning: Attribute already exists.");
 					indexOfNull = 0;
