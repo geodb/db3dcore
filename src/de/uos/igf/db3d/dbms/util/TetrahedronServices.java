@@ -191,12 +191,8 @@ public class TetrahedronServices {
 				hex = "ff" + hexTmp;
 			}
 			
-			System.out.println("0xff" + hex + "00");
-
 			attributeColors.put(pointIDs.get(point), "0xff" + hex + "00");
 		}
-		System.out.println(maxValue);
-		System.out.println(minValue);
 		return attributeColors;
 	}
 

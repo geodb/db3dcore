@@ -1,8 +1,11 @@
 package de.uos.igf.db3d.dbms.util;
 
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
+import java.util.LinkedList;
+import java.util.List;
 import java.util.Set;
 
 import de.uos.igf.db3d.dbms.geom.Equivalentable;
@@ -142,7 +145,7 @@ public class TriangleServices {
 	public HashMap<Integer, Integer> getComponents() {
 		return components;
 	}
-
+	
 	/**
 	 * This Map contains the attributes from the triangle net moved to RGB
 	 * (pointID, color)
@@ -188,12 +191,8 @@ public class TriangleServices {
 				hex = "ff" + hexTmp;
 			}
 			
-			System.out.println("0xff" + hex + "00");
-
 			attributeColors.put(pointIDs.get(point), "0xff" + hex + "00");
 		}
-		System.out.println(maxValue);
-		System.out.println(minValue);
 		return attributeColors;
 	}
 
