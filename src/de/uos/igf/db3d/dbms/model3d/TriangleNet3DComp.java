@@ -2486,4 +2486,11 @@ public class TriangleNet3DComp implements PersistentObject, ComplexGeoObj,
 	public Set inside(MBB3D mbb) {
 		return getSAM().inside(mbb);
 	}
+
+	/**
+	 * @return the id
+	 */
+	public int getID() {
+		return id;
+	}
 }
