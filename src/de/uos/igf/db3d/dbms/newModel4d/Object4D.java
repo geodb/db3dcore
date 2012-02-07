@@ -35,7 +35,7 @@ public class Object4D {
 	private List<SpatialObject4D> geometry;
 
 	// List of timesteps with their effective date
-	private LinkedList<Date> timesteps;
+	protected LinkedList<Date> timesteps;
 
 	private ScalarOperator sop;
 
@@ -400,7 +400,7 @@ public class Object4D {
 		}
 	}
 
-	private int countToplogogyChanges() {
+	protected int countToplogogyChanges() {
 		int cnt = 0;
 		Date oldDate = timesteps.getFirst();
 		for (Date d : timesteps) {
