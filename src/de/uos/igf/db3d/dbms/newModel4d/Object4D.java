@@ -35,7 +35,7 @@ public class Object4D {
 	private List<SpatialObject4D> geometry;
 
 	// List of timesteps with their effective date
-	private LinkedList<Date> timesteps;
+	protected LinkedList<Date> timesteps;
 
 	private ScalarOperator sop;
 
