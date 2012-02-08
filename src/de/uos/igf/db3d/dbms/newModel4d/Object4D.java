@@ -344,9 +344,10 @@ public class Object4D {
 			double factor = (double) (date.getTime() - intervalStart.getTime())
 					/ (intervalEnd.getTime() - intervalStart.getTime());
 
-//			System.out.println(date.getTime() - intervalStart.getTime());
-//			System.out.println(intervalEnd.getTime() - intervalStart.getTime());
-//			System.out.println(factor);
+			// System.out.println(date.getTime() - intervalStart.getTime());
+			// System.out.println(intervalEnd.getTime() -
+			// intervalStart.getTime());
+			// System.out.println(factor);
 
 			// for all Points which are active in this timeinterval we need to
 			// interpolate a new point with the help of the computed factor.
@@ -424,4 +425,30 @@ public class Object4D {
 	public LinkedList<Date> getTimesteps() {
 		return timesteps;
 	}
+
+	protected static int getIndexOfGeometry(LinkedList<Date> dateInterval,
+			Date date) {
+
+		int indexOfGeometry = 0;
+
+		// check if there is more than one timestep:
+		if (dateInterval.size() > 1) {
+
+			// find out which is the right topology for this specified date:
+			Date firstDate = dateInterval.get(0);
+			Date currentDate = dateInterval.get(1);
+			int cnt = 2;
+			while (currentDate.before(date)) {
+				if (currentDate == firstDate)
+					indexOfGeometry++;
+				firstDate = currentDate;
+				currentDate = dateInterval.get(cnt);
+				cnt++;
+			}
+		}
+
+		return indexOfGeometry;
+
+	}
+
 }
