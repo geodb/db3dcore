@@ -4,6 +4,8 @@
 
 package de.uos.igf.db3d.junittests.dbms.geom;
 
+import java.util.Arrays;
+
 import junit.framework.TestCase;
 import de.uos.igf.db3d.dbms.geom.Point3D;
 import de.uos.igf.db3d.dbms.geom.ScalarOperator;
@@ -20,6 +22,20 @@ import de.uos.igf.db3d.dbms.geom.Wireframe3D;
  */
 public class Triangle3DTestCase extends TestCase {
 
+	public final static Point3D P1 = new Point3D(1.0,1.0,1.0);
+	public final static Point3D P2 = new Point3D(2.0,2.0,2.0);
+	public final static Point3D P3 = new Point3D(1.0,1.0,2.0);
+	public final static ScalarOperator sop = new ScalarOperator();
+	
+	
+	public final static Triangle3D T1 = new Triangle3D(P1, P2, P3, sop);
+	public final static Triangle3D T2 = new Triangle3D(P1, P2, P3, sop, 1);
+	public final static String[][] attributesArray = {{"eins","1"},{"zwei","2"},{"drei","3"}};
+	public final static Triangle3D T3 = new Triangle3D(P1, P2, P3, sop, 3, attributesArray);
+	public final static Triangle3D T4 = new Triangle3D(P1, P2, P3, sop, 4, attributesArray);
+	public final static Triangle3D T5 = new Triangle3D(P1, P2, P3, sop, 2);
+	public final static Triangle3D T6 = new Triangle3D(T3);
+	
 	public void setUp() throws Exception {
 
 	}
@@ -308,5 +324,41 @@ public class Triangle3DTestCase extends TestCase {
 	public void tearDown() throws Exception {
 	}
 
+	public void testSetAttribute() {
+//		
+		assertTrue(T2.setAttribute("BodenTyp", "Lehm")); 				// test inserting attribute in initialized Point3D object
+		assertFalse(T2.setAttribute("bodentyp", "Lehm"));				// test inserting attribute that already exists and test for non-case sensitive
+		System.out.println(T2.toString());
+		assertFalse(T2.setAttribute("RGB-Wert", "128,240,23"));			// test inserting attribute in full attributes array
+		assertFalse(T1.setAttribute("Grauwert", "128"));				// test inserting attribute in Point3D object without attributes initialized
+		assertTrue(T5.setAttribute("TestAttribut1", "TestWert1"));		// test inserting attribute in Point3D until array is full
+		assertTrue(T5.setAttribute("TestAttribut2", "TestWert2"));		// test inserting attribute in Point3D until array is full
+		assertFalse(T5.setAttribute("TestAttribut3", "TestWert3"));		// test inserting attribute in Point3D until array is full
+		}
+//	
+	public void testGetAttributeValue(){
+		
+		assertEquals(T3.getAttributeValue("eins"), "1");				// test if right value is returned
+		assertEquals(T3.getAttributeValue("EiNs"), "1");				// test for non-case sensitive
+		assertNull(T4.getAttributeValue("Kennung"));					// test for non existing attribute name
+		assertNull(T1.getAttributeValue("Kennung"));					// test for not initialized attributes
+		assertTrue(Arrays.deepEquals(T3.getAttributes(), attributesArray));			// test for getAttributes()
+		
+	}
+	
+	public void testAttributesConstructor(){
+		
+		assertFalse(T3.setAttribute("Testwert", "wert"));				// test inserting attribute in not initialized attributes because of too many attributes
+		assertFalse(T3.setAttribute("Testwert", "wert"));				// test inserting attribute in full attributes array, filled by constructor
+		assertTrue(T4.setAttribute("Testwert", "wert"));				// test inserting attribute in attributes array, one free space in array 
+		assertTrue(Arrays.deepEquals(T3.getAttributes(), T6.getAttributes())); // test copy constructor
 
+		assertEquals(T2.toString(), "Triangle3D [lines=[Segment3D [end=Point3D [x=1.0, y=1.0, z=2.0],"
+				+ " start=Point3D [x=2.0, y=2.0, z=2.0]], Segment3D [end=Point3D [x=1.0, y=1.0, z=1.0],"
+				+ " start=Point3D [x=1.0, y=1.0, z=2.0]], Segment3D [end=Point3D [x=2.0, y=2.0, z=2.0],"
+				+ " start=Point3D [x=1.0, y=1.0, z=1.0]]], normvec=null, one=Point3D [x=2.0, y=2.0, z=2.0],"
+				+ " two=Point3D [x=1.0, y=1.0, z=2.0], zero=Point3D [x=1.0, y=1.0, z=1.0], attributes= bodentyp:lehm]");
+																		// test toString-method
+		
+	}
 }
