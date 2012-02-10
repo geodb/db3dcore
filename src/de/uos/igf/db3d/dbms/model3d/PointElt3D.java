@@ -207,5 +207,4 @@ public class PointElt3D extends Point3D implements NetElement3D {
 		out.writeInt(getID());
 		out.writeObject(getNetComponent());
 	}
-
 }

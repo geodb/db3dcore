@@ -1,21 +1,23 @@
 package de.uos.igf.db3d.dbms.util;
 
-import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.LinkedList;
-import java.util.List;
 import java.util.Set;
 
 import de.uos.igf.db3d.dbms.geom.Equivalentable;
 import de.uos.igf.db3d.dbms.geom.Point3D;
+import de.uos.igf.db3d.dbms.geom.Segment3D;
+import de.uos.igf.db3d.dbms.geom.Triangle3D;
+import de.uos.igf.db3d.dbms.model3d.PointElt3D;
 import de.uos.igf.db3d.dbms.model3d.TriangleElt3D;
 import de.uos.igf.db3d.dbms.model3d.TriangleNet3D;
 import de.uos.igf.db3d.dbms.model3d.TriangleNet3DComp;
 
 /**
- * Some services for Triangles you dont want to miss. 1) initForPointClouds() -
+ * Some services for Triangles you do not want to miss. 
+ * initForPointClouds(): 
  * Creates some HashMaps for a better Handling of Points from a TriangleNet: The
  * Map "points" is a Map of unique Points with unique IDs. The Map "triangles"
  * is a Map of TriangleIDs with an Integer Array of 3 PointIDs. The Map
@@ -24,6 +26,13 @@ import de.uos.igf.db3d.dbms.model3d.TriangleNet3DComp;
  * 
  * You can use this methods for Import/Export functions to sort out duplicate
  * points.
+ * 
+ * The second init method (initForProgressiveMeshes()) creates even two more
+ * useful Containers: 
+ * Set<Segment3D> segments: A set of all segments of the TriangleNet
+ * 
+ * HashMap<Integer, LinkedList<Triangle3D>> pointToTriangle: This Maps contains
+ * all PointIDs matched to all Triangle3D objects they are present in.
  * 
  * @author Paul Vincent Kuper (kuper@kit.edu)
  */
@@ -47,6 +56,14 @@ public class TriangleServices {
 	// (triangleID, componentID)
 	HashMap<Integer, Integer> components;
 
+	// This Maps contains all PointIDs matched to all Triangle3D objects they
+	// are present in.
+	// (PointID, List of Triangles containing this point)
+	HashMap<Integer, LinkedList<Triangle3D>> pointToTriangle;
+
+	// A set of all segments of the TriangleNet
+	HashSet<Segment3D> segments;
+
 	/**
 	 * Constructor creates Maps and calls init function.
 	 * 
@@ -58,6 +75,8 @@ public class TriangleServices {
 		pointIDs = new HashMap<Point3D, Integer>();
 		triangles = new HashMap<Integer, int[]>();
 		components = new HashMap<Integer, Integer>();
+		segments = new HashSet<Segment3D>();
+		pointToTriangle = new HashMap<Integer, LinkedList<Triangle3D>>();
 	}
 
 	/**
@@ -87,7 +106,7 @@ public class TriangleServices {
 
 				p = triangle.getPoints();
 
-				int[] pointsForTriangles = new int[3];
+				int[] pointsForTriangles = new int[3];			
 
 				for (int i = 0; i < 3; i++) {
 
@@ -99,6 +118,71 @@ public class TriangleServices {
 						id++;
 					} else {
 						pointsForTriangles[i] = pointIDs.get(p[i]);
+					}
+				}
+				triangles.put(triangle.getID(), pointsForTriangles);
+				components.put(triangle.getID(), tri.getID());
+			}
+		}
+	}
+
+	/**
+	 * The initial method to create the Maps for Progressive Meshes. In this
+	 * init method we create two more Containers:
+	 * 
+	 * Set<Segment3D> segments: A set of all segments of the TriangleNet
+	 * 
+	 * HashMap<Integer, LinkedList<Triangle3D>> pointToTriangle: This Maps
+	 * contains all PointIDs matched to all Triangle3D objects they are present
+	 * in.
+	 * 
+	 * @param triNet
+	 *            - A Triangle Net
+	 */
+	public void initForProgressiveMeshes(TriangleNet3D triNet) {
+
+		TriangleNet3DComp[] comp = triNet.getComponents();
+		TriangleElt3D triangle;
+		Point3D[] p;
+		int id = 0;
+
+		// save the IDs of Points to create the Triangles:
+		Set<Point3D> unique = new HashSet<Point3D>();
+
+		for (TriangleNet3DComp tri : comp) {
+
+			Set s = tri.getElementsViaSAM();
+			Iterator<Equivalentable> it = s.iterator();
+			int idForPoint = 0;
+
+			while (it.hasNext()) {
+
+				triangle = (TriangleElt3D) it.next();
+				
+				for (Segment3D seg : triangle.getSegments()) {
+					segments.add(seg);
+				}
+				
+				p = triangle.getPoints();
+
+				int[] pointsForTriangles = new int[3];
+
+				for (int i = 0; i < 3; i++) {
+
+					if (!unique.contains(p[i])) {
+						unique.add(p[i]);
+						points.put(id, p[i]);
+						pointIDs.put(p[i], id);
+						pointsForTriangles[i] = id;
+						
+						pointToTriangle.put(id, new LinkedList<Triangle3D>());
+						pointToTriangle.get(id).add(triangle);
+						
+						id++;
+					} else {
+						idForPoint = pointIDs.get(p[i]);
+						pointsForTriangles[i] = idForPoint;
+						pointToTriangle.get(idForPoint).add(triangle);
 					}
 				}
 				triangles.put(triangle.getID(), pointsForTriangles);
@@ -145,7 +229,26 @@ public class TriangleServices {
 	public HashMap<Integer, Integer> getComponents() {
 		return components;
 	}
+
+	/**
+	 * This Map contains all Triangles matched to a single PointID
+	 * 
+	 * @return the segments
+	 */
+	public HashMap<Integer, LinkedList<Triangle3D>> getpointToTriangles() {
+		return pointToTriangle;
+	}
+
 	
+	/**
+	 * This Set contains all segments of the TriangleNet
+	 * 
+	 * @return the segments
+	 */
+	public Set<Segment3D> getSegments() {
+		return segments;
+	}
+
 	/**
 	 * This Map contains the attributes from the triangle net moved to RGB
 	 * (pointID, color)
@@ -181,16 +284,16 @@ public class TriangleServices {
 
 			if (tmp <= 255) {
 				hexTmp = Integer.toHexString((int) tmp);
-				if (hexTmp.length() == 1) 
+				if (hexTmp.length() == 1)
 					hexTmp = "0" + hexTmp;
 				hex = hexTmp + "ff";
 			} else {
 				hexTmp = Integer.toHexString((int) tmp - 255);
-				if (hexTmp.length() == 1) 
+				if (hexTmp.length() == 1)
 					hexTmp = "0" + hexTmp;
 				hex = "ff" + hexTmp;
 			}
-			
+
 			attributeColors.put(pointIDs.get(point), "0xff" + hex + "00");
 		}
 		return attributeColors;

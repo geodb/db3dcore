@@ -882,17 +882,17 @@ public class Point3D implements PersistentObject, SimpleGeoObj, Equivalentable,
 
 		double[] objcoords = ((Point3D) obj).getCoordinates();
 
-//		ScalarOperator sop = new ScalarOperator();
-//
-//		for (int i = 0; i < 3; i++) {
-//			if (!(sop.equal(this.getCoord(i), objcoords[i])))
-//				return false;
-//		}
-		
+		ScalarOperator sop = new ScalarOperator();
+
 		for (int i = 0; i < 3; i++) {
-			if (!(this.getCoord(i) == objcoords[i]))
+			if (!(sop.equal(this.getCoord(i), objcoords[i])))
 				return false;
 		}
+		
+//		for (int i = 0; i < 3; i++) {
+//			if (!(this.getCoord(i) == objcoords[i]))
+//				return false;
+//		}
 		return true;
 	}
 
