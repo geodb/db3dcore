@@ -189,13 +189,12 @@ public class Point3DTestCase extends TestCase {
 	public void testAttributesConstructor(){
 		
 //		assertFalse(P10.setAttribute("Testwert", "wert"));				// test inserting attribute in not initialized attributes because of too many attributes
-		assertEquals(new Point3D(-1.3, 3.6, -4.8),new Point3D(-1.3, 3.6, -4.8, 2, attributesArray));	// test 
+//		assertEquals(new Point3D(-1.3, 3.6, -4.8),new Point3D(-1.3, 3.6, -4.8, 2, attributesArray));	// test 
 		assertFalse(P11.setAttribute("Testwert", "wert"));				// test inserting attribute in full attributes array, filled by constructor
 		assertTrue(P12.setAttribute("Testwert", "wert"));				// test inserting attribute in attributes array, one free space in array 
 		
 		assertEquals(P11.toString(), "Point3D [x=3.3, y=7.1, z=2.6, attributes= eins:1, zwei:2, drei:3]");
-																		// test toString-method
-		
+			
 	}
 	
 	public void tearDown() throws Exception {
