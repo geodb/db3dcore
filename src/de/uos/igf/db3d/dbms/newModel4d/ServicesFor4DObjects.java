@@ -72,7 +72,7 @@ public class ServicesFor4DObjects {
 			// create all the Triangel3D objects
 			// for every component:
 
-			Iterator<Integer> keys = geometry.getTriangleNets().keySet()
+			Iterator<Integer> keys = geometry.getTriangleNetComps().keySet()
 					.iterator();
 
 			while (keys.hasNext()) {
@@ -80,20 +80,20 @@ public class ServicesFor4DObjects {
 				Integer id = keys.next();
 
 				TriangleElt3D[] elements = new TriangleElt3D[geometry
-						.getTriangleNets().get(id).getElements().size()];
+						.getTriangleNetComps().get(id).getElements().size()];
 
 				// for every Triangle of this component
 
 				// TODO über die eintraege iterieren. (Entryset)
 
-				Iterator<Integer> ids = geometry.getTriangleNets().get(id)
+				Iterator<Integer> ids = geometry.getTriangleNetComps().get(id)
 						.getElements().keySet().iterator();
 
 				while (ids.hasNext()) {
 
 					Integer triangleID = ids.next();
 
-					Triangle4D tmp = geometry.getTriangleNets().get(id)
+					Triangle4D tmp = geometry.getTriangleNetComps().get(id)
 							.getElements().get(triangleID);
 
 					TriangleElt3D triangle = new TriangleElt3D(

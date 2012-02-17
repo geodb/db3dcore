@@ -19,7 +19,7 @@ public class SpatialObject4D {
 	// TODO Netze zu Components!
 	// TODO TreeMap nehmen!
 	private Map<Integer, TetrahedronNet4D> tetrahedronNets;
-	private Map<Integer, TriangleNet4D> triangleNets;
+	private Map<Integer, TriangleNet4DComp> triangleNetComps;
 	private Map<Integer, SegmentNet4D> segmentNets;
 
 	// TODO: do we need components for points?
@@ -34,7 +34,7 @@ public class SpatialObject4D {
 	public SpatialObject4D() {
 		this.object = null;
 		tetrahedronNets = new HashMap<Integer, TetrahedronNet4D>();
-		triangleNets = new HashMap<Integer, TriangleNet4D>();
+		triangleNetComps = new HashMap<Integer, TriangleNet4DComp>();
 		segmentNets = new HashMap<Integer, SegmentNet4D>();
 		points = new HashMap<Integer, Point4D>();
 		sop = new ScalarOperator();
@@ -84,12 +84,12 @@ public class SpatialObject4D {
 		this.tetrahedronNets = tetrahedronNets;
 	}
 
-	public Map<Integer, TriangleNet4D> getTriangleNets() {
-		return triangleNets;
+	public Map<Integer, TriangleNet4DComp> getTriangleNetComps() {
+		return triangleNetComps;
 	}
 
-	public void setTriangleNets(Map<Integer, TriangleNet4D> triangleNets) {
-		this.triangleNets = triangleNets;
+	public void setTriangleNetComps(Map<Integer, TriangleNet4DComp> triangleNetComps) {
+		this.triangleNetComps = triangleNetComps;
 	}
 
 	public Map<Integer, SegmentNet4D> getSegmentNets() {
