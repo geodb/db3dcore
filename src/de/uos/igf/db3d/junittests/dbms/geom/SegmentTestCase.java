@@ -4,6 +4,9 @@
 
 package de.uos.igf.db3d.junittests.dbms.geom;
 
+import java.util.HashSet;
+import java.util.Set;
+
 import junit.framework.TestCase;
 import de.uos.igf.db3d.dbms.api.GeometryException;
 import de.uos.igf.db3d.dbms.api.UpdateException;
@@ -22,6 +25,16 @@ import de.uos.igf.db3d.dbms.model3d.SegmentNetBuilder;
  * 
  */
 public class SegmentTestCase extends TestCase {
+	
+	public void testEquals() {
+		SegmentElt3D seg1 = new SegmentElt3D(new Point3D(1.0, 1.0, 1.0),
+				new Point3D(3.0, 1.0, 1.0), new ScalarOperator());
+		SegmentElt3D seg2 = new SegmentElt3D(new Point3D(1.0, 1.0, 1.0),
+				new Point3D(3.0, 1.0, 1.0), new ScalarOperator());
+		assertTrue(seg1.equals(seg2));		
+		SegmentElt3D seg3 = new SegmentElt3D(new Point3D(3.0, 1.0, 1.0), new Point3D(1.0, 1.0, 1.0), new ScalarOperator());
+		assertTrue(seg1.equals(seg3));
+	}
 
 	public void testIntersection() {
 

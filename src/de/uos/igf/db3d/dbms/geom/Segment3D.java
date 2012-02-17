@@ -1047,15 +1047,14 @@ public class Segment3D implements PersistentObject, SimpleGeoObj,
 
 	@Override
 	public int hashCode() {
-		final int prime = 31;
 		int result = 1;
-		result = prime * result + ((end == null) ? 0 : end.hashCode());
-		result = prime * result + ((start == null) ? 0 : start.hashCode());
+		result = result + ((end == null) ? 0 : end.hashCode());
+		result = result + ((start == null) ? 0 : start.hashCode());
 		return result;
 	}
 
 	@Override
-	public boolean equals(Object obj) {
+	public boolean equals(Object obj) {		
 		if (this == obj)
 			return true;
 		if (obj == null)

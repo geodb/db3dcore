@@ -30,6 +30,13 @@ public class Point3D implements PersistentObject, SimpleGeoObj, Equivalentable,
 	private double z;
 	private String[][] attributes;
 
+	
+	
+	/**
+	 * Returns the attributes of Point3D in a formatted string,
+	 * or provides an siutable message if no attributes are stored for the Point. 
+	 * @return String
+	 */
 	private String attributesToString() {
 		String attrString = "";
 		if (this.attributes != null) {
@@ -39,12 +46,13 @@ public class Point3D implements PersistentObject, SimpleGeoObj, Equivalentable,
 							+ this.attributes[i][1] + ", ";
 				}
 				int lastIndex = attrString.lastIndexOf(", ");
-				attrString = attrString.substring(0, lastIndex);
+				attrString = ", attributes= " + attrString.substring(0, lastIndex);
 			} else {
 				attrString = "Attributes initialized with count 0, i.e. no names and values provided!";
 			}
 		} else {
-			attrString = "No attributes initialized!";
+//			attrString = "No attributes initialized!";
+			attrString = "";
 		}
 		return attrString;
 	}
@@ -62,7 +70,7 @@ public class Point3D implements PersistentObject, SimpleGeoObj, Equivalentable,
 		} else {
 			DB3DLogger.logger
 					.log(Level.FINER,
-							"Info Warning: Too much attributes provided for initialized number of attributes.");
+							"Info Warning: Too many attributes provided for initialized number of attributes.");
 		}
 	}
 
@@ -241,6 +249,7 @@ public class Point3D implements PersistentObject, SimpleGeoObj, Equivalentable,
 		this.x = x;
 		this.y = y;
 		this.z = z;
+		
 		if (numOfAttributes > 0) {
 			AttributeInitializer(numOfAttributes, attributesArray);
 		}
@@ -361,6 +370,11 @@ public class Point3D implements PersistentObject, SimpleGeoObj, Equivalentable,
 		this.x = point.getX();
 		this.y = point.getY();
 		this.z = point.getZ();
+		
+		if (point.attributes != null) {
+			initNumOfAttributes(point.attributes.length);
+			initAttributes(point.attributes);			
+		}
 	}
 
 	/**
@@ -882,23 +896,22 @@ public class Point3D implements PersistentObject, SimpleGeoObj, Equivalentable,
 
 		double[] objcoords = ((Point3D) obj).getCoordinates();
 
-//		ScalarOperator sop = new ScalarOperator();
-//
-//		for (int i = 0; i < 3; i++) {
-//			if (!(sop.equal(this.getCoord(i), objcoords[i])))
-//				return false;
-//		}
-		
+		ScalarOperator sop = new ScalarOperator();
+
 		for (int i = 0; i < 3; i++) {
-			if (!(this.getCoord(i) == objcoords[i]))
+			if (!(sop.equal(this.getCoord(i), objcoords[i])))
 				return false;
 		}
+		
+//		for (int i = 0; i < 3; i++) {
+//			if (!(this.getCoord(i) == objcoords[i]))
+//				return false;
+//		}
 		return true;
 	}
 
 	@Override
 	public String toString() {
-		return "Point3D [x=" + x + ", y=" + y + ", z=" + z + ", attributes= "
-				+ attributesToString() + "]";
+		return "Point3D [x=" + x + ", y=" + y + ", z=" + z + attributesToString() + "]";
 	}
 }
