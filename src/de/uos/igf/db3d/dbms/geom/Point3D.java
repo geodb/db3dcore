@@ -23,6 +23,8 @@ import de.uos.igf.db3d.resources.DB3DLogger;
  */
 public class Point3D implements PersistentObject, SimpleGeoObj, Equivalentable,
 		Externalizable {
+	
+	public int id;
 
 	/* coordinates */
 	private double x;

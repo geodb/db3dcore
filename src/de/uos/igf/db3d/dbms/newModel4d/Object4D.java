@@ -426,23 +426,22 @@ public class Object4D {
 		return timesteps;
 	}
 
-	protected static int getIndexOfGeometry(LinkedList<Date> dateInterval,
-			Date date) {
+	protected int getIndexOfGeometry(Date date) {
 
 		int indexOfGeometry = 0;
 
 		// check if there is more than one timestep:
-		if (dateInterval.size() > 1) {
+		if (this.timesteps.size() > 1) {
 
 			// find out which is the right topology for this specified date:
-			Date firstDate = dateInterval.get(0);
-			Date currentDate = dateInterval.get(1);
+			Date dateBefore = this.timesteps.get(0);
+			Date currentDate = this.timesteps.get(1);
 			int cnt = 2;
 			while (currentDate.before(date)) {
-				if (currentDate == firstDate)
+				if (currentDate == dateBefore)
 					indexOfGeometry++;
-				firstDate = currentDate;
-				currentDate = dateInterval.get(cnt);
+				dateBefore = currentDate;
+				currentDate = this.timesteps.get(cnt);
 				cnt++;
 			}
 		}

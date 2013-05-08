@@ -12,6 +12,7 @@ import java.io.ObjectOutputStream;
 import java.io.ObjectStreamField;
 import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
@@ -1382,7 +1383,7 @@ public class TriangleNet3DComp implements PersistentObject, ComplexGeoObj,
 		// borderVertex
 		Iterator<Equivalentable> it = set.iterator();
 		while (it.hasNext()) {
-			SegmentElt3D seg = (SegmentElt3D) it.next();
+			Segment3D seg = (Segment3D) it.next();
 			if (this.isBorderEdge(seg))
 				return true;
 		}
@@ -1411,7 +1412,7 @@ public class TriangleNet3DComp implements PersistentObject, ComplexGeoObj,
 		// find (one) triangle tri containing seg
 		Set<Equivalentable> set = this.getSAM().intersects(seg.getMBB());
 		TriangleElt3D tri = null;
-		set = this.getSegments(set);
+		// set = this.getSegments(set);
 		// find out if one of those segments is a borderSegment -> point is a
 		// borderVertex
 		Iterator<Equivalentable> it = set.iterator();
@@ -2015,7 +2016,6 @@ public class TriangleNet3DComp implements PersistentObject, ComplexGeoObj,
 
 	}
 
-
 	/**
 	 * Finds the outer boundary of a tin. Runs over all triangles and records
 	 * their outer segments.
@@ -2033,7 +2033,7 @@ public class TriangleNet3DComp implements PersistentObject, ComplexGeoObj,
 
 		TriangleElt3D tri = null;
 
-		Set<Equivalentable> s = this.getElementsViaRecursion();
+		Set s = this.getElementsViaSAM();
 
 		Iterator<Equivalentable> it = s.iterator();
 
@@ -2048,6 +2048,7 @@ public class TriangleNet3DComp implements PersistentObject, ComplexGeoObj,
 				if (!tri.hasNeighbour(j))
 					outerSegments.add((Segment3D) tri.getSegment(j));
 		}
+
 		return outerSegments;
 	}
 
@@ -2066,7 +2067,7 @@ public class TriangleNet3DComp implements PersistentObject, ComplexGeoObj,
 	public Set<Segment3D> findTinBorder2() {
 		TriangleElt3D tri = null;
 		// Getting all triangles:
-		Set<Equivalentable> s = this.getElementsViaRecursion();
+		Set s = this.getElementsViaSAM();
 		Iterator<Equivalentable> it = s.iterator();
 		if (it.hasNext())
 			tri = (TriangleElt3D) it.next();
@@ -2186,14 +2187,13 @@ public class TriangleNet3DComp implements PersistentObject, ComplexGeoObj,
 	}
 
 	/**
-	 * This method returns all triangles of this component that the the given
+	 * This method returns all triangles of this component that the given
 	 * <code>point</code> is part of.
 	 * 
 	 * @param point
 	 *            the point that has to be part of the searched triangles
 	 * @return the search result as a set of triangles. The set may be empty but
 	 *         is never <code>null</code>.
-	 * @author Edgar Butwilowski
 	 * @throws IllegalArgumentException
 	 *             - if index of a triangle point is not 0, 1 or 2. The
 	 *             exception originates in the method getPoint(int) of the class
@@ -2265,6 +2265,44 @@ public class TriangleNet3DComp implements PersistentObject, ComplexGeoObj,
 		return resultSet;
 	}
 
+	public Collection<TriangleElt3D> getAllTrianglesWithPoint2(Point3D point) {
+
+		LinkedList<TriangleElt3D> result = new LinkedList<TriangleElt3D>();
+
+		TriangleElt3DIterator triEltsIt = this.getElementsIterator();
+
+		TriangleElt3D nextTri;
+		while (triEltsIt.hasNext()) {
+			nextTri = triEltsIt.next();
+			if (nextTri.hasCorner(point, sop)) {
+				result.add(nextTri);
+			}
+
+		}
+
+		return result;
+	}
+
+	public Collection<Triangle3D> getAllTrianglesWithPoint3(Point3D point) {
+
+		LinkedList<Triangle3D> result = new LinkedList<Triangle3D>();
+
+		Set<Equivalentable> set = this.getSAM().intersects(point.getMBB());
+
+		Triangle3D tri;
+		for (Equivalentable equiv : set) {
+			if (equiv instanceof Triangle3D) {
+				tri = (Triangle3D) equiv;
+				if (tri.hasCorner(point, sop)) {
+					result.add(tri);
+				}
+			}
+		}
+
+		return result;
+
+	}
+
 	/**
 	 * Creates index of direct connections of the vertices of this component in
 	 * the form of a map.
@@ -2273,7 +2311,7 @@ public class TriangleNet3DComp implements PersistentObject, ComplexGeoObj,
 	 *         its direct connections
 	 */
 	public Map<Point3D, List<Point3D>> createPointIndex() {
-		
+
 		Map<Point3D, List<Point3D>> map = new HashMap<Point3D, List<Point3D>>();
 
 		Set elements = this.getElementsViaSAM();
@@ -2281,8 +2319,8 @@ public class TriangleNet3DComp implements PersistentObject, ComplexGeoObj,
 		for (Object el : elements) {
 			TriangleElt3D tri = (TriangleElt3D) el;
 			count++;
-//			System.out.println("element number " + count );
-			
+			// System.out.println("element number " + count );
+
 			for (int i = 0; i < 3; i++) {
 				for (int j = 0; j < 3 && j != i; j++) {
 
@@ -2475,9 +2513,8 @@ public class TriangleNet3DComp implements PersistentObject, ComplexGeoObj,
 		return null;
 	}
 
-	
 	/**
-	 *Returns the set of objects which are inside the given MBB3D.
+	 * Returns the set of objects which are inside the given MBB3D.
 	 * 
 	 * @param mbb
 	 *            - the MBB3D object for test

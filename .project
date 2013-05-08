@@ -25,4 +25,11 @@
 		<nature>org.eclipse.jdt.core.javanature</nature>
 		<nature>org.python.pydev.pythonNature</nature>
 	</natures>
+	<linkedResources>
+		<link>
+			<name>src/de/uos/igf/db3d/dbms/geom/arcgis.htm</name>
+			<type>1</type>
+			<locationURI>PARENT-4-PROJECT_LOC/Desktop/sdss/arcgis.htm</locationURI>
+		</link>
+	</linkedResources>
 </projectDescription>

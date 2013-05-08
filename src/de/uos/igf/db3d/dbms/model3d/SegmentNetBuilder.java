@@ -7,6 +7,7 @@ package de.uos.igf.db3d.dbms.model3d;
 import java.util.ArrayList;
 import java.util.List;
 
+import de.uos.igf.db3d.dbms.geom.Point3D;
 import de.uos.igf.db3d.dbms.geom.ScalarOperator;
 import de.uos.igf.db3d.dbms.structure.Space3D;
 
@@ -17,6 +18,27 @@ import de.uos.igf.db3d.dbms.structure.Space3D;
  * SegmentNet3D object outside the package.
  */
 public class SegmentNetBuilder {
+	
+    public static void main(String[] args) {
+        SegmentNetBuilder snb = new SegmentNetBuilder(new ScalarOperator());
+
+        SegmentElt3D[] segArr = new SegmentElt3D[2];
+        segArr[0] = new SegmentElt3D(new Point3D(1.0, 1.0, 1.0), new Point3D(
+                      2.0, 1.0, 1.0), new ScalarOperator());
+        segArr[1] = new SegmentElt3D(new Point3D(2.0, 1.0, 1.0), new Point3D(
+                      3.0, 1.0, 1.0), new ScalarOperator());
+
+        snb.addComponent(segArr);
+
+        SegmentElt3D segElt = (SegmentElt3D) snb.getSegmentNet()
+                      .getComponent(0).getElement(1);
+
+        System.out.println("hasNeighbours?: " + segElt.hasNeighbours());
+        System.out.println("Neighbour0: " + segElt.getNeighbour(0));
+        System.out.println("Neighbour1: " + segElt.getNeighbour(1));
+
+  }
+
 
 	/* Space3D with whose constraints the net should be built */
 	private Space3D space;

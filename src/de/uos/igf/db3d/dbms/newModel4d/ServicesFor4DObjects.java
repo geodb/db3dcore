@@ -36,8 +36,7 @@ public class ServicesFor4DObjects {
 			return null;
 		else {
 
-			int indexOfGeometry = Object4D.getIndexOfGeometry(
-					object.getTimesteps(), date);
+			int indexOfGeometry = object.getIndexOfGeometry(date);
 
 			// now we have the index of the right topology for this date.
 			// so get the right points:
