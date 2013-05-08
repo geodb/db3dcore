@@ -218,8 +218,4 @@ public class Object3DBuilder {
 		return this.time;
 	}
 
-	protected void setObjectForSpatial(SpatialObject3D spatial, Object3D object) {
-		spatial.setObject3D(object);
-	}
-
 }

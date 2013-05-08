@@ -434,6 +434,45 @@ public class TriangleNet3D extends SpatialObject3D implements Surface3D,
 		}
 		return false;
 	}
+	
+	/**
+	 * Test whether this intersects with given segment.
+	 * 
+	 * @param seg
+	 *            Segment3D to be tested
+	 * @return boolean - true if intersects, false otherwise.
+	 * @throws IllegalStateException
+	 *             - if the intersectsInt(Segment3D line, ScalarOperator sop)
+	 *             method of the class Segment3D (which computes the intersection
+	 *             of two segments) called by this method returns a value that is
+	 *             not -2, -1, 0 or 1.
+	 * @throws IllegalArgumentException
+	 *             - if an attempt is made to construct a MBB3D whose maximum
+	 *             point is not greater than its minimum point.
+	 * @throws IllegalStateException
+	 *             - if the index of the point coordinate is not 0 , 1 or 2
+	 *             (that stands for the x-, y- and z-coordinate).
+	 * @throws IllegalArgumentException
+	 *             if the index of the point of the tetrahedron is not in the
+	 *             interval [0;3]. The exception originates in the method
+	 *             getPoint(int) of the class Tetrahedron3D.
+	 * @throws IllegalArgumentException
+	 *             - if index of a triangle point is not 0, 1 or 2. The
+	 *             exception originates in the method getPoint(int) of the class
+	 *             Triangle3D.
+	 * @throws ArithmeticException
+	 *             - if norm equals zero in epsilon range. This exception
+	 *             originates in the method normalize(ScalarOperator) of the
+	 *             class Vector3D.
+	 */
+	public boolean intersects(Segment3D seg) { // Dag
+		TriangleNet3DComp[] comps = getComponents();
+		for (int i = 0; i < comps.length; i++) {
+			if (comps[i].intersects(seg))
+				return true;
+		}
+		return false;
+	}
 
 	/**
 	 * Test whether this intersects with given bounding box.

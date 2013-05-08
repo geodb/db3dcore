@@ -1119,6 +1119,53 @@ public class TriangleNet3DComp implements PersistentObject, ComplexGeoObj,
 		}
 		return false;
 	}
+	
+	/**
+	 * Test whether this intersects with given segment.
+	 * 
+	 * @param seg
+	 *            Segment3D to be tested
+	 * @return boolean - true if intersects, false otherwise.
+	 * @throws IllegalStateException
+	 *             - if the intersectsInt(Segment3D seg, ScalarOperator sop)
+	 *             method of the class Segment3D (which computes the intersection
+	 *             of two segments) called by this method returns a value that is
+	 *             not -2, -1, 0 or 1.
+	 * @throws IllegalArgumentException
+	 *             - if an attempt is made to construct a MBB3D whose maximum
+	 *             point is not greater than its minimum point.
+	 * @throws IllegalStateException
+	 *             - if the index of the point coordinate is not 0 , 1 or 2
+	 *             (that stands for the x-, y- and z-coordinate).
+	 * @throws IllegalArgumentException
+	 *             if the index of the point of the tetrahedron is not in the
+	 *             interval [0;3]. The exception originates in the method
+	 *             getPoint(int) of the class Tetrahedron3D.
+	 * @throws IllegalArgumentException
+	 *             - if index of a triangle point is not 0, 1 or 2. The
+	 *             exception originates in the method getPoint(int) of the class
+	 *             Triangle3D.
+	 * @throws ArithmeticException
+	 *             - if norm equals zero in epsilon range. This exception
+	 *             originates in the method normalize(ScalarOperator) of the
+	 *             class Vector3D.
+	 */
+	public boolean intersects(Segment3D seg) { // Dag
+
+		SimpleGeoObj sgo = this.getMBB().intersection(seg.getLine(sop),
+				this.getScalarOperator());
+		if (sgo == null)
+			return false;
+		Set<Equivalentable> set = this.getSAM().intersects(sgo.getMBB());
+		// Here an IllegalArgumentException can be thrown.
+		Iterator<Equivalentable> it = set.iterator();
+		while (it.hasNext()) {
+			TriangleElt3D tri = (TriangleElt3D) it.next();
+			if (tri.intersects(seg, this.getScalarOperator()))
+				return true;
+		}
+		return false;
+	}
 
 	/**
 	 * Test whether this intersects with given bounding box.
