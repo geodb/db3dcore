@@ -21,6 +21,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.Stack;
+import java.util.TreeSet;
 import java.util.logging.Level;
 
 import de.uos.igf.db3d.dbms.api.ContainmentException;
@@ -1119,7 +1120,7 @@ public class TriangleNet3DComp implements PersistentObject, ComplexGeoObj,
 		}
 		return false;
 	}
-	
+
 	/**
 	 * Test whether this intersects with given segment.
 	 * 
@@ -1128,9 +1129,9 @@ public class TriangleNet3DComp implements PersistentObject, ComplexGeoObj,
 	 * @return boolean - true if intersects, false otherwise.
 	 * @throws IllegalStateException
 	 *             - if the intersectsInt(Segment3D seg, ScalarOperator sop)
-	 *             method of the class Segment3D (which computes the intersection
-	 *             of two segments) called by this method returns a value that is
-	 *             not -2, -1, 0 or 1.
+	 *             method of the class Segment3D (which computes the
+	 *             intersection of two segments) called by this method returns a
+	 *             value that is not -2, -1, 0 or 1.
 	 * @throws IllegalArgumentException
 	 *             - if an attempt is made to construct a MBB3D whose maximum
 	 *             point is not greater than its minimum point.
@@ -2044,7 +2045,9 @@ public class TriangleNet3DComp implements PersistentObject, ComplexGeoObj,
 	private void makeSet(Set<Equivalentable> set, TriangleElt3D elt) {
 
 		LinkedList<TriangleElt3D> toVisit = new LinkedList<TriangleElt3D>();
+		TreeSet<Integer> checked = new TreeSet<Integer>();
 		toVisit.add(elt);
+		checked.add(elt.getID());
 
 		TriangleElt3D currTri;
 		TriangleElt3D nb;
@@ -2055,8 +2058,9 @@ public class TriangleNet3DComp implements PersistentObject, ComplexGeoObj,
 			for (int i = 0; i < 3; i++) {
 				nb = currTri.getNeighbour(i);
 				// if not already visited:
-				if (nb != null && !set.contains(nb)) {
+				if (nb != null && !checked.contains(nb.getID())) {
 					toVisit.add(nb);
+					checked.add(nb.getID());
 				}
 			}
 		}
@@ -2231,6 +2235,21 @@ public class TriangleNet3DComp implements PersistentObject, ComplexGeoObj,
 			// while tri is not an already visited triangle
 		}
 		return outerSegments;
+	}
+
+	public Collection<Segment3D> getAllSegmentsWithPoint(Point3D point) {
+		LinkedList<Segment3D> resultSet = new LinkedList<Segment3D>();
+		Collection<TriangleElt3D> allTrianglesWithPoint = getAllTrianglesWithPoint2(point);
+		Segment3D seg;
+		for (TriangleElt3D tri : allTrianglesWithPoint) {
+			for (int i = 0; i < 3; i++) {
+				seg = tri.getSegment(i);
+				if (seg.contains(point, sop)) {
+					resultSet.add(seg);
+				}
+			}
+		}
+		return resultSet;
 	}
 
 	/**
