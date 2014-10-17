@@ -9,8 +9,6 @@ import java.io.IOException;
 import java.io.ObjectInput;
 import java.io.ObjectOutput;
 
-import de.uos.igf.db3d.dbms.structure.PersistentObject;
-
 /**
  * Class ScalarOperator - for epsilon-based arithmetic comparisons.<br>
  * Currently the epsilon for the ScalarOperator has to be something like<br>
@@ -19,7 +17,7 @@ import de.uos.igf.db3d.dbms.structure.PersistentObject;
  * 
  * @author Wolfgang Baer / University of Osnabrueck
  */
-public class ScalarOperator implements PersistentObject, Externalizable {
+public class ScalarOperator implements Externalizable {
 
 	/* persistent epsilon */
 	private double epsilon;

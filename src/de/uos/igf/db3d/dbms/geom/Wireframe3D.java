@@ -15,7 +15,6 @@ import java.util.Map.Entry;
 import java.util.Set;
 
 import de.uos.igf.db3d.dbms.api.Db3dSimpleResourceBundle;
-import de.uos.igf.db3d.dbms.structure.PersistentObject;
 import de.uos.igf.db3d.dbms.util.EquivalentableHashMap;
 import de.uos.igf.db3d.dbms.util.EquivalentableHashSet;
 
@@ -25,7 +24,7 @@ import de.uos.igf.db3d.dbms.util.EquivalentableHashSet;
  * 
  * @author Wolfgang Baer / University of Osnabrueck
  */
-public class Wireframe3D implements SimpleGeoObj, PersistentObject {
+public class Wireframe3D implements SimpleGeoObj {
 
 	/* dimension of the wireframe */
 	private byte dimension;
@@ -664,10 +663,10 @@ public class Wireframe3D implements SimpleGeoObj, PersistentObject {
 	/**
 	 * Triangulates the wireframe which should be !!!planar and convex!!! So far
 	 * these conditions are met anywhere where a wireframe is constructed, i.e.
-	 * as a result of intersecting and projecting. (Proof of convexity:
-	 * the intersection of two convex sets is a convex set. Any simplex is
-	 * convex, therefore, the intersection of two simpices is also convex. A
-	 * projection of a simplex should also be convex.)
+	 * as a result of intersecting and projecting. (Proof of convexity: the
+	 * intersection of two convex sets is a convex set. Any simplex is convex,
+	 * therefore, the intersection of two simpices is also convex. A projection
+	 * of a simplex should also be convex.)
 	 * 
 	 * @author Daria Golovko
 	 * @return List of triangles that substite the wireframe.
@@ -754,7 +753,7 @@ public class Wireframe3D implements SimpleGeoObj, PersistentObject {
 	 * 
 	 * @return WIREFRAME3D always.
 	 * 
-	 * @see db3d.dbms.structure.GeoObj#getType()
+	 * @see db3d.dbms.structure.GeoObject#getType()
 	 */
 	public byte getType() {
 		return SimpleGeoObj.WIREFRAME3D;
@@ -927,7 +926,7 @@ public class Wireframe3D implements SimpleGeoObj, PersistentObject {
 	/*
 	 * Class representing the nodes of the wireframe.
 	 */
-	private final class Wireframe3DNode implements PersistentObject {
+	private final class Wireframe3DNode {
 
 		/* set of connections of the wireframe */
 		private HashSet<Wireframe3DNode> connections;
@@ -1017,13 +1016,6 @@ public class Wireframe3D implements SimpleGeoObj, PersistentObject {
 
 			return segments;
 		}
-
-		// @Override
-		// public String toString() {
-		// return "Wireframe3DNode [" + /*connections=" + connections + */",
-		// point="
-		// + point + "]";
-		// }
 
 	}
 

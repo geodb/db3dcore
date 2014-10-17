@@ -8,11 +8,11 @@ import junit.framework.TestCase;
 import de.uos.igf.db3d.dbms.api.NameNotUniqueException;
 import de.uos.igf.db3d.dbms.geom.Point3D;
 import de.uos.igf.db3d.dbms.geom.ScalarOperator;
-import de.uos.igf.db3d.dbms.model3d.TriangleElt3D;
-import de.uos.igf.db3d.dbms.model3d.TriangleNet3D;
-import de.uos.igf.db3d.dbms.model3d.TriangleNet3DComp;
-import de.uos.igf.db3d.dbms.model3d.TriangleNetBuilder;
-import de.uos.igf.db3d.dbms.model3d.TriangleNet3DComp.TriangleElt3DIterator;
+import de.uos.igf.db3d.dbms.model3d.standard.TriangleNet3D;
+import de.uos.igf.db3d.dbms.model3d.standard.TriangleNet3DBuilder;
+import de.uos.igf.db3d.dbms.model3d.standard.TriangleNet3DComponent;
+import de.uos.igf.db3d.dbms.model3d.standard.TriangleNet3DElement;
+import de.uos.igf.db3d.dbms.model3d.standard.TriangleNet3DComponent.TriangleElt3DIterator;
 
 /**
  * This testcase tests the (topology) methods of the
@@ -25,23 +25,23 @@ public class TriangleNet3DCompTestCase extends TestCase {
 	public void testElementReferences() throws NameNotUniqueException {
 
 		ScalarOperator sop = new ScalarOperator();
-		TriangleNetBuilder triNetBuilder = new TriangleNetBuilder(sop);
-		TriangleElt3D tri1 = new TriangleElt3D(new Point3D(1.0, 1.0, 1.0),
+		TriangleNet3DBuilder triNetBuilder = new TriangleNet3DBuilder(sop);
+		TriangleNet3DElement tri1 = new TriangleNet3DElement(new Point3D(1.0, 1.0, 1.0),
 				new Point3D(3.0, 1.0, 1.0), new Point3D(2.0, 3.0, 1.0),
 				sop);
-		TriangleElt3D tri2 = new TriangleElt3D(new Point3D(3.0, 1.0, 1.0),
+		TriangleNet3DElement tri2 = new TriangleNet3DElement(new Point3D(3.0, 1.0, 1.0),
 				new Point3D(2.0, 3.0, 1.0), new Point3D(3.0, 3.0, 1.0),
 				sop);
-		TriangleElt3D tri111 = new TriangleElt3D(new Point3D(3.0, 1.0, 1.0),
+		TriangleNet3DElement tri111 = new TriangleNet3DElement(new Point3D(3.0, 1.0, 1.0),
 				new Point3D(3.0, 3.0, 1.0), new Point3D(4.0, 1.0, 1.0),
 				sop);
-		triNetBuilder.addComponent(new TriangleElt3D[] { tri1, tri2, tri111 });
+		triNetBuilder.addComponent(new TriangleNet3DElement[] { tri1, tri2, tri111 });
 		TriangleNet3D triNet3D = triNetBuilder.getTriangleNet();
-		TriangleNet3DComp triComp = triNet3D.getComponent(0);
+		TriangleNet3DComponent triComp = triNet3D.getComponent(0);
 
-		TriangleElt3D tri3 = triComp.getElement(1);
-		TriangleElt3D tri4 = triComp.getElement(2);
-		TriangleElt3D tri5 = triComp.getElement(3);
+		TriangleNet3DElement tri3 = triComp.getElement(1);
+		TriangleNet3DElement tri4 = triComp.getElement(2);
+		TriangleNet3DElement tri5 = triComp.getElement(3);
 
 		assertTrue(tri3 != null);
 		assertTrue(tri4 != null);

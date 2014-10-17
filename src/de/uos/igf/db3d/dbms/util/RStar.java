@@ -17,8 +17,7 @@ import de.uos.igf.db3d.dbms.geom.Equivalentable;
 import de.uos.igf.db3d.dbms.geom.MBB3D;
 import de.uos.igf.db3d.dbms.geom.Point3D;
 import de.uos.igf.db3d.dbms.geom.ScalarOperator;
-import de.uos.igf.db3d.dbms.structure.GeoObj;
-import de.uos.igf.db3d.dbms.structure.PersistentObject;
+import de.uos.igf.db3d.dbms.model3d.api.GeoObject;
 
 // IDEAS: Pool for RStarSplitResult instead of creating temporary Objects.
 
@@ -38,7 +37,7 @@ import de.uos.igf.db3d.dbms.structure.PersistentObject;
  * <br>
  * Default Serialization (Serializable) - WBaer 07082003
  */
-public final class RStar implements SAM, PersistentObject {
+public final class RStar implements SAM {
 
 	// Members
 
@@ -121,7 +120,7 @@ public final class RStar implements SAM, PersistentObject {
 	 *             exception originates in the method getPoint(int) of the class
 	 *             Triangle3D.
 	 */
-	public synchronized boolean insert(GeoObj obj) {
+	public synchronized boolean insert(GeoObject obj) {
 		if (obj == null)
 			return false;
 		MBB3D mbb = obj.getMBB();
@@ -179,7 +178,7 @@ public final class RStar implements SAM, PersistentObject {
 	 *             exception originates in the method getPoint(int) of the class
 	 *             Triangle3D.
 	 */
-	public synchronized boolean remove(GeoObj obj) {
+	public synchronized boolean remove(GeoObject obj) {
 		MBB3D mbb = obj.getMBB();
 		// Here an IllegalArgumentException can be thrown.
 		if (mbb == null)
@@ -601,7 +600,7 @@ public final class RStar implements SAM, PersistentObject {
 	 * 
 	 * Default Serialization (Serializable) - WBaer 07082003
 	 */
-	private final class Node implements PersistentObject, Serializable {
+	private final class Node implements Serializable {
 
 		// Members
 
@@ -2286,7 +2285,7 @@ public final class RStar implements SAM, PersistentObject {
 	 * @author Wolfgang Baer / University of Osnabrueck Default Serialization
 	 * (Serializable) - WBaer 07082003
 	 */
-	private final static class Entry implements PersistentObject, Serializable {
+	private final static class Entry implements Serializable {
 
 		// Members
 

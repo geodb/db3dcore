@@ -9,7 +9,7 @@ import java.util.Set;
 
 import de.uos.igf.db3d.dbms.geom.MBB3D;
 import de.uos.igf.db3d.dbms.geom.Point3D;
-import de.uos.igf.db3d.dbms.structure.GeoObj;
+import de.uos.igf.db3d.dbms.model3d.api.GeoObject;
 
 /**
  * The Interface SAM defines the methods used for spatial access in the
@@ -62,7 +62,7 @@ public interface SAM extends Serializable {
 	 * 
 	 * @return Set - all entries.
 	 */
-	public Set getEntries();
+	public Set<?> getEntries();
 
 	/**
 	 * Inserts an GeoObj into the SAM.
@@ -71,7 +71,7 @@ public interface SAM extends Serializable {
 	 *            a GeoObj to be inserted
 	 * @return boolean - true if insertion successful.
 	 */
-	public boolean insert(GeoObj go);
+	public boolean insert(GeoObject go);
 
 	/**
 	 * Removes an GeoObj from the SAM.
@@ -80,7 +80,7 @@ public interface SAM extends Serializable {
 	 *            an GeoObj to be removed
 	 * @return boolean - true if removal successful.
 	 */
-	public boolean remove(GeoObj go);
+	public boolean remove(GeoObject go);
 
 	/**
 	 * Returns the set of SpatialObject objects which <b>strictly</b> intersect
@@ -90,7 +90,7 @@ public interface SAM extends Serializable {
 	 *            the MBB3D object for test
 	 * @return Set - a Set object containing the result.
 	 */
-	public Set intersectsStrict(MBB3D mbb);
+	public Set<?> intersectsStrict(MBB3D mbb);
 
 	/**
 	 * Returns the set of SpatialObject objects which intersect the given MBB3D.
@@ -99,7 +99,7 @@ public interface SAM extends Serializable {
 	 *            the MBB3D object for test
 	 * @return Set - a Set object containing the result.
 	 */
-	public Set intersects(MBB3D mbb);
+	public Set<?> intersects(MBB3D mbb);
 
 	/**
 	 * Returns the set of SpatialObject objects which <b>strictly</b>contain the
@@ -109,7 +109,7 @@ public interface SAM extends Serializable {
 	 *            the MBB3D object for test
 	 * @return Set - a Set object containing the result.
 	 */
-	public Set containsStrict(MBB3D mbb);
+	public Set<?> containsStrict(MBB3D mbb);
 
 	/**
 	 * Returns the set of SpatialObject objects which contain the given MBB3D.
@@ -118,7 +118,7 @@ public interface SAM extends Serializable {
 	 *            the MBB3D object for test
 	 * @return Set - a Set object containing the result.
 	 */
-	public Set contains(MBB3D mbb);
+	public Set<?> contains(MBB3D mbb);
 
 	/**
 	 *Returns the set of SpatialObject objects which are <b>strictly</b> inside
@@ -128,7 +128,7 @@ public interface SAM extends Serializable {
 	 *            the MBB3D object for test
 	 * @return Set - a Set object containing the result.
 	 */
-	public Set insideStrict(MBB3D mbb);
+	public Set<?> insideStrict(MBB3D mbb);
 
 	/**
 	 *Returns the set of SpatialObject objects which are inside the given
@@ -138,7 +138,7 @@ public interface SAM extends Serializable {
 	 *            the MBB3D object for test
 	 * @return Set - a Set object containing the result.
 	 */
-	public Set inside(MBB3D mbb);
+	public Set<?> inside(MBB3D mbb);
 
 	/**
 	 * Returns the set of SpatialObject objects which contain the given point.
@@ -147,7 +147,7 @@ public interface SAM extends Serializable {
 	 *            the Point3D object for test
 	 * @return Set - a Set object containing the result.
 	 */
-	public Set contains(Point3D point);
+	public Set<?> contains(Point3D point);
 
 	/**
 	 * Returns the set of the <code>number</code> SpatialObject objects which

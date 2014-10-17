@@ -7,8 +7,8 @@ package de.uos.igf.db3d.junittests.dbms.model3d;
 import junit.framework.TestCase;
 import de.uos.igf.db3d.dbms.geom.Point3D;
 import de.uos.igf.db3d.dbms.geom.ScalarOperator;
-import de.uos.igf.db3d.dbms.model3d.SegmentElt3D;
-import de.uos.igf.db3d.dbms.model3d.SegmentNetBuilder;
+import de.uos.igf.db3d.dbms.model3d.standard.SegmentNet3DBuilder;
+import de.uos.igf.db3d.dbms.model3d.standard.SegmentNet3DElement;
 
 /**
  * This testcase tests the (topology) methods of the <code>SegmentElt3D</code>
@@ -23,9 +23,9 @@ public class SegmentElt3DTestCase extends TestCase {
 	private final static Point3D P3 = new Point3D(3.0, 1.0, 0.0);
 	private final static Point3D P4 = new Point3D(4.0, 2.0, 0.0);
 
-	private SegmentElt3D segmentA;
-	private SegmentElt3D segmentB;
-	private SegmentElt3D segmentC;
+	private SegmentNet3DElement segmentA;
+	private SegmentNet3DElement segmentB;
+	private SegmentNet3DElement segmentC;
 
 	/**
 	 * @throws IllegalArgumentException
@@ -35,12 +35,12 @@ public class SegmentElt3DTestCase extends TestCase {
 	public void setUp() throws Exception {
 
 		ScalarOperator sop = new ScalarOperator();
-		segmentA = new SegmentElt3D(P1, P2, sop);
-		segmentB = new SegmentElt3D(P2, P3, sop);
-		segmentC = new SegmentElt3D(P3, P4, sop);
+		segmentA = new SegmentNet3DElement(P1, P2, sop);
+		segmentB = new SegmentNet3DElement(P2, P3, sop);
+		segmentC = new SegmentNet3DElement(P3, P4, sop);
 
-		SegmentNetBuilder netBuilder = new SegmentNetBuilder(sop);
-		netBuilder.addComponent(new SegmentElt3D[] { segmentA, segmentB,
+		SegmentNet3DBuilder netBuilder = new SegmentNet3DBuilder(sop);
+		netBuilder.addComponent(new SegmentNet3DElement[] { segmentA, segmentB,
 				segmentC });
 		// Here an IllegalArgumentException can be thrown.
 

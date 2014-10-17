@@ -30,6 +30,8 @@ public final class DB3DProperties {
 
 	private final static Properties db3dProperties = new Properties();
 	private static File propertiesFile;
+	private static String propertiesFolderString = "etc";
+	private static String propertiesFilenameString = "db3d.properties";
 
 	static {
 
@@ -41,46 +43,28 @@ public final class DB3DProperties {
 
 		try {
 
-//			String appFolderString = DB3DProperties.class.getResource(
-//					DB3DProperties.class.getSimpleName() + ".class").toString();
-//			
-//			System.out.println(":::::::::::::::::::::::::::::::::: "+appFolderString);
-//
-//			/*
-//			 * cut
-//			 * "file:/.../DB3DoDB/bin/de/uos/igf/db3d/resources/Db3dProperties.class"
-//			 * to ".../DB3DoDB/":
-//			 */
-//			appFolderString = appFolderString.substring(5, appFolderString
-//					.length()
-//					- (DB3DProperties.class.getCanonicalName().length() + 10));
-//
-//			String propertiesFolderString = appFolderString + "properties";
-			
-			String propertiesFolderString = "etc/";
-			
-			File propertiesFolder = new File(propertiesFolderString);
-
-			if (!propertiesFolder.exists()) {
-				propertiesFolder.mkdir();
-			}
-
-			propertiesFile = new File(propertiesFolderString
-					+ "/db3d.properties");
-
-			if (!propertiesFile.exists()) {
-				propertiesFile.createNewFile();
-			}
+			propertiesFile = new File(propertiesFolderString,
+					propertiesFilenameString);
 
 			if (propertiesFile.exists()) {
 				db3dProperties.load(new FileInputStream(propertiesFile));
+			} else {
+				System.out.println("DB3DProperties: \""
+						+ propertiesFilenameString + "\" file " + "in \""
+						+ propertiesFolderString
+						+ "\" does not exist folder of the server.");
 			}
 
 		} catch (Exception ex) {
 			// Db3dLogger can not be used here, since the logger needs the
 			// Db3dProperties, so:
-			System.out.println("DB3DProperties: Can not find db3d.properties file "
-					+ "in properties/ folder of the server.");
+			System.out
+					.println("DB3DProperties: Exception caught while loading \""
+							+ propertiesFilenameString
+							+ "\" file "
+							+ "in \""
+							+ propertiesFolderString
+							+ "\" folder of the server.");
 		}
 
 	}

@@ -21,8 +21,8 @@ import de.uos.igf.db3d.dbms.geom.TetrahedronSet3D;
 import de.uos.igf.db3d.dbms.geom.Triangle3D;
 import de.uos.igf.db3d.dbms.geom.Vector3D;
 import de.uos.igf.db3d.dbms.geom.Wireframe3D;
-import de.uos.igf.db3d.dbms.model3d.TetrahedronNet3D;
-import de.uos.igf.db3d.dbms.model3d.TetrahedronNet3DComp;
+import de.uos.igf.db3d.dbms.model3d.standard.TetrahedronNet3D;
+import de.uos.igf.db3d.dbms.model3d.standard.TetrahedronNet3DComponent;
 
 
 public class Utils {
@@ -810,7 +810,7 @@ public class Utils {
 
 		for ( int i = 0; i < net.countComponents(); i++ ) {
 			
-			TetrahedronNet3DComp tetComp = net.getComponent(i);
+			TetrahedronNet3DComponent tetComp = net.getComponent(i);
 			
 			Set set = tetComp.getElementsViaRecursion();
 			Iterator it = set.iterator();

@@ -13,7 +13,6 @@ import java.util.List;
 import java.util.Set;
 
 import de.uos.igf.db3d.dbms.api.Db3dSimpleResourceBundle;
-import de.uos.igf.db3d.dbms.structure.PersistentObject;
 import de.uos.igf.db3d.dbms.util.EquivalentableHashSet;
 
 /**
@@ -24,7 +23,7 @@ import de.uos.igf.db3d.dbms.util.EquivalentableHashSet;
  * 
  * @author Wolfgang Baer / University of Osnabrueck
  */
-public class MBB3D implements PersistentObject, SimpleGeoObj, Externalizable {
+public class MBB3D implements SimpleGeoObj, Externalizable {
 
 	/* minimum and maximum point */
 	private Point3D pMin;
@@ -798,7 +797,7 @@ public class MBB3D implements PersistentObject, SimpleGeoObj, Externalizable {
 	 * 
 	 * @return MBB3D - this.
 	 * 
-	 * @see db3d.dbms.structure.GeoObj#getMBB()
+	 * @see GeoObject.dbms.structure.GeoObj#getMBB()
 	 */
 	public MBB3D getMBB() {
 		return this;

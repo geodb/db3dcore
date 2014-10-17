@@ -263,7 +263,7 @@ public class TetrahedronSet3D implements SimpleGeoObj {
 	 *             if the index of the point of the tetrahedron is not in the
 	 *             interval [0;3]. The exception originates in the method
 	 *             getPoint(int) of the class Tetrahedron3D.
-	 * @see db3d.dbms.structure.GeoObj#getMBB()
+	 * @see db3d.dbms.structure.GeoObject#getMBB()
 	 */
 	public MBB3D getMBB() {
 		if (size() > 0) {

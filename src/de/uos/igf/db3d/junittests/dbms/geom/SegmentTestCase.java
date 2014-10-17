@@ -4,17 +4,14 @@
 
 package de.uos.igf.db3d.junittests.dbms.geom;
 
-import java.util.HashSet;
-import java.util.Set;
-
 import junit.framework.TestCase;
 import de.uos.igf.db3d.dbms.api.GeometryException;
 import de.uos.igf.db3d.dbms.api.UpdateException;
 import de.uos.igf.db3d.dbms.geom.*;
-import de.uos.igf.db3d.dbms.model3d.SegmentElt3D;
-import de.uos.igf.db3d.dbms.model3d.SegmentNet3D;
-import de.uos.igf.db3d.dbms.model3d.SegmentNet3DComp;
-import de.uos.igf.db3d.dbms.model3d.SegmentNetBuilder;
+import de.uos.igf.db3d.dbms.model3d.standard.SegmentNet3D;
+import de.uos.igf.db3d.dbms.model3d.standard.SegmentNet3DBuilder;
+import de.uos.igf.db3d.dbms.model3d.standard.SegmentNet3DComponent;
+import de.uos.igf.db3d.dbms.model3d.standard.SegmentNet3DElement;
 
 /**
  * This testcase tests the (geometry) methods of the <code>Segment3D</code>
@@ -25,14 +22,15 @@ import de.uos.igf.db3d.dbms.model3d.SegmentNetBuilder;
  * 
  */
 public class SegmentTestCase extends TestCase {
-	
+
 	public void testEquals() {
-		SegmentElt3D seg1 = new SegmentElt3D(new Point3D(1.0, 1.0, 1.0),
-				new Point3D(3.0, 1.0, 1.0), new ScalarOperator());
-		SegmentElt3D seg2 = new SegmentElt3D(new Point3D(1.0, 1.0, 1.0),
-				new Point3D(3.0, 1.0, 1.0), new ScalarOperator());
-		assertTrue(seg1.equals(seg2));		
-		SegmentElt3D seg3 = new SegmentElt3D(new Point3D(3.0, 1.0, 1.0), new Point3D(1.0, 1.0, 1.0), new ScalarOperator());
+		SegmentNet3DElement seg1 = new SegmentNet3DElement(new Point3D(1.0,
+				1.0, 1.0), new Point3D(3.0, 1.0, 1.0), new ScalarOperator());
+		SegmentNet3DElement seg2 = new SegmentNet3DElement(new Point3D(1.0,
+				1.0, 1.0), new Point3D(3.0, 1.0, 1.0), new ScalarOperator());
+		assertTrue(seg1.equals(seg2));
+		SegmentNet3DElement seg3 = new SegmentNet3DElement(new Point3D(3.0,
+				1.0, 1.0), new Point3D(1.0, 1.0, 1.0), new ScalarOperator());
 		assertTrue(seg1.equals(seg3));
 	}
 
@@ -53,10 +51,10 @@ public class SegmentTestCase extends TestCase {
 		 *   +------+
 		 * </tt>
 		 */
-		SegmentElt3D seg1 = new SegmentElt3D(new Point3D(1.0, 1.0, 1.0),
-				new Point3D(3.0, 1.0, 1.0), new ScalarOperator());
-		SegmentElt3D seg2 = new SegmentElt3D(new Point3D(3.0, 1.0, 1.0),
-				new Point3D(5.0, 2.0, 1.0), new ScalarOperator());
+		SegmentNet3DElement seg1 = new SegmentNet3DElement(new Point3D(1.0,
+				1.0, 1.0), new Point3D(3.0, 1.0, 1.0), new ScalarOperator());
+		SegmentNet3DElement seg2 = new SegmentNet3DElement(new Point3D(3.0,
+				1.0, 1.0), new Point3D(5.0, 2.0, 1.0), new ScalarOperator());
 		SimpleGeoObj result = seg1.intersection(seg2, sop);
 
 		assertTrue(result instanceof Point3D);
@@ -71,10 +69,10 @@ public class SegmentTestCase extends TestCase {
 		 *   +------+------+
 		 * </tt>
 		 */
-		seg1 = new SegmentElt3D(new Point3D(1.0, 1.0, 1.0), new Point3D(3.0,
-				1.0, 1.0), new ScalarOperator());
-		seg2 = new SegmentElt3D(new Point3D(3.0, 1.0, 1.0), new Point3D(5.0,
-				1.0, 1.0), new ScalarOperator());
+		seg1 = new SegmentNet3DElement(new Point3D(1.0, 1.0, 1.0), new Point3D(
+				3.0, 1.0, 1.0), new ScalarOperator());
+		seg2 = new SegmentNet3DElement(new Point3D(3.0, 1.0, 1.0), new Point3D(
+				5.0, 1.0, 1.0), new ScalarOperator());
 		result = seg1.intersection(seg2, new ScalarOperator());
 
 		assertTrue(result instanceof Point3D);
@@ -88,16 +86,17 @@ public class SegmentTestCase extends TestCase {
 	public void testDisjunctNetComponent() throws UpdateException {
 
 		ScalarOperator sop = new ScalarOperator();
-		SegmentNetBuilder segNetBuilder = new SegmentNetBuilder(sop);
-		SegmentElt3D seg1 = new SegmentElt3D(new Point3D(1.0, 1.0, 1.0),
-				new Point3D(3.0, 1.0, 1.0), sop);
-		SegmentElt3D seg2 = new SegmentElt3D(new Point3D(3.0, 1.0, 1.0),
-				new Point3D(5.0, 1.0, 1.0), sop);
-		SegmentElt3D seg3 = new SegmentElt3D(new Point3D(5.0, 1.0, 1.0),
-				new Point3D(7.0, 1.0, 1.0), sop);
-		segNetBuilder.addComponent(new SegmentElt3D[] { seg1, seg2, seg3 });
+		SegmentNet3DBuilder segNetBuilder = new SegmentNet3DBuilder(sop);
+		SegmentNet3DElement seg1 = new SegmentNet3DElement(new Point3D(1.0,
+				1.0, 1.0), new Point3D(3.0, 1.0, 1.0), sop);
+		SegmentNet3DElement seg2 = new SegmentNet3DElement(new Point3D(3.0,
+				1.0, 1.0), new Point3D(5.0, 1.0, 1.0), sop);
+		SegmentNet3DElement seg3 = new SegmentNet3DElement(new Point3D(5.0,
+				1.0, 1.0), new Point3D(7.0, 1.0, 1.0), sop);
+		segNetBuilder
+				.addComponent(new SegmentNet3DElement[] { seg1, seg2, seg3 });
 		SegmentNet3D segNet3D = segNetBuilder.getSegmentNet();
-		SegmentNet3DComp segComp = segNet3D.getComponent(0);
+		SegmentNet3DComponent segComp = segNet3D.getComponent(0);
 
 		assertTrue(segComp.countElements() == 3);
 

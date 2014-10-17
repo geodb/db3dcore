@@ -10,14 +10,13 @@ import java.io.ObjectInput;
 import java.io.ObjectOutput;
 
 import de.uos.igf.db3d.dbms.api.Db3dSimpleResourceBundle;
-import de.uos.igf.db3d.dbms.structure.PersistentObject;
 
 /**
  * Class Vector3D models a vector in 3 dimensional space.
  * 
  * @author Wolfgang Baer / University of Osnabrueck
  */
-public class Vector3D implements PersistentObject, SimpleGeoObj, Externalizable {
+public class Vector3D implements SimpleGeoObj, Externalizable {
 
 	/* scalars representing this Vector */
 
@@ -501,7 +500,7 @@ public class Vector3D implements PersistentObject, SimpleGeoObj, Externalizable 
 	 * @throws IllegalArgumentException
 	 *             if an attempt is made to construct a MBB3D whose maximum
 	 *             point is not greater than its minimum point.
-	 * @see db3d.dbms.structure.GeoObj#getMBB()
+	 * @see db3d.dbms.structure.GeoObject#getMBB()
 	 */
 	public MBB3D getMBB() {
 		return new MBB3D(new Point3D(getX(), getY(), getZ()), new Point3D(

@@ -550,7 +550,7 @@ public class Plane3D implements SimpleGeoObj, Serializable {
 	 * @throws IllegalArgumentException
 	 *             if an attempt is made to construct a MBB3D whose maximum
 	 *             point is not greater than its minimum point.
-	 * @see db3d.dbms.structure.GeoObj#getMBB()
+	 * @see db3d.dbms.structure.GeoObject#getMBB()
 	 */
 	public MBB3D getMBB() {
 		return new MBB3D(new Point3D(Double.NEGATIVE_INFINITY,

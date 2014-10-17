@@ -10,10 +10,10 @@ import de.uos.igf.db3d.dbms.api.NameNotUniqueException;
 import de.uos.igf.db3d.dbms.api.UpdateException;
 import de.uos.igf.db3d.dbms.geom.Point3D;
 import de.uos.igf.db3d.dbms.geom.ScalarOperator;
-import de.uos.igf.db3d.dbms.model3d.SegmentElt3D;
-import de.uos.igf.db3d.dbms.model3d.SegmentNet3D;
-import de.uos.igf.db3d.dbms.model3d.SegmentNet3DComp;
-import de.uos.igf.db3d.dbms.model3d.SegmentNetBuilder;
+import de.uos.igf.db3d.dbms.model3d.standard.SegmentNet3D;
+import de.uos.igf.db3d.dbms.model3d.standard.SegmentNet3DBuilder;
+import de.uos.igf.db3d.dbms.model3d.standard.SegmentNet3DComponent;
+import de.uos.igf.db3d.dbms.model3d.standard.SegmentNet3DElement;
 
 /**
  * This testcase tests the (topology) methods of the
@@ -40,7 +40,7 @@ public class SegmentNet3DCompTestCase extends TestCase {
 
 		ScalarOperator sop = new ScalarOperator();
 
-		SegmentNetBuilder segNetBuilder = new SegmentNetBuilder(sop);
+		SegmentNet3DBuilder segNetBuilder = new SegmentNet3DBuilder(sop);
 
 		// creating segment net with two adjacent segments:
 		/**
@@ -49,13 +49,13 @@ public class SegmentNet3DCompTestCase extends TestCase {
 		 *   +------+------+
 		 * </tt>
 		 */
-		SegmentElt3D seg1 = new SegmentElt3D(new Point3D(1.0, 1.0, 1.0),
+		SegmentNet3DElement seg1 = new SegmentNet3DElement(new Point3D(1.0, 1.0, 1.0),
 				new Point3D(3.0, 1.0, 1.0), new ScalarOperator());
-		SegmentElt3D seg2 = new SegmentElt3D(new Point3D(3.0, 1.0, 1.0),
+		SegmentNet3DElement seg2 = new SegmentNet3DElement(new Point3D(3.0, 1.0, 1.0),
 				new Point3D(5.0, 1.0, 1.0), sop);
-		segNetBuilder.addComponent(new SegmentElt3D[] { seg1, seg2 });
+		segNetBuilder.addComponent(new SegmentNet3DElement[] { seg1, seg2 });
 		SegmentNet3D segNet3D = segNetBuilder.getSegmentNet();
-		SegmentNet3DComp segComp = segNet3D.getComponent(0);
+		SegmentNet3DComponent segComp = segNet3D.getComponent(0);
 
 		// no adjacency of newly added segment:
 		/**
@@ -82,7 +82,7 @@ public class SegmentNet3DCompTestCase extends TestCase {
 		 *   +------+------+ - - - +
 		 * </tt>
 		 */
-		SegmentElt3D newSeg1 = new SegmentElt3D(new Point3D(5.0, 1.0, 1.0),
+		SegmentNet3DElement newSeg1 = new SegmentNet3DElement(new Point3D(5.0, 1.0, 1.0),
 				new Point3D(6.0, 1.0, 1.0), sop);
 		segComp.addElt(newSeg1);
 
@@ -99,7 +99,7 @@ public class SegmentNet3DCompTestCase extends TestCase {
 		 *   + - - - +------+------+
 		 * </tt>
 		 */
-		SegmentElt3D newSeg2 = new SegmentElt3D(new Point3D(-1.0, 1.0, 1.0),
+		SegmentNet3DElement newSeg2 = new SegmentNet3DElement(new Point3D(-1.0, 1.0, 1.0),
 				new Point3D(1.0, 1.0, 1.0), sop);
 		segComp.addElt(newSeg2);
 
@@ -149,7 +149,7 @@ public class SegmentNet3DCompTestCase extends TestCase {
 		}
 		assertTrue(ge2 != null);
 
-		segNetBuilder = new SegmentNetBuilder(sop);
+		segNetBuilder = new SegmentNet3DBuilder(sop);
 
 		// creating segment net with two adjacent segments:
 		/**
@@ -161,11 +161,11 @@ public class SegmentNet3DCompTestCase extends TestCase {
 		 *      1  
 		 * </tt>
 		 */
-		seg1 = new SegmentElt3D(new Point3D(1.0, 1.0, 1.0), new Point3D(3.0,
+		seg1 = new SegmentNet3DElement(new Point3D(1.0, 1.0, 1.0), new Point3D(3.0,
 				1.0, 1.0), new ScalarOperator());
-		seg2 = new SegmentElt3D(new Point3D(3.0, 1.0, 1.0), new Point3D(3.0,
+		seg2 = new SegmentNet3DElement(new Point3D(3.0, 1.0, 1.0), new Point3D(3.0,
 				4.0, 1.0), sop);
-		segNetBuilder.addComponent(new SegmentElt3D[] { seg1, seg2 });
+		segNetBuilder.addComponent(new SegmentNet3DElement[] { seg1, seg2 });
 		segNet3D = segNetBuilder.getSegmentNet();
 		segComp = segNet3D.getComponent(0);
 
@@ -183,7 +183,7 @@ public class SegmentNet3DCompTestCase extends TestCase {
 
 		// this is possible since no intersection between the new segment and
 		// segment 1 is computed
-		SegmentElt3D newSeg4 = new SegmentElt3D(new Point3D(3.0, 4.0, 1.0),
+		SegmentNet3DElement newSeg4 = new SegmentNet3DElement(new Point3D(3.0, 4.0, 1.0),
 				new Point3D(2.0, 0.0, 1.0), sop);
 		newSeg4 = segComp.addElt(newSeg4);
 

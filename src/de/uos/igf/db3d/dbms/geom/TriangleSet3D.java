@@ -259,7 +259,7 @@ public class TriangleSet3D implements SimpleGeoObj {
 	 *             - if index of a triangle point is not 0, 1 or 2. The
 	 *             exception originates in the method getPoint(int) of the class
 	 *             Triangle3D.
-	 * @see db3d.dbms.structure.GeoObj#getMBB()
+	 * @see db3d.dbms.structure.GeoObject#getMBB()
 	 */
 	public MBB3D getMBB() {
 		if (size() > 0) {

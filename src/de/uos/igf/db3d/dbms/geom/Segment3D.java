@@ -8,7 +8,6 @@ import java.io.Serializable;
 import java.util.Vector;
 
 import de.uos.igf.db3d.dbms.api.Db3dSimpleResourceBundle;
-import de.uos.igf.db3d.dbms.structure.PersistentObject;
 
 /**
  * <p>
@@ -22,8 +21,7 @@ import de.uos.igf.db3d.dbms.structure.PersistentObject;
  * @author Wolfgang Baer / University of Osnabrueck
  */
 @SuppressWarnings("serial")
-public class Segment3D implements PersistentObject, SimpleGeoObj,
-		Equivalentable, Serializable {
+public class Segment3D implements SimpleGeoObj, Equivalentable, Serializable {
 
 	/* start point of Segment3D */
 	private Point3D start;
@@ -54,11 +52,13 @@ public class Segment3D implements PersistentObject, SimpleGeoObj,
 		// validate
 		if (sop != null) {
 			if (!isValid(sop))
-				throw new IllegalArgumentException(Db3dSimpleResourceBundle
-						.getString("db3d.geom.argnotval"));
+				throw new IllegalArgumentException(
+						Db3dSimpleResourceBundle
+								.getString("db3d.geom.argnotval"));
 			if (!isRegular(sop))
-				throw new IllegalArgumentException(Db3dSimpleResourceBundle
-						.getString("db3d.geom.argnotreg"));
+				throw new IllegalArgumentException(
+						Db3dSimpleResourceBundle
+								.getString("db3d.geom.argnotreg"));
 		}
 	}
 
@@ -118,8 +118,9 @@ public class Segment3D implements PersistentObject, SimpleGeoObj,
 			return this.end;
 		default:
 			// FIXME fix this weird switch(index) stuff
-			throw new IllegalStateException(Db3dSimpleResourceBundle
-					.getString("db3d.geom.segonlystartend"));
+			throw new IllegalStateException(
+					Db3dSimpleResourceBundle
+							.getString("db3d.geom.segonlystartend"));
 		}
 	}
 
@@ -152,8 +153,9 @@ public class Segment3D implements PersistentObject, SimpleGeoObj,
 			break;
 		default:
 			// FIXME fix this weird switch(index) stuff
-			throw new IllegalStateException(Db3dSimpleResourceBundle
-					.getString("db3d.geom.segonlystartend"));
+			throw new IllegalStateException(
+					Db3dSimpleResourceBundle
+							.getString("db3d.geom.segonlystartend"));
 		}
 	}
 
@@ -196,15 +198,13 @@ public class Segment3D implements PersistentObject, SimpleGeoObj,
 	 *             point is not greater than its minimum point.
 	 */
 	public MBB3D getMBB() {
-		return new MBB3D(
-				new Point3D(GeomUtils
-						.getMin(this.start.getX(), this.end.getX()), GeomUtils
-						.getMin(this.start.getY(), this.end.getY()), GeomUtils
-						.getMin(this.start.getZ(), this.end.getZ())),
-				new Point3D(GeomUtils
-						.getMax(this.start.getX(), this.end.getX()), GeomUtils
-						.getMax(this.start.getY(), this.end.getY()), GeomUtils
-						.getMax(this.start.getZ(), this.end.getZ())));
+		return new MBB3D(new Point3D(GeomUtils.getMin(this.start.getX(),
+				this.end.getX()), GeomUtils.getMin(this.start.getY(),
+				this.end.getY()), GeomUtils.getMin(this.start.getZ(),
+				this.end.getZ())), new Point3D(GeomUtils.getMax(
+				this.start.getX(), this.end.getX()), GeomUtils.getMax(
+				this.start.getY(), this.end.getY()), GeomUtils.getMax(
+				this.start.getZ(), this.end.getZ())));
 	}
 
 	/**
@@ -691,8 +691,9 @@ public class Segment3D implements PersistentObject, SimpleGeoObj,
 										.getString("db3d.geom.somewrong"));
 					else {
 						if (!(seg.getPoint(0).isEqual(this.getPoint(1), sop)))
-							return new Segment3D(seg.getPoint(0), this
-									.getPoint(1), sop); // segments intersect
+							return new Segment3D(seg.getPoint(0),
+									this.getPoint(1), sop); // segments
+															// intersect
 						// with end point 0 of
 						// argument at end point
 						// 1 of this
@@ -708,10 +709,11 @@ public class Segment3D implements PersistentObject, SimpleGeoObj,
 					if (segContainsP1)
 						return new Segment3D(this);
 					else { // this contain P1 and not P0, seg contains P0 and
-						// not P1
+							// not P1
 						if (!(seg.getPoint(1).isEqual(this.getPoint(0), sop))) {
-							return new Segment3D(seg.getPoint(1), this
-									.getPoint(0), sop); // segments intersect
+							return new Segment3D(seg.getPoint(1),
+									this.getPoint(0), sop); // segments
+															// intersect
 							// with end point 1 of
 							// argument at end point
 							// 0 of this
@@ -727,8 +729,9 @@ public class Segment3D implements PersistentObject, SimpleGeoObj,
 										.getString("db3d.geom.somewrong"));
 					else {
 						if (!(seg.getPoint(1).isEqual(this.getPoint(1), sop))) {
-							return new Segment3D(seg.getPoint(1), this
-									.getPoint(1), sop); // segments intersect
+							return new Segment3D(seg.getPoint(1),
+									this.getPoint(1), sop); // segments
+															// intersect
 							// with end point 1 of
 							// argument at end point
 							// 1 of this
@@ -849,8 +852,8 @@ public class Segment3D implements PersistentObject, SimpleGeoObj,
 
 		double sqrSegLength = this.getLengthSQR();
 		return !(sop.greaterThan(point.euclideanDistanceSQR(this.start),
-				sqrSegLength) || sop.greaterThan(point
-				.euclideanDistanceSQR(this.end), sqrSegLength));
+				sqrSegLength) || sop.greaterThan(
+				point.euclideanDistanceSQR(this.end), sqrSegLength));
 	}
 
 	/**
@@ -1054,7 +1057,7 @@ public class Segment3D implements PersistentObject, SimpleGeoObj,
 	}
 
 	@Override
-	public boolean equals(Object obj) {		
+	public boolean equals(Object obj) {
 		if (this == obj)
 			return true;
 		if (obj == null)

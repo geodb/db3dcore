@@ -4,7 +4,7 @@
 
 package de.uos.igf.db3d.dbms.geom;
 
-import de.uos.igf.db3d.dbms.structure.GeoObj;
+import de.uos.igf.db3d.dbms.model3d.api.GeoObject;
 
 /**
  * Interface SimpleGeoObj is a common data type for the simple geo-objects in
@@ -12,7 +12,7 @@ import de.uos.igf.db3d.dbms.structure.GeoObj;
  * 
  * @author Wolfgang Baer / University of Osnabrueck
  */
-public interface SimpleGeoObj extends GeoObj {
+public interface SimpleGeoObj extends GeoObject {
 
 	// simple objects (3D)
 	/** constant for a Point3D object */

@@ -10,14 +10,12 @@ import de.uos.igf.db3d.dbms.geom.Equivalentable;
 import de.uos.igf.db3d.dbms.geom.Point3D;
 import de.uos.igf.db3d.dbms.geom.Segment3D;
 import de.uos.igf.db3d.dbms.geom.Triangle3D;
-import de.uos.igf.db3d.dbms.model3d.PointElt3D;
-import de.uos.igf.db3d.dbms.model3d.TriangleElt3D;
-import de.uos.igf.db3d.dbms.model3d.TriangleNet3D;
-import de.uos.igf.db3d.dbms.model3d.TriangleNet3DComp;
+import de.uos.igf.db3d.dbms.model3d.standard.TriangleNet3D;
+import de.uos.igf.db3d.dbms.model3d.standard.TriangleNet3DComponent;
+import de.uos.igf.db3d.dbms.model3d.standard.TriangleNet3DElement;
 
 /**
- * Some services for Triangles you do not want to miss. 
- * initForPointClouds(): 
+ * Some services for Triangles you do not want to miss. initForPointClouds():
  * Creates some HashMaps for a better Handling of Points from a TriangleNet: The
  * Map "points" is a Map of unique Points with unique IDs. The Map "triangles"
  * is a Map of TriangleIDs with an Integer Array of 3 PointIDs. The Map
@@ -28,8 +26,8 @@ import de.uos.igf.db3d.dbms.model3d.TriangleNet3DComp;
  * points.
  * 
  * The second init method (initForProgressiveMeshes()) creates even two more
- * useful Containers: 
- * Set<Segment3D> segments: A set of all segments of the TriangleNet
+ * useful Containers: Set<Segment3D> segments: A set of all segments of the
+ * TriangleNet
  * 
  * HashMap<Integer, LinkedList<Triangle3D>> pointToTriangle: This Maps contains
  * all PointIDs matched to all Triangle3D objects they are present in.
@@ -87,26 +85,26 @@ public class TriangleServices {
 	 */
 	public void initForPointClouds(TriangleNet3D triNet) {
 
-		TriangleNet3DComp[] comp = triNet.getComponents();
-		TriangleElt3D triangle;
+		TriangleNet3DComponent[] comp = triNet.getComponents();
+		TriangleNet3DElement triangle;
 		Point3D[] p;
 		int id = 0;
 
 		// save the IDs of Points to create the Triangles:
 		Set<Point3D> unique = new HashSet<Point3D>();
 
-		for (TriangleNet3DComp tri : comp) {
+		for (TriangleNet3DComponent tri : comp) {
 
 			Set s = tri.getElementsViaSAM();
 			Iterator<Equivalentable> it = s.iterator();
 
 			while (it.hasNext()) {
 
-				triangle = (TriangleElt3D) it.next();
+				triangle = (TriangleNet3DElement) it.next();
 
 				p = triangle.getPoints();
 
-				int[] pointsForTriangles = new int[3];			
+				int[] pointsForTriangles = new int[3];
 
 				for (int i = 0; i < 3; i++) {
 
@@ -141,15 +139,15 @@ public class TriangleServices {
 	 */
 	public void initForProgressiveMeshes(TriangleNet3D triNet) {
 
-		TriangleNet3DComp[] comp = triNet.getComponents();
-		TriangleElt3D triangle;
+		TriangleNet3DComponent[] comp = triNet.getComponents();
+		TriangleNet3DElement triangle;
 		Point3D[] p;
 		int id = 0;
 
 		// save the IDs of Points to create the Triangles:
 		Set<Point3D> unique = new HashSet<Point3D>();
 
-		for (TriangleNet3DComp tri : comp) {
+		for (TriangleNet3DComponent tri : comp) {
 
 			Set s = tri.getElementsViaSAM();
 			Iterator<Equivalentable> it = s.iterator();
@@ -157,12 +155,12 @@ public class TriangleServices {
 
 			while (it.hasNext()) {
 
-				triangle = (TriangleElt3D) it.next();
-				
+				triangle = (TriangleNet3DElement) it.next();
+
 				for (Segment3D seg : triangle.getSegments()) {
 					segments.add(seg);
 				}
-				
+
 				p = triangle.getPoints();
 
 				int[] pointsForTriangles = new int[3];
@@ -174,10 +172,10 @@ public class TriangleServices {
 						points.put(id, p[i]);
 						pointIDs.put(p[i], id);
 						pointsForTriangles[i] = id;
-						
+
 						pointToTriangle.put(id, new LinkedList<Triangle3D>());
 						pointToTriangle.get(id).add(triangle);
-						
+
 						id++;
 					} else {
 						idForPoint = pointIDs.get(p[i]);
@@ -239,7 +237,6 @@ public class TriangleServices {
 		return pointToTriangle;
 	}
 
-	
 	/**
 	 * This Set contains all segments of the TriangleNet
 	 * 
@@ -249,69 +246,4 @@ public class TriangleServices {
 		return segments;
 	}
 
-	/**
-	 * This Map contains the attributes from the triangle net moved to RGB
-	 * (pointID, color)
-	 * 
-	 * @return the components
-	 */
-	public HashMap<Integer, String> getAttributeAsColor(String attribute) {
-
-		HashMap<Integer, String> attributeColors = new HashMap<Integer, String>();
-
-		double maxValue = Double.MIN_VALUE;
-		double minValue = Double.MAX_VALUE;
-
-		// check out the range of values:
-		for (Point3D point : points.values()) {
-			double tmp = Double.valueOf(point.getAttributeValue(attribute));
-			if (tmp > maxValue)
-				maxValue = tmp;
-			else if (tmp < minValue)
-				minValue = tmp;
-		}
-
-		minValue = Math.abs(minValue);
-		maxValue = maxValue + minValue;
-
-		// build colors:
-		for (Point3D point : points.values()) {
-
-			double tmp = Double.valueOf(point.getAttributeValue(attribute));
-			tmp = tmp + minValue;
-			tmp = (510. * tmp) / maxValue;
-			String hex, hexTmp;
-
-			if (tmp <= 255) {
-				hexTmp = Integer.toHexString((int) tmp);
-				if (hexTmp.length() == 1)
-					hexTmp = "0" + hexTmp;
-				hex = hexTmp + "ff";
-			} else {
-				hexTmp = Integer.toHexString((int) tmp - 255);
-				if (hexTmp.length() == 1)
-					hexTmp = "0" + hexTmp;
-				hex = "ff" + hexTmp;
-			}
-
-			attributeColors.put(pointIDs.get(point), "0xff" + hex + "00");
-		}
-		return attributeColors;
-	}
-
-	/**
-	 * Converts RGB values to hex!
-	 * 
-	 * @param r
-	 * @param g
-	 * @param b
-	 * @return
-	 */
-	private static String colorToHex(String r, String g, String b) {
-		String rHex = Integer.toHexString(Integer.parseInt(r));
-		String gHex = Integer.toHexString(Integer.parseInt(g));
-		String bHex = Integer.toHexString(Integer.parseInt(b));
-
-		return ("0xff" + rHex + gHex + bHex);
-	}
 }

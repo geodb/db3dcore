@@ -9,7 +9,6 @@ import java.util.Arrays;
 import java.util.Iterator;
 
 import de.uos.igf.db3d.dbms.api.Db3dSimpleResourceBundle;
-import de.uos.igf.db3d.dbms.structure.PersistentObject;
 
 /**
  * Tetrahedron3D is the geometric representation of a tetrahedron simplex in 3D.
@@ -20,7 +19,7 @@ import de.uos.igf.db3d.dbms.structure.PersistentObject;
  * methods ensureOrder and buildTriangles.
  */
 @SuppressWarnings("serial")
-public class Tetrahedron3D implements PersistentObject, SimpleGeoObj,
+public class Tetrahedron3D implements SimpleGeoObj,
 		Equivalentable, Serializable {
 
 	/* geometry */

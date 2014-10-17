@@ -255,7 +255,7 @@ public class SegmentSet3D implements SimpleGeoObj {
 	 * @throws IllegalArgumentException
 	 *             if an attempt is made to construct a MBB3D whose maximum
 	 *             point is not greater than its minimum point.
-	 * @see db3d.dbms.structure.GeoObj#getMBB()
+	 * @see db3d.dbms.structure.GeoObject#getMBB()
 	 */
 	public MBB3D getMBB() {
 		if (size() > 0) {
