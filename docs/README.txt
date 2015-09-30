@@ -71,7 +71,7 @@ Create a segment net of two segments and test topological relationship:
 /////// JAVA CODE SAMPLE ///////
 	public static void main(String[] args) throws NameNotUniqueException {
 		// define a scalar operator:
-		ScalarOperator sop = new ScalarOperator(0.001);
+		GeoEpsilon sop = new GeoEpsilon(0.001);
 		// create a segment net builder:
 		SegmentNetBuilder builder = new SegmentNetBuilder(sop);
 		// model two segments:

@@ -5,15 +5,14 @@
 package de.uos.igf.db3d.junittests.dbms.model3d;
 
 import junit.framework.TestCase;
-import de.uos.igf.db3d.dbms.api.GeometryException;
-import de.uos.igf.db3d.dbms.api.NameNotUniqueException;
-import de.uos.igf.db3d.dbms.api.UpdateException;
-import de.uos.igf.db3d.dbms.geom.Point3D;
-import de.uos.igf.db3d.dbms.geom.ScalarOperator;
-import de.uos.igf.db3d.dbms.model3d.standard.SegmentNet3D;
-import de.uos.igf.db3d.dbms.model3d.standard.SegmentNet3DBuilder;
-import de.uos.igf.db3d.dbms.model3d.standard.SegmentNet3DComponent;
-import de.uos.igf.db3d.dbms.model3d.standard.SegmentNet3DElement;
+import de.uos.igf.db3d.dbms.exceptions.GeometryException;
+import de.uos.igf.db3d.dbms.exceptions.NameNotUniqueException;
+import de.uos.igf.db3d.dbms.exceptions.UpdateException;
+import de.uos.igf.db3d.dbms.spatials.geometries3d.Point3D;
+import de.uos.igf.db3d.dbms.spatials.standard.GeoEpsilon;
+import de.uos.igf.db3d.dbms.spatials.standard3d.Segment3DNet;
+import de.uos.igf.db3d.dbms.spatials.standard3d.Segment3DComponent;
+import de.uos.igf.db3d.dbms.spatials.standard3d.Segment3DElement;
 
 /**
  * This testcase tests the (topology) methods of the
@@ -38,9 +37,7 @@ public class SegmentNet3DCompTestCase extends TestCase {
 		 * comp.
 		 */
 
-		ScalarOperator sop = new ScalarOperator();
-
-		SegmentNet3DBuilder segNetBuilder = new SegmentNet3DBuilder(sop);
+		GeoEpsilon sop = new GeoEpsilon();
 
 		// creating segment net with two adjacent segments:
 		/**
@@ -49,13 +46,16 @@ public class SegmentNet3DCompTestCase extends TestCase {
 		 *   +------+------+
 		 * </tt>
 		 */
-		SegmentNet3DElement seg1 = new SegmentNet3DElement(new Point3D(1.0, 1.0, 1.0),
-				new Point3D(3.0, 1.0, 1.0), new ScalarOperator());
-		SegmentNet3DElement seg2 = new SegmentNet3DElement(new Point3D(3.0, 1.0, 1.0),
-				new Point3D(5.0, 1.0, 1.0), sop);
-		segNetBuilder.addComponent(new SegmentNet3DElement[] { seg1, seg2 });
-		SegmentNet3D segNet3D = segNetBuilder.getSegmentNet();
-		SegmentNet3DComponent segComp = segNet3D.getComponent(0);
+		Segment3DElement seg1 = new Segment3DElement(new Point3D(1.0,
+				1.0, 1.0), new Point3D(3.0, 1.0, 1.0), new GeoEpsilon());
+		Segment3DElement seg2 = new Segment3DElement(new Point3D(3.0,
+				1.0, 1.0), new Point3D(5.0, 1.0, 1.0), sop);
+
+		Segment3DNet net = new Segment3DNet(
+				new Segment3DComponent[] { new Segment3DComponent(
+						new Segment3DElement[] { seg1, seg2 }, sop) }, sop);
+
+		Segment3DComponent segComp = net.getComponent(0);
 
 		// no adjacency of newly added segment:
 		/**
@@ -67,7 +67,7 @@ public class SegmentNet3DCompTestCase extends TestCase {
 		// this has to throw a GeometryException since adjacency is inevitable:
 		GeometryException ge0 = null;
 		try {
-			segComp.addElt(new Point3D(6.0, 1.0, 1.0), new Point3D(7.0, 1.0,
+			segComp.addElement(new Point3D(6.0, 1.0, 1.0), new Point3D(7.0, 1.0,
 					1.0));
 		} catch (GeometryException e) {
 			ge0 = e;
@@ -82,9 +82,9 @@ public class SegmentNet3DCompTestCase extends TestCase {
 		 *   +------+------+ - - - +
 		 * </tt>
 		 */
-		SegmentNet3DElement newSeg1 = new SegmentNet3DElement(new Point3D(5.0, 1.0, 1.0),
-				new Point3D(6.0, 1.0, 1.0), sop);
-		segComp.addElt(newSeg1);
+		Segment3DElement newSeg1 = new Segment3DElement(new Point3D(5.0,
+				1.0, 1.0), new Point3D(6.0, 1.0, 1.0), sop);
+		segComp.addElement(newSeg1);
 
 		boolean geomEquiv = seg2.getNeighbour(1)
 				.isGeometryEquivalent(seg1, sop);
@@ -99,9 +99,9 @@ public class SegmentNet3DCompTestCase extends TestCase {
 		 *   + - - - +------+------+
 		 * </tt>
 		 */
-		SegmentNet3DElement newSeg2 = new SegmentNet3DElement(new Point3D(-1.0, 1.0, 1.0),
-				new Point3D(1.0, 1.0, 1.0), sop);
-		segComp.addElt(newSeg2);
+		Segment3DElement newSeg2 = new Segment3DElement(new Point3D(-1.0,
+				1.0, 1.0), new Point3D(1.0, 1.0, 1.0), sop);
+		segComp.addElement(newSeg2);
 
 		assertTrue(seg1.getNeighbour(1).isGeometryEquivalent(newSeg2, sop));
 		assertTrue(seg1.getNeighbour(0).isGeometryEquivalent(seg2, sop));
@@ -119,7 +119,7 @@ public class SegmentNet3DCompTestCase extends TestCase {
 		// disjunct to net component:
 		GeometryException ge1 = null;
 		try {
-			segComp.addElt(new Point3D(4.0, 0.0, 1.0), new Point3D(4.0, 2.0,
+			segComp.addElement(new Point3D(4.0, 0.0, 1.0), new Point3D(4.0, 2.0,
 					1.0));
 		} catch (GeometryException e) {
 			ge1 = e;
@@ -138,18 +138,16 @@ public class SegmentNet3DCompTestCase extends TestCase {
 		 *   1      2
 		 * </tt>
 		 */
-		segComp.addElt(new Point3D(6.0, 1.0, 1.0), new Point3D(6.0, 5.0, 1.0));
+		segComp.addElement(new Point3D(6.0, 1.0, 1.0), new Point3D(6.0, 5.0, 1.0));
 
 		GeometryException ge2 = null;
 		try {
-			segComp.addElt(new Point3D(6.0, 5.0, 1.0), new Point3D(5.0, 1.0,
+			segComp.addElement(new Point3D(6.0, 5.0, 1.0), new Point3D(5.0, 1.0,
 					1.0));
 		} catch (GeometryException e) {
 			ge2 = e;
 		}
 		assertTrue(ge2 != null);
-
-		segNetBuilder = new SegmentNet3DBuilder(sop);
 
 		// creating segment net with two adjacent segments:
 		/**
@@ -161,13 +159,14 @@ public class SegmentNet3DCompTestCase extends TestCase {
 		 *      1  
 		 * </tt>
 		 */
-		seg1 = new SegmentNet3DElement(new Point3D(1.0, 1.0, 1.0), new Point3D(3.0,
-				1.0, 1.0), new ScalarOperator());
-		seg2 = new SegmentNet3DElement(new Point3D(3.0, 1.0, 1.0), new Point3D(3.0,
-				4.0, 1.0), sop);
-		segNetBuilder.addComponent(new SegmentNet3DElement[] { seg1, seg2 });
-		segNet3D = segNetBuilder.getSegmentNet();
-		segComp = segNet3D.getComponent(0);
+		seg1 = new Segment3DElement(new Point3D(1.0, 1.0, 1.0), new Point3D(
+				3.0, 1.0, 1.0), new GeoEpsilon());
+		seg2 = new Segment3DElement(new Point3D(3.0, 1.0, 1.0), new Point3D(
+				3.0, 4.0, 1.0), sop);
+		net = new Segment3DNet(
+				new Segment3DComponent[] { new Segment3DComponent(
+						new Segment3DElement[] { seg1, seg2 }, sop) }, sop);
+		segComp = net.getComponent(0);
 
 		// self-intersection of a segment net:
 		/**
@@ -183,9 +182,9 @@ public class SegmentNet3DCompTestCase extends TestCase {
 
 		// this is possible since no intersection between the new segment and
 		// segment 1 is computed
-		SegmentNet3DElement newSeg4 = new SegmentNet3DElement(new Point3D(3.0, 4.0, 1.0),
-				new Point3D(2.0, 0.0, 1.0), sop);
-		newSeg4 = segComp.addElt(newSeg4);
+		Segment3DElement newSeg4 = new Segment3DElement(new Point3D(3.0,
+				4.0, 1.0), new Point3D(2.0, 0.0, 1.0), sop);
+		newSeg4 = segComp.addElement(newSeg4);
 
 		assertTrue(newSeg4.getNeighbour(1) == null);
 		assertTrue(newSeg4.getNeighbour(0).isGeometryEquivalent(seg2, sop));

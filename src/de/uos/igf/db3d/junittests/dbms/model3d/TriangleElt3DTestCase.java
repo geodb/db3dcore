@@ -5,10 +5,10 @@
 package de.uos.igf.db3d.junittests.dbms.model3d;
 
 import junit.framework.TestCase;
-import de.uos.igf.db3d.dbms.geom.Point3D;
-import de.uos.igf.db3d.dbms.geom.ScalarOperator;
-import de.uos.igf.db3d.dbms.model3d.standard.TriangleNet3D;
-import de.uos.igf.db3d.dbms.model3d.standard.TriangleNet3DElement;
+import de.uos.igf.db3d.dbms.spatials.geometries3d.Point3D;
+import de.uos.igf.db3d.dbms.spatials.standard.GeoEpsilon;
+import de.uos.igf.db3d.dbms.spatials.standard3d.Triangle3DNet;
+import de.uos.igf.db3d.dbms.spatials.standard3d.Triangle3DElement;
 
 /**
  * This testcase tests the (topology) methods of the <code>TriangleElt3D</code>
@@ -25,19 +25,19 @@ public class TriangleElt3DTestCase extends TestCase {
 	private final static Point3D P5 = new Point3D(5.0, 3.0, 0.0);
 	private final static Point3D P6 = new Point3D(3.0, 1.0, 0.0);
 
-	private TriangleNet3D net;
-	private TriangleNet3DElement triangleA;
-	private TriangleNet3DElement triangleB;
-	private TriangleNet3DElement triangleC;
-	private TriangleNet3DElement triangleD;
+	private Triangle3DNet net;
+	private Triangle3DElement triangleA;
+	private Triangle3DElement triangleB;
+	private Triangle3DElement triangleC;
+	private Triangle3DElement triangleD;
 
 	public void setUp() throws Exception {
 
-		ScalarOperator sop = new ScalarOperator();
-		triangleA = new TriangleNet3DElement(P1, P2, P3, sop);
-		triangleB = new TriangleNet3DElement(P1, P3, P4, sop);
-		triangleC = new TriangleNet3DElement(P4, P3, P5, sop);
-		triangleD = new TriangleNet3DElement(P1, P4, P6, sop);
+		GeoEpsilon sop = new GeoEpsilon();
+		triangleA = new Triangle3DElement(P1, P2, P3, sop);
+		triangleB = new Triangle3DElement(P1, P3, P4, sop);
+		triangleC = new Triangle3DElement(P4, P3, P5, sop);
+		triangleD = new Triangle3DElement(P1, P4, P6, sop);
 
 	}
 

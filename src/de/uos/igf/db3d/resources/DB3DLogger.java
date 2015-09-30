@@ -28,7 +28,7 @@ public final class DB3DLogger {
 
 	public static Logger logger = Logger.getLogger("", DB3DLang.qualClassName
 			+ "_" + DB3DLang.getBundle().getLocale());
-	public final static String logFolderString = "logs/";
+	public final static String logFolderString = "logs"+File.separator;
 
 	/*
 	 * Factory method returns a preconfigured logging object. The logging
@@ -53,7 +53,7 @@ public final class DB3DLogger {
 			// file handler for the logging with up to 50,000 bytes per
 			// file, file name pattern db3d[NUMBER].log, and number
 			// counting +1 every step:
-			Handler fh = new FileHandler(logFolder + "/db3d%g.log", 50000, 1,
+			Handler fh = new FileHandler(logFolder +"db3d%g.log", 50000, 1,
 					true);
 			fh.setFormatter(new SimpleFormatter());
 
@@ -74,7 +74,7 @@ public final class DB3DLogger {
 			logger.setLevel(Level.FINEST);
 
 		} catch (Exception ex) {
-			new Exception("Logging in logs/db3d%g.log file not possible.", ex)
+			new Exception("Logging in "+logFolderString+"db3d%g.log file not possible.", ex)
 					.printStackTrace();
 		}
 
