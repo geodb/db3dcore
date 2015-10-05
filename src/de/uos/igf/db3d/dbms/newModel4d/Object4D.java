@@ -449,5 +449,4 @@ public class Object4D {
 		return indexOfGeometry;
 
 	}
-
 }
