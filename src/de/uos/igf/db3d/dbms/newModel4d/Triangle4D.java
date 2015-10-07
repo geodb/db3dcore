@@ -5,11 +5,9 @@ package de.uos.igf.db3d.dbms.newModel4d;
  * 
  * @author Paul Vincent Kuper (kuper@kit.edu)
  */
-public class Triangle4D {	
+public class Triangle4D implements Element4D {	
 
 
-	private static final long serialVersionUID = 4121395257446711350L;
-	
 	/* ID of the points */
 	private int IDzero;
 	private int IDone;

@@ -18,12 +18,12 @@ public class SpatialObject4D {
 	// (componentID = key)
 	// TODO Netze zu Components!
 	// TODO TreeMap nehmen!
-	private Map<Integer, TetrahedronNet4D> tetrahedronNets;
-	private Map<Integer, TriangleNet4DComp> triangleNetComps;
-	private Map<Integer, SegmentNet4D> segmentNets;
+	private TetrahedronNet4D tetrahedronNet;
+	private TriangleNet4D triangleNet;
+	private SegmentNet4D segmentNet;
 
 	// TODO: do we need components for points?
-	private Map<Integer, Point4D> points;
+	private Point4DNet pointCloud;
 
 	// ScalarOperator
 	private ScalarOperator sop;
@@ -33,10 +33,6 @@ public class SpatialObject4D {
 	 */
 	public SpatialObject4D() {
 		this.object = null;
-		tetrahedronNets = new HashMap<Integer, TetrahedronNet4D>();
-		triangleNetComps = new HashMap<Integer, TriangleNet4DComp>();
-		segmentNets = new HashMap<Integer, SegmentNet4D>();
-		points = new HashMap<Integer, Point4D>();
 		sop = new ScalarOperator();
 	}
 
@@ -75,36 +71,35 @@ public class SpatialObject4D {
 		this.sop = sop;
 	}
 
-	public Map<Integer, TetrahedronNet4D> getTetrahedronNets() {
-		return tetrahedronNets;
+	public TetrahedronNet4D getTetrahedronNet() {
+		return tetrahedronNet;
 	}
 
-	public void setTetrahedronNets(
-			Map<Integer, TetrahedronNet4D> tetrahedronNets) {
-		this.tetrahedronNets = tetrahedronNets;
+public void setTetrahedronNet(TetrahedronNet4D tetrahedronNet) {
+		this.tetrahedronNet = tetrahedronNet;
 	}
 
-	public Map<Integer, TriangleNet4DComp> getTriangleNetComps() {
-		return triangleNetComps;
+	public TriangleNet4D getTriangleNet() {
+		return triangleNet;
 	}
 
-	public void setTriangleNetComps(Map<Integer, TriangleNet4DComp> triangleNetComps) {
-		this.triangleNetComps = triangleNetComps;
+	public void setTriangleNet(TriangleNet4D triangleNet) {
+		this.triangleNet = triangleNet;
 	}
 
-	public Map<Integer, SegmentNet4D> getSegmentNets() {
-		return segmentNets;
+	public SegmentNet4D getSegmentNet() {
+		return segmentNet;
 	}
 
-	public void setSegmentNets(Map<Integer, SegmentNet4D> segmentNets) {
-		this.segmentNets = segmentNets;
+	public void setSegmentNet(SegmentNet4D segmentNet) {
+		this.segmentNet = segmentNet;
 	}
 
-	public Map<Integer, Point4D> getPoints() {
-		return points;
+	public Point4DNet getPointNet() {
+		return pointCloud;
 	}
 
-	public void setPoints(Map<Integer, Point4D> points) {
-		this.points = points;
+	public void setPointCloud(Point4DNet pointCloud) {
+		this.pointCloud = pointCloud;
 	}	
 }

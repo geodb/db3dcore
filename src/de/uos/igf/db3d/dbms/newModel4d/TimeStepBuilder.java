@@ -11,46 +11,59 @@ import java.util.Set;
 import java.util.Vector;
 
 import de.uos.igf.db3d.dbms.geom.Point3D;
-import de.uos.igf.db3d.dbms.geom.ScalarOperator;
 
 /**
- * This class represents an 4D object. The user has to call the function
- * addTimestep() to add the Point information for the PointTubes this Object4D
- * is working with. After that the user has to call the function addGeometry()
- * to add the geometry informations for the last added timestep. This procedure
- * must be done for every timestep with a changing net topology.
+ * This class handles the pointTube logic, when a new time-step is added to a 4D
+ * component.
  * 
  * @author Paul Vincent Kuper (kuper@kit.edu)
  */
-public class Object4D {
-
-	// TODO: Ab in die Components! Getter Methoden für die Objekte zum 
-	// Zeitpunkt XY in die Components! Done...
-	// The pointTubes of this 4D Object
-	// <ID, <Zeitschritt, Point3D>>
-	private Map<Integer, Map<Integer, Point3D>> pointTubes;
-
-	// contains the spatial of this object
-	// spatial objects only consists of the ID information of its Point3D
-	// elements
-	// every SpatialObject4D object has its own timeinterval
-	private SpatialObject4D spatial;
-
-	// TODO: Put this into the components!!! Done...
-	// List of timesteps with their effective date
-	protected LinkedList<Date> timesteps;
-
-	private ScalarOperator sop;
-
+public class TimeStepBuilder {
+	
 	/**
-	 * Constructor
+	 * Add one new timestep. This function will only add the Points for the
+	 * PointTubes at this timestep. You need to add the geometry for this
+	 * timestep after you called this function.
 	 * 
+	 * TODO: Constraints beachten!
+	 * 
+	 * @param newPoints
+	 * @param date
 	 */
-	public Object4D() {
-		super();
-		pointTubes = new HashMap<Integer, Map<Integer, Point3D>>();
-		timesteps = new LinkedList<Date>();
-		sop = new ScalarOperator();
+	public static void addTimestep(Component4D component , HashMap<Integer, Point3D> newPoints, Date date) {
+
+		// check if it is the first timestep
+		if (component.getTimesteps().isEmpty()) {
+
+			firstStep(component, newPoints, date);
+
+			// if there are already some timesteps in the Map, check if the new
+			// timestep is higher than the last one
+		} else if (!date.before(component.getTimesteps().getLast())) {
+
+			// Now we need to know if the user already added the geometry for
+			// the last Postobject (can be whether the first object or the
+			// Postobject of a new interval)
+			if (geometry.size() < countToplogogyChanges(component))
+				throw new IllegalArgumentException(
+						"The net topology changed. You need to add the geometrydata for the last Postobject first. Call the addGeometry() function.");
+
+			// this is the Polthier und Rumpf model
+			// do we have a change of topology?
+			// check if this is an Post-object!
+			if (component.getTimesteps().getLast().equals(date)) {
+
+				polthierAndRumpf(component, newPoints, date);
+				
+				// Notify corresponding net
+				component.getNet().TopologyChange(date);	
+
+				// no Post-object, should be the same topology
+			} else {
+
+				addNormalTimeStep(component, newPoints, date);
+			}
+		}
 	}
 
 	/**
@@ -61,11 +74,15 @@ public class Object4D {
 	 * @param newPoints
 	 * @param date
 	 */
-	private void addTimeStep(HashMap<Integer, Point3D> newPoints, Date date) {
+	private static void addNormalTimeStep(Component4D component, HashMap<Integer, Point3D> newPoints, Date date) {
 		// check if the new step has the same ids of points as the last
 		// step:
 		Iterator<Integer> it = newPoints.keySet().iterator();
 
+		Map<Integer, Map<Integer, Point3D>> pointTubes =  component.getPointTubes();
+		 
+		LinkedList<Date> timesteps = component.getTimesteps();
+		
 		while (it.hasNext()) {
 			if (pointTubes.get(it.next()).get(timesteps.size() - 1) == null)
 				throw new IllegalArgumentException(
@@ -89,6 +106,7 @@ public class Object4D {
 
 		// everything is alright? Add the new Points!
 		timesteps.add(date);
+		component.getNet().addTimestep(date);
 
 		it = newPoints.keySet().iterator();
 
@@ -120,9 +138,14 @@ public class Object4D {
 	 * @param newPoints
 	 * @param date
 	 */
-	private void polthierAndRumpf(HashMap<Integer, Point3D> newPoints, Date date) {
+	private static void polthierAndRumpf(Component4D component, HashMap<Integer, Point3D> newPoints, Date date) {
 
+		Map<Integer, Map<Integer, Point3D>> pointTubes =  component.getPointTubes();
+		 
+		LinkedList<Date> timesteps = component.getTimesteps();
+		
 		timesteps.add(date);
+		component.getNet().addTimestep(date);
 
 		Iterator<Integer> it = newPoints.keySet().iterator();
 
@@ -207,6 +230,57 @@ public class Object4D {
 	}
 
 	/**
+	 * Adds the first step of a Object4D object.
+	 * 
+	 * @param newPoints
+	 * @param date
+	 */
+	private static void firstStep(Component4D component, HashMap<Integer, Point3D> newPoints, Date date) {
+		
+		Map<Integer, Map<Integer, Point3D>> pointTubes =  component.getPointTubes();
+		 
+		LinkedList<Date> timesteps = component.getTimesteps();
+		
+		// add the effective date as first timestep to the component and net		
+		timesteps.add(date);
+		component.getNet().addTimestep(date);
+
+		Iterator<Integer> it = newPoints.keySet().iterator();
+
+		// add all Points with their ID to the pointTube Map
+		while (it.hasNext()) {
+
+			Integer id = it.next();
+
+			// It is the initial step, so we have to create a new HashMap
+			// for every Point.
+			HashMap<Integer, Point3D> newTube = new HashMap<Integer, Point3D>();
+			newTube.put(0, newPoints.get(id));
+
+			pointTubes.put(id, newTube);
+		}
+	}
+
+	/**
+	 * Function to add the information of the geometry for an object.
+	 * 
+	 * We check if the geometry will be added at the right place of the geometry
+	 * List.
+	 * 
+	 * @param spatial
+	 *            - the spatial information for the last added timestep.
+	 */
+	public static void addGeometry(SpatialObject4D spatial) {
+		int changes = countToplogogyChanges();
+		if (changes == geometry.size() + 1)
+			geometry.add(spatial);
+		// else {
+		// if (!spatial.equals(geometry.get(geometry.size() - 1)))
+		// throw new IllegalArgumentException(
+		// "You can not add the geometry. You already have the geometry information for the actual step.");
+		// }
+	}
+
 	/**
 	 * This function creates a Map of Point3D objects which contains the
 	 * information of the location of the Points at the specified date with the
@@ -215,8 +289,12 @@ public class Object4D {
 	 * @return Map - contains the Point3D objects and their IDs at the specified
 	 *         date
 	 */
-	public Map<Integer, Point3D> getPointTubesAtInstance(Date date) {
+	public static Map<Integer, Point3D> getPointTubesAtInstance(Component4D component, Date date) {
 
+		Map<Integer, Map<Integer, Point3D>> pointTubes =  component.getPointTubes();
+		 
+		LinkedList<Date> timesteps = component.getTimesteps();
+		
 		HashMap<Integer, Point3D> points = new HashMap<Integer, Point3D>();
 
 		// the case that the date is similar to a date of one timestep we only
@@ -314,7 +392,9 @@ public class Object4D {
 		}
 	}
 
-	protected int countToplogogyChanges() {
+	protected static int countToplogogyChanges(Component4D component) {
+		
+		LinkedList<Date> timesteps = component.getTimesteps();
 		int cnt = 0;
 		Date oldDate = timesteps.getFirst();
 		for (Date d : timesteps) {
@@ -327,15 +407,19 @@ public class Object4D {
 
 	// Getter methods
 
-	public Map<Integer, Map<Integer, Point3D>> getPointTubes() {
+	public static Map<Integer, Map<Integer, Point3D>> getPointTubes() {
 		return pointTubes;
 	}
 
-	public LinkedList<Date> getTimesteps() {
+	public static List<SpatialObject4D> getGeometry() {
+		return geometry;
+	}
+
+	public static LinkedList<Date> getTimesteps() {
 		return timesteps;
 	}
 
-	protected int getIndexOfGeometry(Date date) {
+	protected static int getIndexOfGeometry(Date date) {
 
 		int indexOfGeometry = 0;
 
@@ -359,11 +443,4 @@ public class Object4D {
 
 	}
 
-	public SpatialObject4D getSpatial() {
-		return spatial;
-	}
-
-	public void setSpatial(SpatialObject4D spatial) {
-		this.spatial = spatial;
-	}
 }

@@ -92,7 +92,7 @@ public class ServicesFor4DObjects {
 
 					Integer triangleID = ids.next();
 
-					Triangle4D tmp = geometry.getTriangleNetComps().get(id)
+					Triangle4D tmp = (Triangle4D) geometry.getTriangleNetComps().get(id)
 							.getElements().get(triangleID);
 
 					TriangleElt3D triangle = new TriangleElt3D(
