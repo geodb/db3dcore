@@ -21,12 +21,8 @@ public class TriangleComponent4D implements Component4D {
 	// Back reference to the corresponding TriangleNet object
 	Net4D net;
 	
-	// TODO: Need? Better from the net object!
-	// the start date of the existence interval for this TriangleComponent4D object
-	Date start;
-	
-	// the end date of the existence interval for this TriangleComponent4D object
-	Date end;
+	// TimeInterval of this component
+	TimeInterval timeInterval;
 	
 	// TODO: Ab in die Components! Getter Methoden für die Objekte zum 
 	// Zeitpunkt XY in die Components!
@@ -34,7 +30,6 @@ public class TriangleComponent4D implements Component4D {
 	// <ID, <Zeitschritt, Point3D>>
 	private Map<Integer, Map<Integer, Point3D>> pointTubes;
 
-	// TODO: Put this into the components!!!
 	// List of timesteps with their effective date
 	protected LinkedList<Date> timesteps;
 
@@ -48,6 +43,7 @@ public class TriangleComponent4D implements Component4D {
 	public TriangleComponent4D(TriangleNet4D net, int id) {
 		this.net = net;
 		this.id = id;
+		timeInterval = new TimeInterval(net.getLastChangeDate(), null);
 	}
 		
 	public int getID() {
@@ -70,19 +66,7 @@ public class TriangleComponent4D implements Component4D {
 		return net;
 	}
 
-	public Date getStart() {
-		return start;
-	}
-
-	public void setStart(Date start) {
-		this.start = start;
-	}
-
-	public Date getEnd() {
-		return end;
-	}
-
-	public void setEnd(Date end) {
-		this.end = end;
+	public TimeInterval getTimeInterval() {
+		return timeInterval;
 	}
 }

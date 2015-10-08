@@ -13,4 +13,6 @@ public interface Component4D {
 	public LinkedList<Date> getTimesteps();	
 	
 	public Net4D getNet();
+
+	public TimeInterval getTimeInterval();
 }

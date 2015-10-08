@@ -7,7 +7,7 @@ public interface Net4D {
 
 	public void TopologyChange(Date date);
 
-	public void addTimestep(Date date);
+	public void addChangeTimestep(Date date);
 
 	public void preparePostObject(Date date);
 }

@@ -28,8 +28,8 @@ public class TriangleNet4D implements Net4D {
 	// Connects TimeIntervals to TriangleComponent4D objects
 	Map<TimeInterval, List<Integer>> timeIntervals;
 
-	// Dates with a explicit timestep
-	LinkedList<Date> dates;
+	// Dates with a change of net topology
+	LinkedList<Date> changeDates;
 
 	// the start date of the existence interval for this TriangleNet4D object
 	Date start;
@@ -37,8 +37,10 @@ public class TriangleNet4D implements Net4D {
 	// the end date of the existence interval for this TriangleNet4D object
 	Date end;
 
+	// TimeInterval to Component Mapper
+	TimeInterval currentInterval;
+
 	// Die Elemente dieses Netzes mit ID. Fuer jeden Topologiewechsel eine Map:
-	
 	List<Map<Integer, Element4D>> elements;
 
 	/**
@@ -52,14 +54,18 @@ public class TriangleNet4D implements Net4D {
 		super();
 		components = new HashMap<Integer, TriangleComponent4D>();
 		timeIntervals = new HashMap<TimeInterval, List<Integer>>();
-		dates = new LinkedList<Date>();
+		changeDates = new LinkedList<Date>();
 		elements = new LinkedList<Map<Integer, Element4D>>();
-		
+
 		// Add first Post object:
 		elements.add(new HashMap<Integer, Element4D>());
-		
+
 		this.start = start;
 		this.end = null;
+
+		currentInterval = new TimeInterval(start, null);
+
+		timeIntervals.put(currentInterval, new LinkedList<Integer>());
 	}
 
 	/**
@@ -74,6 +80,9 @@ public class TriangleNet4D implements Net4D {
 					"You tried to add a triangleComponent that already exists to the TriangleNet.");
 		}
 		components.put(component.getID(), component);
+
+		// update TimeInterval to Component Mapper
+		timeIntervals.get(currentInterval).add(component.getID());
 	}
 
 	/**
@@ -94,7 +103,7 @@ public class TriangleNet4D implements Net4D {
 	public Map<Integer, TriangleComponent4D> getComponents() {
 		return components;
 	}
-	
+
 	/**
 	 * Returns a specific TriangleComponents of this TriangleNet.
 	 * 
@@ -109,8 +118,8 @@ public class TriangleNet4D implements Net4D {
 	 * 
 	 * @param triangle
 	 */
-	public void addTriangle(Triangle4D triangle) {		
-		
+	public void addTriangle(Triangle4D triangle) {
+
 		// Immer an der aktuellen Stelle einfuegen:
 		if (elements.get(elements.size()).containsKey(triangle.getID())) {
 			throw new IllegalArgumentException(
@@ -140,21 +149,50 @@ public class TriangleNet4D implements Net4D {
 	}
 
 	@Override
-	public void addTimestep(Date date) {
-		dates.add(date);
-		java.util.Collections.sort(dates);
+	public void addChangeTimestep(Date date) {
+		changeDates.add(date);
 	}
 
-	public LinkedList<Date> getDates() {
-		return dates;
+	public LinkedList<Date> getChangeDates() {
+		return changeDates;
 	}
 
-	public Date getLastDate() {
-		return dates.getLast();
+	public Date getLastChangeDate() {
+		return changeDates.getLast();
 	}
 
 	public void preparePostObject(Date date) {
-		closeTimeInterval(date);
 		closeAllComponents(date);
+		closeTimeInterval(date);
+	}
+
+	/**
+	 * We need to close the TimeIntervals of this net
+	 * 
+	 * @param date
+	 */
+	private void closeTimeInterval(Date date) {
+
+		// close old TimeInterval
+		currentInterval.setEnd(date);
+
+		// start new TimeInterval
+		currentInterval = new TimeInterval(date, null);
+
+		// generate new List of Components for the new TimeInterval
+		timeIntervals.put(currentInterval, new LinkedList<Integer>());
+	}
+
+	/**
+	 * We need to close all TimeIntervals of all current components of this net
+	 * 
+	 * @param date
+	 */
+	private void closeAllComponents(Date date) {
+
+		for (Integer ID : timeIntervals.get(currentInterval)) {
+			Component4D comp = components.get(ID);
+			comp.getTimeInterval().setEnd(date);
+		}
 	}
 }
