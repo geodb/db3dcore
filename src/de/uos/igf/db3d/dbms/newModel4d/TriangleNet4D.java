@@ -151,6 +151,8 @@ public class TriangleNet4D implements Net4D {
 	@Override
 	public void addChangeTimestep(Date date) {
 		changeDates.add(date);
+		// Add new Post object:
+		elements.add(new HashMap<Integer, Element4D>());
 	}
 
 	public LinkedList<Date> getChangeDates() {
@@ -195,4 +197,45 @@ public class TriangleNet4D implements Net4D {
 			comp.getTimeInterval().setEnd(date);
 		}
 	}
+
+	public Date getStart() {
+		return start;
+	}
+
+	public Date getEnd() {
+		return end;
+	}
+
+	@Override
+	public List<Component4D> getValidComponents(Date date) {
+		
+		for(TimeInterval interval : timeIntervals.keySet()) {
+			if(interval.getStart().before(date) && interval.getEnd().after(date)) {
+				
+				List<Component4D> tmp = new LinkedList<Component4D>();
+				
+				for(Integer ID : timeIntervals.get(interval))
+					tmp.add(components.get(ID));
+				
+				return tmp;
+			}
+		}
+		return null;
+	}
+
+	@Override
+	public Map<Integer, Element4D> getNetElements(Date date) {
+		
+		int index = 0;
+		
+		// is it invalid?
+		if(date.before(changeDates.get(0)))
+			return null;
+		
+		for(Date check : changeDates) {
+			if(check.before(date)) index++;
+		}
+		
+		return elements.get(index-1);
+	}	
 }

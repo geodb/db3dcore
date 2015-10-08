@@ -4,7 +4,7 @@ import java.util.Date;
 import java.util.List;
 import java.util.Map;
 
-public class TetrahedronNet4D implements Net4D {
+public class PointNet4D implements Net4D {
 
 	@Override
 	public void TopologyChange(Date date) {

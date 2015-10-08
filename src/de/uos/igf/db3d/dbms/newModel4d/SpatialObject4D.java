@@ -23,7 +23,7 @@ public class SpatialObject4D {
 	private SegmentNet4D segmentNet;
 
 	// TODO: do we need components for points?
-	private Point4DNet pointCloud;
+	private PointNet4D pointCloud;
 
 	// ScalarOperator
 	private ScalarOperator sop;
@@ -95,11 +95,11 @@ public void setTetrahedronNet(TetrahedronNet4D tetrahedronNet) {
 		this.segmentNet = segmentNet;
 	}
 
-	public Point4DNet getPointNet() {
+	public PointNet4D getPointNet() {
 		return pointCloud;
 	}
 
-	public void setPointCloud(Point4DNet pointCloud) {
+	public void setPointCloud(PointNet4D pointCloud) {
 		this.pointCloud = pointCloud;
 	}	
 }
