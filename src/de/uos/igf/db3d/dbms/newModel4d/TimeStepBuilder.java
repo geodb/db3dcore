@@ -116,11 +116,7 @@ public class TimeStepBuilder {
 		for (final Integer id : ids) {
 			if (pointTubes.get(id).get(timesteps.size() - 1) != null)
 				cnt++;
-		}
-		
-		DB3DLogger.logger
-		.log(Level.INFO,
-				"Method addNormalTimeStep() cnt = "+ cnt + " and newPoint.size = " + newPoints.size());
+		}		
 		
 		if (cnt != newPoints.size())
 			throw new IllegalArgumentException(

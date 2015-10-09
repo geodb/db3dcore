@@ -58,7 +58,7 @@ public class TriangleNet4D implements Net4D {
 		elements = new LinkedList<Map<Integer, Element4D>>();
 
 		this.start = start;
-		this.end = null;
+		this.end = new Date(Long.MAX_VALUE);
 
 		currentInterval = new TimeInterval(start, null);
 
@@ -149,7 +149,7 @@ public class TriangleNet4D implements Net4D {
 	public void addChangeTimestep(Date date) {
 		changeDates.add(date);
 		// Add new Post object:
-		elements.add(new HashMap<Integer, Element4D>());		
+		elements.add(new HashMap<Integer, Element4D>());	
 	}
 
 	public LinkedList<Date> getChangeDates() {

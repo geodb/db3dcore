@@ -1969,6 +1969,11 @@ public class TriangleNet3DComp implements PersistentObject, ComplexGeoObj,
 			}
 		}
 
+		DB3DLogger.logger.log(
+				Level.INFO,
+				"TriangleNet3DComp: updateEntryElement. set.size = "
+						+ set.size() + " verticies count " + vertices);
+
 		if (closed) // if the net is closed take one arbitrary triangle
 			setEntryElement((TriangleElt3D) set.iterator().next());
 	}

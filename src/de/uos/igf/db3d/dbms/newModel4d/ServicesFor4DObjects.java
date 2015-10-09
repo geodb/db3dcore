@@ -115,6 +115,8 @@ public class ServicesFor4DObjects {
 
 			TriangleElt3D[] elements = new TriangleElt3D[elements4D.size()];
 
+			int cnt = 0;
+			
 			for (Integer triangleID : elements4D.keySet()) {
 
 				Triangle4D tmp = (Triangle4D) elements4D.get(triangleID);
@@ -124,7 +126,8 @@ public class ServicesFor4DObjects {
 						interpolatedPoints.get(tmp.getIDone()),
 						interpolatedPoints.get(tmp.getIDtwo()), null);
 
-				elements[triangleID] = triangle;
+				elements[cnt] = triangle;
+				cnt++;
 			}
 
 			// add the component to the TriangleNetBuilder
@@ -137,12 +140,14 @@ public class ServicesFor4DObjects {
 		if (tetrahedronNet != null) {
 			Map<Integer, Point3D> interpolatedPoints = new HashMap<Integer, Point3D>();
 
-			for (Component4D component : tetrahedronNet.getValidComponents(date)) {
+			for (Component4D component : tetrahedronNet
+					.getValidComponents(date)) {
 				interpolatedPoints.putAll(TimeStepBuilder
 						.getPointTubesAtInstance(component, date));
 			}
 
-			Map<Integer, Element4D> elements4D = tetrahedronNet.getNetElements(date);
+			Map<Integer, Element4D> elements4D = tetrahedronNet
+					.getNetElements(date);
 
 		}
 
@@ -169,10 +174,12 @@ public class ServicesFor4DObjects {
 		netObjects.add(spatial.getTetrahedronNet());
 
 		for (Net4D net : netObjects) {
-			if (((net.getStart().before(date) && net.getEnd().after(date))
-					|| net.getEnd().equals((date)) || net.getStart().equals(
-					(date)))) {
-				valid = true;
+			if (net != null) {
+				if (((net.getStart().before(date) && net.getEnd().after(date))
+						|| net.getEnd().equals((date)) || net.getStart()
+						.equals((date)))) {
+					valid = true;
+				}
 			}
 		}
 		return valid;
