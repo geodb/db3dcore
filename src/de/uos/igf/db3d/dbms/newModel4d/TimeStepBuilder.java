@@ -9,9 +9,11 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.Vector;
+import java.util.logging.Level;
 
 import de.uos.igf.db3d.dbms.geom.Point3D;
 import de.uos.igf.db3d.dbms.geom.ScalarOperator;
+import de.uos.igf.db3d.resources.DB3DLogger;
 
 /**
  * This class handles the pointTube logic, when a new time-step is added to a 4D
@@ -86,7 +88,8 @@ public class TimeStepBuilder {
 	 * @param date
 	 */
 	private static void addNormalTimeStep(Component4D component,
-			HashMap<Integer, Point3D> newPoints, Date date) {
+			HashMap<Integer, Point3D> newPoints, Date date) {		
+		
 		// check if the new step has the same ids of points as the last
 		// step:
 		Iterator<Integer> it = newPoints.keySet().iterator();
@@ -114,6 +117,11 @@ public class TimeStepBuilder {
 			if (pointTubes.get(id).get(timesteps.size() - 1) != null)
 				cnt++;
 		}
+		
+		DB3DLogger.logger
+		.log(Level.INFO,
+				"Method addNormalTimeStep() cnt = "+ cnt + " and newPoint.size = " + newPoints.size());
+		
 		if (cnt != newPoints.size())
 			throw new IllegalArgumentException(
 					"New Object is neither a Postobject nor it fits the size of the last object");

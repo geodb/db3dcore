@@ -57,9 +57,6 @@ public class TriangleNet4D implements Net4D {
 		changeDates = new LinkedList<Date>();
 		elements = new LinkedList<Map<Integer, Element4D>>();
 
-		// Add first Post object:
-		elements.add(new HashMap<Integer, Element4D>());
-
 		this.start = start;
 		this.end = null;
 
@@ -121,11 +118,11 @@ public class TriangleNet4D implements Net4D {
 	public void addTriangle(Triangle4D triangle) {
 
 		// Immer an der aktuellen Stelle einfuegen:
-		if (elements.get(elements.size()).containsKey(triangle.getID())) {
+		if (elements.get(elements.size()-1).containsKey(triangle.getID())) {
 			throw new IllegalArgumentException(
 					"You tried to add a triangle that already exists to the TriangleNet.");
 		}
-		elements.get(elements.size()).put(triangle.getID(), triangle);
+		elements.get(elements.size()-1).put(triangle.getID(), triangle);
 	}
 
 	/**
@@ -152,7 +149,7 @@ public class TriangleNet4D implements Net4D {
 	public void addChangeTimestep(Date date) {
 		changeDates.add(date);
 		// Add new Post object:
-		elements.add(new HashMap<Integer, Element4D>());
+		elements.add(new HashMap<Integer, Element4D>());		
 	}
 
 	public LinkedList<Date> getChangeDates() {

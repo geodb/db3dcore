@@ -44,6 +44,8 @@ public class TriangleComponent4D implements Component4D {
 		this.net = net;
 		this.id = id;
 		timeInterval = new TimeInterval(net.getLastChangeDate(), null);
+		timesteps = new LinkedList<Date>();
+		pointTubes = new HashMap<Integer, Map<Integer, Point3D>>();
 	}
 		
 	public int getID() {
