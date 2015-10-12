@@ -5,6 +5,7 @@ import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
+import java.util.TreeMap;
 
 import de.uos.igf.db3d.dbms.geom.Point3D;
 
@@ -149,7 +150,7 @@ public class TriangleNet4D implements Net4D {
 	public void addChangeTimestep(Date date) {
 		changeDates.add(date);
 		// Add new Post object:
-		elements.add(new HashMap<Integer, Element4D>());	
+		elements.add(new TreeMap<Integer, Element4D>());	
 	}
 
 	public LinkedList<Date> getChangeDates() {

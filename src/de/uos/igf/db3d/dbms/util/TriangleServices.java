@@ -1,10 +1,14 @@
 package de.uos.igf.db3d.dbms.util;
 
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.LinkedList;
+import java.util.Map;
 import java.util.Set;
+import java.util.TreeMap;
+import java.util.TreeSet;
 
 import de.uos.igf.db3d.dbms.geom.Equivalentable;
 import de.uos.igf.db3d.dbms.geom.Point3D;
@@ -14,10 +18,11 @@ import de.uos.igf.db3d.dbms.model3d.PointElt3D;
 import de.uos.igf.db3d.dbms.model3d.TriangleElt3D;
 import de.uos.igf.db3d.dbms.model3d.TriangleNet3D;
 import de.uos.igf.db3d.dbms.model3d.TriangleNet3DComp;
+import de.uos.igf.db3d.dbms.newModel4d.Element4D;
+import de.uos.igf.db3d.dbms.newModel4d.Triangle4D;
 
 /**
- * Some services for Triangles you do not want to miss. 
- * initForPointClouds(): 
+ * Some services for Triangles you do not want to miss. initForPointClouds():
  * Creates some HashMaps for a better Handling of Points from a TriangleNet: The
  * Map "points" is a Map of unique Points with unique IDs. The Map "triangles"
  * is a Map of TriangleIDs with an Integer Array of 3 PointIDs. The Map
@@ -28,8 +33,8 @@ import de.uos.igf.db3d.dbms.model3d.TriangleNet3DComp;
  * points.
  * 
  * The second init method (initForProgressiveMeshes()) creates even two more
- * useful Containers: 
- * Set<Segment3D> segments: A set of all segments of the TriangleNet
+ * useful Containers: Set<Segment3D> segments: A set of all segments of the
+ * TriangleNet
  * 
  * HashMap<Integer, LinkedList<Triangle3D>> pointToTriangle: This Maps contains
  * all PointIDs matched to all Triangle3D objects they are present in.
@@ -40,26 +45,26 @@ public class TriangleServices {
 
 	// ID + Point3D
 	// The Map "points" is a Map of unique Points with unique IDs.
-	HashMap<Integer, Point3D> points;
+	Map<Integer, Point3D> points;
 
 	// Point3D + ID
 	// The Map "pointIDs" is a Map to access the Point IDs via Point objects. We
 	// need it to fill the Integer Array of Triangles.
-	HashMap<Point3D, Integer> pointIDs;
+	Map<Point3D, Integer> pointIDs;
 
 	// Triangle ID + 3 Point3D IDs
 	// The Map "triangles" is a Map of TriangleIDs with an Integer Array of 3
 	// PointIDs.
-	HashMap<Integer, int[]> triangles;
+	Map<Integer, int[]> triangles;
 
 	// This Map contains all componentIDs accessible by their triangleID
 	// (triangleID, componentID)
-	HashMap<Integer, Integer> components;
+	Map<Integer, Integer> components;
 
 	// This Maps contains all PointIDs matched to all Triangle3D objects they
 	// are present in.
 	// (PointID, List of Triangles containing this point)
-	HashMap<Integer, LinkedList<Triangle3D>> pointToTriangle;
+	Map<Integer, LinkedList<Triangle3D>> pointToTriangle;
 
 	// A set of all segments of the TriangleNet
 	HashSet<Segment3D> segments;
@@ -71,12 +76,12 @@ public class TriangleServices {
 	 *            - A Triangle Net
 	 */
 	public TriangleServices() {
-		points = new HashMap<Integer, Point3D>();
+		points = new TreeMap<Integer, Point3D>();
 		pointIDs = new HashMap<Point3D, Integer>();
-		triangles = new HashMap<Integer, int[]>();
-		components = new HashMap<Integer, Integer>();
+		triangles = new TreeMap<Integer, int[]>();
+		components = new TreeMap<Integer, Integer>();
 		segments = new HashSet<Segment3D>();
-		pointToTriangle = new HashMap<Integer, LinkedList<Triangle3D>>();
+		pointToTriangle = new TreeMap<Integer, LinkedList<Triangle3D>>();
 	}
 
 	/**
@@ -106,7 +111,7 @@ public class TriangleServices {
 
 				p = triangle.getPoints();
 
-				int[] pointsForTriangles = new int[3];			
+				int[] pointsForTriangles = new int[3];
 
 				for (int i = 0; i < 3; i++) {
 
@@ -158,11 +163,11 @@ public class TriangleServices {
 			while (it.hasNext()) {
 
 				triangle = (TriangleElt3D) it.next();
-				
+
 				for (Segment3D seg : triangle.getSegments()) {
 					segments.add(seg);
 				}
-				
+
 				p = triangle.getPoints();
 
 				int[] pointsForTriangles = new int[3];
@@ -174,10 +179,10 @@ public class TriangleServices {
 						points.put(id, p[i]);
 						pointIDs.put(p[i], id);
 						pointsForTriangles[i] = id;
-						
+
 						pointToTriangle.put(id, new LinkedList<Triangle3D>());
 						pointToTriangle.get(id).add(triangle);
-						
+
 						id++;
 					} else {
 						idForPoint = pointIDs.get(p[i]);
@@ -192,11 +197,54 @@ public class TriangleServices {
 	}
 
 	/**
+	 * This methods creates unique points for a 4D triangle net
+	 * 
+	 * @param triangle4dNet
+	 *            - Map with IDs and Triangle4D objects (just point IDs)
+	 * @param pointTubes4D
+	 *            - Point3D objects with an ID
+	 */
+	public void initFor4DPointCloud(Map<Integer, Element4D> triangle4dNet,
+			Map<Integer, Point3D> pointTubes4D) {
+
+		// save the IDs of Points to create the Triangles:
+		Set<Point3D> unique = new HashSet<Point3D>();
+
+		for (Integer triangleID : triangle4dNet.keySet()) {
+
+			Triangle4D tmpTriangle = (Triangle4D) triangle4dNet.get(triangleID);
+			
+			int point4DIDs [] = {tmpTriangle.getIDzero(), tmpTriangle.getIDone(), tmpTriangle.getIDtwo()};
+
+			Point3D zero = pointTubes4D.get(point4DIDs[0]);
+			Point3D one = pointTubes4D.get(point4DIDs[1]);
+			Point3D two = pointTubes4D.get(point4DIDs[2]);
+
+			Point3D[] p = { zero, one, two };
+
+			int[] pointsForTriangles = new int[3];
+
+			for (int i = 0; i < 3; i++) {
+
+				if (!unique.contains(p[i])) {
+					unique.add(p[i]);
+					points.put(point4DIDs[i], p[i]);
+					pointIDs.put(p[i], point4DIDs[i]);
+					pointsForTriangles[i] = point4DIDs[i];
+				} else {
+					pointsForTriangles[i] = pointIDs.get(p[i]);
+				}
+			}
+			triangles.put(triangleID, pointsForTriangles);
+		}
+	}
+
+	/**
 	 * The Map "points" is a Map of unique Points with unique IDs. Starts at 0.
 	 * 
 	 * @return the points
 	 */
-	public HashMap<Integer, Point3D> getPoints() {
+	public Map<Integer, Point3D> getPoints() {
 		return points;
 	}
 
@@ -206,7 +254,7 @@ public class TriangleServices {
 	 * 
 	 * @return the pointIDs
 	 */
-	public HashMap<Point3D, Integer> getPointIDs() {
+	public Map<Point3D, Integer> getPointIDs() {
 		return pointIDs;
 	}
 
@@ -216,7 +264,7 @@ public class TriangleServices {
 	 * 
 	 * @return the triangles
 	 */
-	public HashMap<Integer, int[]> getTriangles() {
+	public Map<Integer, int[]> getTriangles() {
 		return triangles;
 	}
 
@@ -226,7 +274,7 @@ public class TriangleServices {
 	 * 
 	 * @return the components
 	 */
-	public HashMap<Integer, Integer> getComponents() {
+	public Map<Integer, Integer> getComponents() {
 		return components;
 	}
 
@@ -235,11 +283,10 @@ public class TriangleServices {
 	 * 
 	 * @return the segments
 	 */
-	public HashMap<Integer, LinkedList<Triangle3D>> getpointToTriangles() {
+	public Map<Integer, LinkedList<Triangle3D>> getpointToTriangles() {
 		return pointToTriangle;
 	}
 
-	
 	/**
 	 * This Set contains all segments of the TriangleNet
 	 * 

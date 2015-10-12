@@ -8,6 +8,7 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.TreeMap;
 import java.util.Vector;
 import java.util.logging.Level;
 
@@ -36,7 +37,7 @@ public class TimeStepBuilder {
 	 * @param date
 	 */
 	public static void addTimestep(Component4D component,
-			HashMap<Integer, Point3D> newPoints, Date date) {
+			Map<Integer, Point3D> newPoints, Date date) {
 
 		// check if it is the first timestep
 		if (component.getTimesteps().isEmpty()) {
@@ -88,8 +89,8 @@ public class TimeStepBuilder {
 	 * @param date
 	 */
 	private static void addNormalTimeStep(Component4D component,
-			HashMap<Integer, Point3D> newPoints, Date date) {		
-		
+			Map<Integer, Point3D> newPoints, Date date) {
+
 		// check if the new step has the same ids of points as the last
 		// step:
 		Iterator<Integer> it = newPoints.keySet().iterator();
@@ -116,8 +117,8 @@ public class TimeStepBuilder {
 		for (final Integer id : ids) {
 			if (pointTubes.get(id).get(timesteps.size() - 1) != null)
 				cnt++;
-		}		
-		
+		}
+
 		if (cnt != newPoints.size())
 			throw new IllegalArgumentException(
 					"New Object is neither a Postobject nor it fits the size of the last object");
@@ -125,12 +126,9 @@ public class TimeStepBuilder {
 		// everything is alright? Add the new Points!
 		timesteps.add(date);
 
-		it = newPoints.keySet().iterator();
-
 		// add all Points with their ID to the pointTube Map
-		while (it.hasNext()) {
 
-			Integer id = it.next();
+		for (Integer id : newPoints.keySet()) {
 
 			// Deltaspeicherung:
 			if (pointTubes.get(id).get(timesteps.size() - 2)
@@ -157,7 +155,7 @@ public class TimeStepBuilder {
 	 * @param date
 	 */
 	private static void polthierAndRumpf(Component4D component,
-			HashMap<Integer, Point3D> newPoints, Date date) {
+			Map<Integer, Point3D> newPoints, Date date) {
 
 		Map<Integer, Map<Integer, Point3D>> pointTubes = component
 				.getPointTubes();
@@ -168,7 +166,7 @@ public class TimeStepBuilder {
 
 		Iterator<Integer> it = newPoints.keySet().iterator();
 
-		HashMap<Integer, Point3D> correlation = new HashMap<Integer, Point3D>();
+		Map<Integer, Point3D> correlation = new TreeMap<Integer, Point3D>();
 
 		// TODO: Code for the Deltaspeicherung:
 
@@ -255,7 +253,7 @@ public class TimeStepBuilder {
 	 * @param date
 	 */
 	private static void firstStep(Component4D component,
-			HashMap<Integer, Point3D> newPoints, Date date) {
+			Map<Integer, Point3D> newPoints, Date date) {
 
 		Map<Integer, Map<Integer, Point3D>> pointTubes = component
 				.getPointTubes();
@@ -274,7 +272,7 @@ public class TimeStepBuilder {
 
 			// It is the initial step, so we have to create a new HashMap
 			// for every Point.
-			HashMap<Integer, Point3D> newTube = new HashMap<Integer, Point3D>();
+			Map<Integer, Point3D> newTube = new TreeMap<Integer, Point3D>();
 			newTube.put(0, newPoints.get(id));
 
 			pointTubes.put(id, newTube);
@@ -297,7 +295,7 @@ public class TimeStepBuilder {
 
 		LinkedList<Date> timesteps = component.getTimesteps();
 
-		HashMap<Integer, Point3D> points = new HashMap<Integer, Point3D>();
+		Map<Integer, Point3D> points = new TreeMap<Integer, Point3D>();
 
 		// the case that the date is similar to a date of one timestep we only
 		// need to get the right Points from the PointTube
@@ -353,13 +351,9 @@ public class TimeStepBuilder {
 				if (pointTubes.get(id).containsKey(intervalStartStep + 1))
 					allIDs.add(id);
 			}
-
-			Iterator<Integer> ids = allIDs.iterator();
-
-			while (ids.hasNext()) {
-
-				Integer id = ids.next();
-
+			
+			for(Integer id : allIDs) {
+				
 				// check if this ID is active in this timeinterval
 				if (pointTubes.get(id).containsKey(intervalStartStep)) {
 

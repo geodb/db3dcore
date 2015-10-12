@@ -23,12 +23,12 @@ public class Triangle4D implements Element4D {
 	 * @param points
 	 *            Point3D array.
 	 */
-	public Triangle4D(Integer[] pointIDs, Integer ID)
+	public Triangle4D(int[] IDs, Integer ID)
 			throws IllegalArgumentException {
 
-		this.IDzero = pointIDs[0];
-		this.IDone = pointIDs[1];
-		this.IDtwo = pointIDs[2];
+		this.IDzero = IDs[0];
+		this.IDone = IDs[1];
+		this.IDtwo = IDs[2];
 		
 		this.id = ID;
 	}
@@ -44,8 +44,8 @@ public class Triangle4D implements Element4D {
 	 * @param point3
 	 *            Point3D.		 
 	 */
-	public Triangle4D(Integer pointID1, Integer pointID2, Integer pointID3, Integer ID) {
-		this(new Integer[] { pointID1, pointID2, pointID3 }, ID);
+	public Triangle4D(int pointID1, int pointID2, int pointID3, Integer ID) {
+		this(new int[] { pointID1, pointID2, pointID3 }, ID);
 	}
 	
 	// Getter methods for the fields:

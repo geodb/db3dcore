@@ -5,6 +5,7 @@ import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
+import java.util.TreeMap;
 
 import de.uos.igf.db3d.dbms.geom.Point3D;
 
@@ -24,8 +25,6 @@ public class TriangleComponent4D implements Component4D {
 	// TimeInterval of this component
 	TimeInterval timeInterval;
 	
-	// TODO: Ab in die Components! Getter Methoden für die Objekte zum 
-	// Zeitpunkt XY in die Components!
 	// The pointTubes of this 4D Object
 	// <ID, <Zeitschritt, Point3D>>
 	private Map<Integer, Map<Integer, Point3D>> pointTubes;
@@ -45,7 +44,7 @@ public class TriangleComponent4D implements Component4D {
 		this.id = id;
 		timeInterval = new TimeInterval(net.getLastChangeDate(), null);
 		timesteps = new LinkedList<Date>();
-		pointTubes = new HashMap<Integer, Map<Integer, Point3D>>();
+		pointTubes = new TreeMap<Integer, Map<Integer, Point3D>>();
 	}
 		
 	public int getID() {
