@@ -75,7 +75,7 @@ public class SpatialObject4D {
 		return tetrahedronNet;
 	}
 
-public void setTetrahedronNet(TetrahedronNet4D tetrahedronNet) {
+	public void setTetrahedronNet(TetrahedronNet4D tetrahedronNet) {
 		this.tetrahedronNet = tetrahedronNet;
 	}
 
@@ -101,5 +101,5 @@ public void setTetrahedronNet(TetrahedronNet4D tetrahedronNet) {
 
 	public void setPointCloud(PointNet4D pointCloud) {
 		this.pointCloud = pointCloud;
-	}	
+	}
 }

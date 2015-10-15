@@ -19,4 +19,6 @@ public interface Net4D {
 	List<Component4D> getValidComponents(Date date);
 
 	public Map<Integer, Element4D> getNetElements(Date date);
+	
+	public Date getLastChangeDate();
 }

@@ -231,7 +231,7 @@ public class TriangleNet4D implements Net4D {
 			return null;
 		
 		for(Date check : changeDates) {
-			if(check.before(date)) index++;
+			if(check.before(date) || check.equals(date)) index++;
 		}
 		
 		return elements.get(index-1);
