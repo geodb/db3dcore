@@ -8,10 +8,14 @@ import java.util.List;
 import java.util.Map;
 
 import de.uos.igf.db3d.dbms.geom.Point3D;
+import de.uos.igf.db3d.dbms.geom.ScalarOperator;
 import de.uos.igf.db3d.dbms.model3d.Object3D;
 import de.uos.igf.db3d.dbms.model3d.Object3DBuilder;
+import de.uos.igf.db3d.dbms.model3d.PointElt3D;
 import de.uos.igf.db3d.dbms.model3d.PointNetBuilder;
+import de.uos.igf.db3d.dbms.model3d.SegmentElt3D;
 import de.uos.igf.db3d.dbms.model3d.SegmentNetBuilder;
+import de.uos.igf.db3d.dbms.model3d.TetrahedronElt3D;
 import de.uos.igf.db3d.dbms.model3d.TetrahedronNetBuilder;
 import de.uos.igf.db3d.dbms.model3d.TriangleElt3D;
 import de.uos.igf.db3d.dbms.model3d.TriangleNetBuilder;
@@ -35,6 +39,8 @@ public class ServicesFor4DObjects {
 	public Object3D getInstanceAt(Object4D object, Date date) {
 
 		SpatialObject4D spatial = object.getSpatial();
+
+		ScalarOperator sop = spatial.getScalarOperator();
 
 		PointNet4D pointNet = spatial.getPointNet();
 		SegmentNet4D segmentNet = spatial.getSegmentNet();
@@ -63,6 +69,7 @@ public class ServicesFor4DObjects {
 		// create all the Point3D objects
 
 		if (pointNet != null) {
+
 			Map<Integer, Point3D> interpolatedPoints = new HashMap<Integer, Point3D>();
 
 			for (Component4D component : pointNet.getValidComponents(date)) {
@@ -72,10 +79,31 @@ public class ServicesFor4DObjects {
 
 			Map<Integer, Element4D> elements4D = pointNet.getNetElements(date);
 
+			PointElt3D[] elements = new PointElt3D[elements4D.size()];
+
+			int cnt = 0;
+
+			for (Integer pointID : elements4D.keySet()) {
+
+				Point4D tmp = (Point4D) elements4D.get(pointID);
+
+				PointElt3D point = new PointElt3D(interpolatedPoints.get(tmp
+						.getID()));
+
+				elements[cnt] = point;
+				cnt++;
+			}
+
+			// add the component to the PointNetBuilder
+			pNB.addComponent(elements);
+
+			builder.setSpatialPart(pNB.getPointNet());
+
 		}
 
 		// create all the Segments3D objects
 		if (segmentNet != null) {
+			
 			Map<Integer, Point3D> interpolatedPoints = new HashMap<Integer, Point3D>();
 
 			for (Component4D component : segmentNet.getValidComponents(date)) {
@@ -85,6 +113,27 @@ public class ServicesFor4DObjects {
 
 			Map<Integer, Element4D> elements4D = segmentNet
 					.getNetElements(date);
+
+			SegmentElt3D[] elements = new SegmentElt3D[elements4D.size()];
+
+			int cnt = 0;
+
+			for (Integer segmentID : elements4D.keySet()) {
+
+				Segment4D tmp = (Segment4D) elements4D.get(segmentID);
+
+				SegmentElt3D segment = new SegmentElt3D(
+						interpolatedPoints.get(tmp.getIDstart()),
+						interpolatedPoints.get(tmp.getIDend()), sop);
+
+				elements[cnt] = segment;
+				cnt++;
+			}
+
+			// add the component to the SegmentNetBuilder
+			sNB.addComponent(elements);
+
+			builder.setSpatialPart(sNB.getSegmentNet());
 		}
 
 		// create all the Triangel3D objects
@@ -116,7 +165,7 @@ public class ServicesFor4DObjects {
 			TriangleElt3D[] elements = new TriangleElt3D[elements4D.size()];
 
 			int cnt = 0;
-			
+
 			for (Integer triangleID : elements4D.keySet()) {
 
 				Triangle4D tmp = (Triangle4D) elements4D.get(triangleID);
@@ -124,7 +173,7 @@ public class ServicesFor4DObjects {
 				TriangleElt3D triangle = new TriangleElt3D(
 						interpolatedPoints.get(tmp.getIDzero()),
 						interpolatedPoints.get(tmp.getIDone()),
-						interpolatedPoints.get(tmp.getIDtwo()), null);
+						interpolatedPoints.get(tmp.getIDtwo()), sop);
 
 				elements[cnt] = triangle;
 				cnt++;
@@ -148,7 +197,30 @@ public class ServicesFor4DObjects {
 
 			Map<Integer, Element4D> elements4D = tetrahedronNet
 					.getNetElements(date);
+			
+			TetrahedronElt3D[] elements = new TetrahedronElt3D[elements4D.size()];
 
+			int cnt = 0;
+
+			for (Integer tetrahedronID : elements4D.keySet()) {
+
+				Tetrahedron4D tmp = (Tetrahedron4D) elements4D.get(tetrahedronID);
+
+				TetrahedronElt3D tetrahedron = new TetrahedronElt3D(
+						interpolatedPoints.get(tmp.getIDzero()),
+						interpolatedPoints.get(tmp.getIDone()),
+						interpolatedPoints.get(tmp.getIDtwo()),
+						interpolatedPoints.get(tmp.getIDthree()),
+						sop);
+
+				elements[cnt] = tetrahedron;
+				cnt++;
+			}
+
+			// add the component to the TetrahedronNetBuilder
+			tetraNB.addComponent(elements);
+
+			builder.setSpatialPart(tetraNB.getTetrahedronNet());
 		}
 
 		// return the Object3D
