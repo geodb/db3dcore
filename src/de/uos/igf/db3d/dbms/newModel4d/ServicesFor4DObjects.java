@@ -9,6 +9,7 @@ import java.util.Map;
 
 import de.uos.igf.db3d.dbms.geom.Point3D;
 import de.uos.igf.db3d.dbms.geom.ScalarOperator;
+import de.uos.igf.db3d.dbms.model3d.ComplexGeoObj;
 import de.uos.igf.db3d.dbms.model3d.Object3D;
 import de.uos.igf.db3d.dbms.model3d.Object3DBuilder;
 import de.uos.igf.db3d.dbms.model3d.PointElt3D;
@@ -42,10 +43,7 @@ public class ServicesFor4DObjects {
 
 		ScalarOperator sop = spatial.getScalarOperator();
 
-		PointNet4D pointNet = spatial.getPointNet();
-		SegmentNet4D segmentNet = spatial.getSegmentNet();
-		TriangleNet4D triangleNet = spatial.getTriangleNet();
-		TetrahedronNet4D tetrahedronNet = spatial.getTetrahedronNet();
+		Net4D net = spatial.getNet();
 
 		// check if the specified date is not in the timeinterval:
 		if (!checkIfDateIsValid(date, spatial))
@@ -68,7 +66,9 @@ public class ServicesFor4DObjects {
 
 		// create all the Point3D objects
 
-		if (pointNet != null) {
+		if (net.getType() == ComplexGeoObj.POINT_NET_4D) {
+
+			PointNet4D pointNet = (PointNet4D) net;
 
 			Map<Integer, Point3D> interpolatedPoints = new HashMap<Integer, Point3D>();
 
@@ -102,8 +102,10 @@ public class ServicesFor4DObjects {
 		}
 
 		// create all the Segments3D objects
-		if (segmentNet != null) {
-			
+		else if (net.getType() == ComplexGeoObj.SEGMENT_NET_4D) {
+
+			SegmentNet4D segmentNet = (SegmentNet4D) net;
+
 			Map<Integer, Point3D> interpolatedPoints = new HashMap<Integer, Point3D>();
 
 			for (Component4D component : segmentNet.getValidComponents(date)) {
@@ -150,7 +152,9 @@ public class ServicesFor4DObjects {
 		// so get the right points:
 		// TODO: Do this for every component!
 
-		if (triangleNet != null) {
+		else if (net.getType() == ComplexGeoObj.TRIANGLE_NET_4D) {
+
+			TriangleNet4D triangleNet = (TriangleNet4D) net;
 
 			Map<Integer, Point3D> interpolatedPoints = new HashMap<Integer, Point3D>();
 
@@ -186,7 +190,10 @@ public class ServicesFor4DObjects {
 		}
 
 		// create all the Tetrahedron3D objects
-		if (tetrahedronNet != null) {
+		else if (net.getType() == ComplexGeoObj.TETRAHEDRON_NET_4D) {
+
+			TetrahedronNet4D tetrahedronNet = (TetrahedronNet4D) net;
+
 			Map<Integer, Point3D> interpolatedPoints = new HashMap<Integer, Point3D>();
 
 			for (Component4D component : tetrahedronNet
@@ -197,21 +204,22 @@ public class ServicesFor4DObjects {
 
 			Map<Integer, Element4D> elements4D = tetrahedronNet
 					.getNetElements(date);
-			
-			TetrahedronElt3D[] elements = new TetrahedronElt3D[elements4D.size()];
+
+			TetrahedronElt3D[] elements = new TetrahedronElt3D[elements4D
+					.size()];
 
 			int cnt = 0;
 
 			for (Integer tetrahedronID : elements4D.keySet()) {
 
-				Tetrahedron4D tmp = (Tetrahedron4D) elements4D.get(tetrahedronID);
+				Tetrahedron4D tmp = (Tetrahedron4D) elements4D
+						.get(tetrahedronID);
 
 				TetrahedronElt3D tetrahedron = new TetrahedronElt3D(
 						interpolatedPoints.get(tmp.getIDzero()),
 						interpolatedPoints.get(tmp.getIDone()),
 						interpolatedPoints.get(tmp.getIDtwo()),
-						interpolatedPoints.get(tmp.getIDthree()),
-						sop);
+						interpolatedPoints.get(tmp.getIDthree()), sop);
 
 				elements[cnt] = tetrahedron;
 				cnt++;
@@ -238,22 +246,16 @@ public class ServicesFor4DObjects {
 
 		boolean valid = false;
 
-		List<Net4D> netObjects = new LinkedList<Net4D>();
+		Net4D net = spatial.getNet();
 
-		netObjects.add(spatial.getPointNet());
-		netObjects.add(spatial.getSegmentNet());
-		netObjects.add(spatial.getTriangleNet());
-		netObjects.add(spatial.getTetrahedronNet());
-
-		for (Net4D net : netObjects) {
-			if (net != null) {
-				if (((net.getStart().before(date) && net.getEnd().after(date))
-						|| net.getEnd().equals((date)) || net.getStart()
-						.equals((date)))) {
-					valid = true;
-				}
+		if (net != null) {
+			if (((net.getStart().before(date) && net.getEnd().after(date))
+					|| net.getEnd().equals((date)) || net.getStart().equals(
+					(date)))) {
+				valid = true;
 			}
 		}
+
 		return valid;
 	}
 }

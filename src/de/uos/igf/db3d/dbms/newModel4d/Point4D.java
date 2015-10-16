@@ -8,7 +8,9 @@ package de.uos.igf.db3d.dbms.newModel4d;
 public class Point4D implements Element4D {
 
 	/* id of this - unique in whole net */
-	private int id;
+	private int ID;
+	
+	private int tubeID;
 
 	/**
 	 * Constructor. 
@@ -17,16 +19,13 @@ public class Point4D implements Element4D {
 	 * @param id
 	 *            PointTube ID
 	 */
-	public Point4D(int id) {
+	public Point4D(int tubeID, int ID) {
 		super();
-		this.id = id;
-	}
-	
-	public int getID() {
-		return id;
+		this.tubeID = tubeID;
+		this.ID = ID;
 	}
 
-	public void setId(int id) {
-		this.id = id;
+	public int getID() {
+		return ID;
 	}	
 }

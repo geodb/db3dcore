@@ -4,6 +4,8 @@ import java.util.Date;
 import java.util.List;
 import java.util.Map;
 
+import de.uos.igf.db3d.dbms.geom.Point3D;
+
 public interface Net4D {
 
 	public void TopologyChange(Date date);
@@ -21,4 +23,12 @@ public interface Net4D {
 	public Map<Integer, Element4D> getNetElements(Date date);
 	
 	public Date getLastChangeDate();
+	
+	public byte getType();
+
+	public Map<Integer, Component4D> getComponents();
+
+	public List<Map<Integer, Element4D>> getElements();
+	
+	public Component4D getComponent(int ID);
 }

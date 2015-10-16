@@ -3,6 +3,7 @@ package de.uos.igf.db3d.dbms.util;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
+import java.util.Map;
 import java.util.Set;
 
 import de.uos.igf.db3d.dbms.geom.Equivalentable;
@@ -13,14 +14,17 @@ import de.uos.igf.db3d.dbms.model3d.TetrahedronNet3DComp;
 import de.uos.igf.db3d.dbms.model3d.TriangleElt3D;
 import de.uos.igf.db3d.dbms.model3d.TriangleNet3D;
 import de.uos.igf.db3d.dbms.model3d.TriangleNet3DComp;
+import de.uos.igf.db3d.dbms.newModel4d.Element4D;
+import de.uos.igf.db3d.dbms.newModel4d.Tetrahedron4D;
+import de.uos.igf.db3d.dbms.newModel4d.Triangle4D;
 
 /**
- * Some services for Tetrahedrons you dont want to miss. 1) initForPointClouds() -
- * Creates some HashMaps for a better Handling of Points from a TetrahedronNet: The
- * Map "points" is a Map of unique Points with unique IDs. The Map "tetrahedrons"
- * is a Map of TetrahedronIDs with an Integer Array of 3 PointIDs. The Map
- * "pointIDs" is a Map to access the Point IDs via Point objects. We need it to
- * fill the Integer Array of Tetrahedrons.
+ * Some services for Tetrahedrons you dont want to miss. 1) initForPointClouds()
+ * - Creates some HashMaps for a better Handling of Points from a
+ * TetrahedronNet: The Map "points" is a Map of unique Points with unique IDs.
+ * The Map "tetrahedrons" is a Map of TetrahedronIDs with an Integer Array of 3
+ * PointIDs. The Map "pointIDs" is a Map to access the Point IDs via Point
+ * objects. We need it to fill the Integer Array of Tetrahedrons.
  * 
  * You can use this methods for Import/Export functions to sort out duplicate
  * points.
@@ -39,7 +43,8 @@ public class TetrahedronServices {
 	HashMap<Point3D, Integer> pointIDs;
 
 	// Tetrahedron ID + 3 Point3D IDs
-	// The Map "tetrahedrons" is a Map of TetrahedronIDs with an Integer Array of 4
+	// The Map "tetrahedrons" is a Map of TetrahedronIDs with an Integer Array
+	// of 4
 	// PointIDs.
 	HashMap<Integer, int[]> tetrahedrons;
 
@@ -108,6 +113,48 @@ public class TetrahedronServices {
 	}
 
 	/**
+	 * The initial method to create the Maps for our services.
+	 */
+	public void initFor4DPointClouds(Map<Integer, Element4D> tetrahedron4dNet,
+			Map<Integer, Point3D> pointTubes4D) {
+
+		// save the IDs of Points to create the Triangles:
+		Set<Point3D> unique = new HashSet<Point3D>();
+
+		for (Integer tetrahedronID : tetrahedron4dNet.keySet()) {
+
+			Tetrahedron4D tmpTetrahedron = (Tetrahedron4D) tetrahedron4dNet
+					.get(tetrahedronID);
+
+			int point4DIDs[] = { tmpTetrahedron.getIDzero(),
+					tmpTetrahedron.getIDone(), tmpTetrahedron.getIDtwo(),
+					tmpTetrahedron.getIDthree() };
+
+			Point3D zero = pointTubes4D.get(point4DIDs[0]);
+			Point3D one = pointTubes4D.get(point4DIDs[1]);
+			Point3D two = pointTubes4D.get(point4DIDs[2]);
+			Point3D three = pointTubes4D.get(point4DIDs[3]);
+
+			Point3D[] p = { zero, one, two, three };
+
+			int[] pointsForTetrahedrons = new int[4];
+
+			for (int i = 0; i < 4; i++) {
+
+				if (!unique.contains(p[i])) {
+					unique.add(p[i]);
+					points.put(point4DIDs[i], p[i]);
+					pointIDs.put(p[i], point4DIDs[i]);
+					pointsForTetrahedrons[i] = point4DIDs[i];
+				} else {
+					pointsForTetrahedrons[i] = pointIDs.get(p[i]);
+				}
+			}
+			tetrahedrons.put(tetrahedronID, pointsForTetrahedrons);
+		}
+	}
+
+	/**
 	 * The Map "points" is a Map of unique Points with unique IDs. Starts at 0.
 	 * 
 	 * @return the points
@@ -127,8 +174,8 @@ public class TetrahedronServices {
 	}
 
 	/**
-	 * The Map "tetrahedrons" is a Map of TetrahedronIDs with an Integer Array of 4
-	 * PointIDs.
+	 * The Map "tetrahedrons" is a Map of TetrahedronIDs with an Integer Array
+	 * of 4 PointIDs.
 	 * 
 	 * @return the triangles
 	 */
@@ -181,16 +228,16 @@ public class TetrahedronServices {
 
 			if (tmp <= 255) {
 				hexTmp = Integer.toHexString((int) tmp);
-				if (hexTmp.length() == 1) 
+				if (hexTmp.length() == 1)
 					hexTmp = "0" + hexTmp;
 				hex = hexTmp + "ff";
 			} else {
 				hexTmp = Integer.toHexString((int) tmp - 255);
-				if (hexTmp.length() == 1) 
+				if (hexTmp.length() == 1)
 					hexTmp = "0" + hexTmp;
 				hex = "ff" + hexTmp;
 			}
-			
+
 			attributeColors.put(pointIDs.get(point), "0xff" + hex + "00");
 		}
 		return attributeColors;

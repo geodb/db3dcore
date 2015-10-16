@@ -8,6 +8,7 @@ import java.util.Map;
 import java.util.TreeMap;
 
 import de.uos.igf.db3d.dbms.geom.Point3D;
+import de.uos.igf.db3d.dbms.model3d.ComplexGeoObj;
 
 /**
  * This class represents a 4D PointNet. A PointNet objects consists of one
@@ -24,7 +25,7 @@ public class PointNet4D implements Net4D {
 	// The Components of this Net
 	// Due to the Components we can handle different parts of the net
 	// with a different temporal discretisation.
-	Map<Integer, PointComponent4D> components;
+	Map<Integer, Component4D> components;
 
 	// Connects TimeIntervals to Component objects
 	Map<TimeInterval, List<Integer>> timeIntervals;
@@ -53,7 +54,7 @@ public class PointNet4D implements Net4D {
 	 */
 	public PointNet4D(Date start) {
 		super();
-		components = new HashMap<Integer, PointComponent4D>();
+		components = new HashMap<Integer, Component4D>();
 		timeIntervals = new HashMap<TimeInterval, List<Integer>>();
 		changeDates = new LinkedList<Date>();
 		elements = new LinkedList<Map<Integer, Element4D>>();
@@ -98,7 +99,7 @@ public class PointNet4D implements Net4D {
 	 * @return Map<Integer, Component4D> - All Components of
 	 *         this net.
 	 */
-	public Map<Integer, PointComponent4D> getComponents() {
+	public Map<Integer, Component4D> getComponents() {
 		return components;
 	}
 
@@ -107,7 +108,7 @@ public class PointNet4D implements Net4D {
 	 * 
 	 * @return Component4D
 	 */
-	public PointComponent4D getComponent(int ID) {
+	public Component4D getComponent(int ID) {
 		return components.get(ID);
 	}
 
@@ -235,5 +236,10 @@ public class PointNet4D implements Net4D {
 		}
 		
 		return elements.get(index-1);
+	}
+
+	@Override
+	public byte getType() {		
+		return ComplexGeoObj.POINT_NET_4D;
 	}	
 }

@@ -14,16 +14,8 @@ public class SpatialObject4D {
 	// back reference to Object4D
 	private Object4D object;
 
-	// Geometry information for all kind of simplices and their components
-	// (componentID = key)
-	// TODO Netze zu Components!
-	// TODO TreeMap nehmen!
-	private TetrahedronNet4D tetrahedronNet;
-	private TriangleNet4D triangleNet;
-	private SegmentNet4D segmentNet;
-
-	// TODO: do we need components for points?
-	private PointNet4D pointCloud;
+	// the net of this spatial part
+	private Net4D net;
 
 	// ScalarOperator
 	private ScalarOperator sop;
@@ -71,35 +63,11 @@ public class SpatialObject4D {
 		this.sop = sop;
 	}
 
-	public TetrahedronNet4D getTetrahedronNet() {
-		return tetrahedronNet;
+	public Net4D getNet() {
+		return net;
 	}
-
-	public void setTetrahedronNet(TetrahedronNet4D tetrahedronNet) {
-		this.tetrahedronNet = tetrahedronNet;
-	}
-
-	public TriangleNet4D getTriangleNet() {
-		return triangleNet;
-	}
-
-	public void setTriangleNet(TriangleNet4D triangleNet) {
-		this.triangleNet = triangleNet;
-	}
-
-	public SegmentNet4D getSegmentNet() {
-		return segmentNet;
-	}
-
-	public void setSegmentNet(SegmentNet4D segmentNet) {
-		this.segmentNet = segmentNet;
-	}
-
-	public PointNet4D getPointNet() {
-		return pointCloud;
-	}
-
-	public void setPointCloud(PointNet4D pointCloud) {
-		this.pointCloud = pointCloud;
+	
+	public void setNet(Net4D net) {
+		this.net = net;
 	}
 }
