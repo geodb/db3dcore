@@ -24,7 +24,7 @@ public class PointNet4D implements Net4D {
 	// The Components of this Net
 	// Due to the Components we can handle different parts of the net
 	// with a different temporal discretisation.
-	Map<Integer, Component4D> components;
+	Map<Integer, PointComponent4D> components;
 
 	// Connects TimeIntervals to Component objects
 	Map<TimeInterval, List<Integer>> timeIntervals;
@@ -53,7 +53,7 @@ public class PointNet4D implements Net4D {
 	 */
 	public PointNet4D(Date start) {
 		super();
-		components = new HashMap<Integer, Component4D>();
+		components = new HashMap<Integer, PointComponent4D>();
 		timeIntervals = new HashMap<TimeInterval, List<Integer>>();
 		changeDates = new LinkedList<Date>();
 		elements = new LinkedList<Map<Integer, Element4D>>();
@@ -98,7 +98,7 @@ public class PointNet4D implements Net4D {
 	 * @return Map<Integer, Component4D> - All Components of
 	 *         this net.
 	 */
-	public Map<Integer, Component4D> getComponents() {
+	public Map<Integer, PointComponent4D> getComponents() {
 		return components;
 	}
 
@@ -107,7 +107,7 @@ public class PointNet4D implements Net4D {
 	 * 
 	 * @return Component4D
 	 */
-	public Component4D getComponent(int ID) {
+	public PointComponent4D getComponent(int ID) {
 		return components.get(ID);
 	}
 
