@@ -12,19 +12,30 @@ public class Segment4D implements Element4D {
 	private int IDend;
 
 	/* id of this - unique in whole net */
-	private int id;
+	private int ID;
 
 	/**
 	 * Constructor. Constructs a Segment4D with given pointTubeIDs
+	 */
+	public Segment4D(int IDstart, int IDend, int ID) {
+		super();
+		this.IDstart = IDstart;
+		this.IDend = IDend;
+		this.ID = ID;
+	}
+	
+	/**
+	 * Constructor. Constructs a Segment4D with given pointTubeID array
 	 * 
 	 * @param points
 	 *            Point3D array.
 	 */
-	public Segment4D(int iDstart, int iDend, int id) {
+	public Segment4D(int[] IDs, Integer id) {
 		super();
-		IDstart = iDstart;
-		IDend = iDend;
-		this.id = id;
+		IDstart = IDs[0];
+		IDend = IDs[1];
+		
+		this.ID = id;
 	}
 
 	public int getIDstart() {
@@ -36,6 +47,6 @@ public class Segment4D implements Element4D {
 	}
 
 	public int getID() {
-		return id;
+		return ID;
 	}
 }
