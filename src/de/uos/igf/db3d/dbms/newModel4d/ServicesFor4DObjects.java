@@ -37,7 +37,7 @@ public class ServicesFor4DObjects {
 	 *         specified date
 	 * @author Paul Vincent Kuper (kuper@kit.edu)
 	 */
-	public Object3D getInstanceAt(Object4D object, Date date) {
+	public static Object3D getInstanceAt(Object4D object, Date date) {
 
 		SpatialObject4D spatial = object.getSpatial();
 
@@ -242,7 +242,7 @@ public class ServicesFor4DObjects {
 	 * @param netObjects
 	 * @return true if we found a net, false otherwise
 	 */
-	private boolean checkIfDateIsValid(Date date, SpatialObject4D spatial) {
+	private static boolean checkIfDateIsValid(Date date, SpatialObject4D spatial) {
 
 		boolean valid = false;
 
