@@ -1300,4 +1300,8 @@ public class SegmentNet3DComp implements PersistentObject, ComplexGeoObj,
 		return null;
 	}
 
+	public int getID() {
+		return id;
+	}
+
 }

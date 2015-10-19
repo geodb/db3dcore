@@ -8,6 +8,9 @@ import java.util.Set;
 
 import de.uos.igf.db3d.dbms.geom.Equivalentable;
 import de.uos.igf.db3d.dbms.geom.Point3D;
+import de.uos.igf.db3d.dbms.model3d.SegmentElt3D;
+import de.uos.igf.db3d.dbms.model3d.SegmentNet3D;
+import de.uos.igf.db3d.dbms.model3d.SegmentNet3DComp;
 import de.uos.igf.db3d.dbms.model3d.TetrahedronElt3D;
 import de.uos.igf.db3d.dbms.model3d.TetrahedronNet3D;
 import de.uos.igf.db3d.dbms.model3d.TetrahedronNet3DComp;
@@ -15,23 +18,24 @@ import de.uos.igf.db3d.dbms.model3d.TriangleElt3D;
 import de.uos.igf.db3d.dbms.model3d.TriangleNet3D;
 import de.uos.igf.db3d.dbms.model3d.TriangleNet3DComp;
 import de.uos.igf.db3d.dbms.newModel4d.Element4D;
+import de.uos.igf.db3d.dbms.newModel4d.Segment4D;
 import de.uos.igf.db3d.dbms.newModel4d.Tetrahedron4D;
 import de.uos.igf.db3d.dbms.newModel4d.Triangle4D;
 
 /**
- * Some services for Tetrahedrons you dont want to miss. 1) initForPointClouds()
- * - Creates some HashMaps for a better Handling of Points from a
- * TetrahedronNet: The Map "points" is a Map of unique Points with unique IDs.
- * The Map "tetrahedrons" is a Map of TetrahedronIDs with an Integer Array of 4
- * PointIDs. The Map "pointIDs" is a Map to access the Point IDs via Point
- * objects. We need it to fill the Integer Array of Tetrahedrons.
+ * Some services for Segments you dont want to miss. 1) initForPointClouds() -
+ * Creates some HashMaps for a better Handling of Points from a SegmentNet: The
+ * Map "points" is a Map of unique Points with unique IDs. The Map "segments" is
+ * a Map of SegmentIDs with an Integer Array of 2 PointIDs. The Map "pointIDs"
+ * is a Map to access the Point IDs via Point objects. We need it to fill the
+ * Integer Array of Segments.
  * 
  * You can use this methods for Import/Export functions to sort out duplicate
  * points.
  * 
  * @author Paul Vincent Kuper (kuper@kit.edu)
  */
-public class TetrahedronServices {
+public class SegmentServices {
 
 	// ID + Point3D
 	// The Map "points" is a Map of unique Points with unique IDs.
@@ -39,27 +43,26 @@ public class TetrahedronServices {
 
 	// Point3D + ID
 	// The Map "pointIDs" is a Map to access the Point IDs via Point objects. We
-	// need it to fill the Integer Array of Tetrahedrons.
+	// need it to fill the Integer Array of Segment.
 	HashMap<Point3D, Integer> pointIDs;
 
 	// Tetrahedron ID + 3 Point3D IDs
-	// The Map "tetrahedrons" is a Map of TetrahedronIDs with an Integer Array
-	// of 4
-	// PointIDs.
-	HashMap<Integer, int[]> tetrahedrons;
+	// The Map "segments" is a Map of SegmentIDs with an Integer Array
+	// of 2 PointIDs.
+	HashMap<Integer, int[]> segments;
 
-	// This Map contains all componentIDs accessible by their tetrahedronID
-	// (tetrahedronID, componentID)
+	// This Map contains all componentIDs accessible by their segmentID
+	// (segmentID, componentID)
 	HashMap<Integer, Integer> components;
 
 	/**
 	 * Constructor creates Maps and calls init function.
 	 * 
 	 */
-	public TetrahedronServices() {
+	public SegmentServices() {
 		points = new HashMap<Integer, Point3D>();
 		pointIDs = new HashMap<Point3D, Integer>();
-		tetrahedrons = new HashMap<Integer, int[]>();
+		segments = new HashMap<Integer, int[]>();
 		components = new HashMap<Integer, Integer>();
 	}
 
@@ -67,45 +70,45 @@ public class TetrahedronServices {
 	 * The initial method to create the Maps for our services.
 	 * 
 	 * @param tetNet
-	 *            - A Tetrahedron Net
+	 *            - A Segment Net
 	 */
-	public void initForPointClouds(TetrahedronNet3D tetNet) {
+	public void initForPointClouds(SegmentNet3D segNet) {
 
-		TetrahedronNet3DComp[] comp = tetNet.getComponents();
-		TetrahedronElt3D tetrahedron;
+		SegmentNet3DComp[] comp = segNet.getComponents();
+		SegmentElt3D segment;
 		Point3D[] p;
 		int id = 0;
 
-		// save the IDs of Points to create the Tetrahedrons:
+		// save the IDs of Points to create the Segments:
 		Set<Point3D> unique = new HashSet<Point3D>();
 
-		for (TetrahedronNet3DComp tetComp : comp) {
+		for (SegmentNet3DComp segComp : comp) {
 
-			Set s = tetComp.getElementsViaSAM();
+			Set s = segComp.getElementsViaSAM();
 			Iterator<Equivalentable> it = s.iterator();
 
 			while (it.hasNext()) {
 
-				tetrahedron = (TetrahedronElt3D) it.next();
+				segment = (SegmentElt3D) it.next();
 
-				p = tetrahedron.getPoints();
+				p = segment.getPoints();
 
-				int[] pointsForTetrahedrons = new int[4];
+				int[] pointsForSegments = new int[2];
 
-				for (int i = 0; i < 4; i++) {
+				for (int i = 0; i < 2; i++) {
 
 					if (!unique.contains(p[i])) {
 						unique.add(p[i]);
 						points.put(id, p[i]);
 						pointIDs.put(p[i], id);
-						pointsForTetrahedrons[i] = id;
+						pointsForSegments[i] = id;
 						id++;
 					} else {
-						pointsForTetrahedrons[i] = pointIDs.get(p[i]);
+						pointsForSegments[i] = pointIDs.get(p[i]);
 					}
 				}
-				tetrahedrons.put(tetrahedron.getID(), pointsForTetrahedrons);
-				components.put(tetrahedron.getID(), tetComp.getID());
+				segments.put(segment.getID(), pointsForSegments);
+				components.put(segment.getID(), segComp.getID());
 			}
 		}
 	}
@@ -113,44 +116,39 @@ public class TetrahedronServices {
 	/**
 	 * The initial method to create the Maps for our services.
 	 */
-	public void initFor4DPointClouds(Map<Integer, Element4D> tetrahedron4dNet,
+	public void initFor4DPointClouds(Map<Integer, Element4D> segment4dNet,
 			Map<Integer, Point3D> pointTubes4D) {
 
 		// save the IDs of Points to create the Triangles:
 		Set<Point3D> unique = new HashSet<Point3D>();
 		
-		Point3D zero, one, two, three;
+		Point3D zero, one;		
 
-		for (Integer tetrahedronID : tetrahedron4dNet.keySet()) {
+		for (Integer segmentID : segment4dNet.keySet()) {
 
-			Tetrahedron4D tmpTetrahedron = (Tetrahedron4D) tetrahedron4dNet
-					.get(tetrahedronID);
+			Segment4D tmpSegment = (Segment4D) segment4dNet.get(segmentID);
 
-			int point4DIDs[] = { tmpTetrahedron.getIDzero(),
-					tmpTetrahedron.getIDone(), tmpTetrahedron.getIDtwo(),
-					tmpTetrahedron.getIDthree() };
+			int point4DIDs[] = { tmpSegment.getIDstart(), tmpSegment.getIDend() };
 
 			zero = pointTubes4D.get(point4DIDs[0]);
 			one = pointTubes4D.get(point4DIDs[1]);
-			two = pointTubes4D.get(point4DIDs[2]);
-			three = pointTubes4D.get(point4DIDs[3]);
 
-			Point3D[] p = { zero, one, two, three };
+			Point3D[] p = { zero, one };
 
-			int[] pointsForTetrahedrons = new int[4];
+			int[] pointsForSegments = new int[2];
 
-			for (int i = 0; i < 4; i++) {
+			for (int i = 0; i < 2; i++) {
 
 				if (!unique.contains(p[i])) {
 					unique.add(p[i]);
 					points.put(point4DIDs[i], p[i]);
 					pointIDs.put(p[i], point4DIDs[i]);
-					pointsForTetrahedrons[i] = point4DIDs[i];
+					pointsForSegments[i] = point4DIDs[i];
 				} else {
-					pointsForTetrahedrons[i] = pointIDs.get(p[i]);
+					pointsForSegments[i] = pointIDs.get(p[i]);
 				}
 			}
-			tetrahedrons.put(tetrahedronID, pointsForTetrahedrons);
+			segments.put(segmentID, pointsForSegments);
 		}
 	}
 
@@ -165,7 +163,7 @@ public class TetrahedronServices {
 
 	/**
 	 * The Map "pointIDs" is a Map to access the Point IDs via Point objects. We
-	 * need it to fill the Integer Array of Tetrahedrons.
+	 * need it to fill the Integer Array of Segments.
 	 * 
 	 * @return the pointIDs
 	 */
@@ -174,18 +172,18 @@ public class TetrahedronServices {
 	}
 
 	/**
-	 * The Map "tetrahedrons" is a Map of TetrahedronIDs with an Integer Array
-	 * of 4 PointIDs.
+	 * The Map "segments" is a Map of SegmentIDs with an Integer Array
+	 * of 2 PointIDs.
 	 * 
 	 * @return the triangles
 	 */
-	public HashMap<Integer, int[]> getTetrahedrons() {
-		return tetrahedrons;
+	public HashMap<Integer, int[]> getSegments() {
+		return segments;
 	}
 
 	/**
-	 * This Map contains all componentIDs accessible by their tetrahedronID
-	 * (tetrahedronID, componentID)
+	 * This Map contains all componentIDs accessible by their segmentID
+	 * (segmentID, componentID)
 	 * 
 	 * @return the components
 	 */
@@ -194,7 +192,7 @@ public class TetrahedronServices {
 	}
 
 	/**
-	 * This Map contains the attributes from the tetrahedron net moved to RGB
+	 * This Map contains the attributes from the triangle net moved to RGB
 	 * (pointID, color)
 	 * 
 	 * @return the components
