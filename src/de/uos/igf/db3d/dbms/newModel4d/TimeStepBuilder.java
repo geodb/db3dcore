@@ -14,6 +14,8 @@ import java.util.logging.Level;
 
 import de.uos.igf.db3d.dbms.geom.Point3D;
 import de.uos.igf.db3d.dbms.geom.ScalarOperator;
+import de.uos.igf.db3d.dbms.model3d.ComplexGeoObj;
+import de.uos.igf.db3d.dbms.util.TriangleServices;
 import de.uos.igf.db3d.resources.DB3DLogger;
 
 /**
@@ -70,6 +72,7 @@ public class TimeStepBuilder {
 				polthierAndRumpf(component, newPoints, date);
 
 				// Notify corresponding net
+				// TODO: vorher oder hier?
 				component.getNet().TopologyChange(date);
 
 				// no Post-object, should be the same topology
@@ -244,6 +247,16 @@ public class TimeStepBuilder {
 				}
 			}
 		}
+
+		// Boundary Elements
+		if (component.getNet().getType() == ComplexGeoObj.TRIANGLE_NET_4D) {
+			TriangleNet4D net = (TriangleNet4D) component.getNet();
+
+			if (net.isBoundaryElements()) {
+				TriangleServices services = new TriangleServices();
+				services.createBoundaryElements(net, newPoints, date);
+			}
+		}
 	}
 
 	/**
@@ -276,6 +289,16 @@ public class TimeStepBuilder {
 			newTube.put(0, newPoints.get(id));
 
 			pointTubes.put(id, newTube);
+		}
+
+		// Boundary Elements
+		if (component.getNet().getType() == ComplexGeoObj.TRIANGLE_NET_4D) {
+			TriangleNet4D net = (TriangleNet4D) component.getNet();
+
+			if (net.isBoundaryElements()) {
+				TriangleServices services = new TriangleServices();
+				services.createBoundaryElements(net, newPoints, date);
+			}
 		}
 	}
 
@@ -351,9 +374,9 @@ public class TimeStepBuilder {
 				if (pointTubes.get(id).containsKey(intervalStartStep + 1))
 					allIDs.add(id);
 			}
-			
-			for(Integer id : allIDs) {
-				
+
+			for (Integer id : allIDs) {
+
 				// check if this ID is active in this timeinterval
 				if (pointTubes.get(id).containsKey(intervalStartStep)) {
 

@@ -1,6 +1,6 @@
 package de.uos.igf.db3d.dbms.util;
 
-import java.util.Collections;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
@@ -8,18 +8,19 @@ import java.util.LinkedList;
 import java.util.Map;
 import java.util.Set;
 import java.util.TreeMap;
-import java.util.TreeSet;
 
 import de.uos.igf.db3d.dbms.geom.Equivalentable;
 import de.uos.igf.db3d.dbms.geom.Point3D;
+import de.uos.igf.db3d.dbms.geom.ScalarOperator;
 import de.uos.igf.db3d.dbms.geom.Segment3D;
 import de.uos.igf.db3d.dbms.geom.Triangle3D;
-import de.uos.igf.db3d.dbms.model3d.PointElt3D;
 import de.uos.igf.db3d.dbms.model3d.TriangleElt3D;
 import de.uos.igf.db3d.dbms.model3d.TriangleNet3D;
 import de.uos.igf.db3d.dbms.model3d.TriangleNet3DComp;
 import de.uos.igf.db3d.dbms.newModel4d.Element4D;
+import de.uos.igf.db3d.dbms.newModel4d.Segment4D;
 import de.uos.igf.db3d.dbms.newModel4d.Triangle4D;
+import de.uos.igf.db3d.dbms.newModel4d.TriangleNet4D;
 
 /**
  * Some services for Triangles you do not want to miss. initForPointClouds():
@@ -213,8 +214,9 @@ public class TriangleServices {
 		for (Integer triangleID : triangle4dNet.keySet()) {
 
 			Triangle4D tmpTriangle = (Triangle4D) triangle4dNet.get(triangleID);
-			
-			int point4DIDs [] = {tmpTriangle.getIDzero(), tmpTriangle.getIDone(), tmpTriangle.getIDtwo()};
+
+			int point4DIDs[] = { tmpTriangle.getIDzero(),
+					tmpTriangle.getIDone(), tmpTriangle.getIDtwo() };
 
 			Point3D zero = pointTubes4D.get(point4DIDs[0]);
 			Point3D one = pointTubes4D.get(point4DIDs[1]);
@@ -236,6 +238,63 @@ public class TriangleServices {
 				}
 			}
 			triangles.put(triangleID, pointsForTriangles);
+		}
+	}
+
+	public void createBoundaryElements(TriangleNet4D net,
+			Map<Integer, Point3D> pointTubes4D, Date date) {
+
+		ScalarOperator sop = new ScalarOperator();
+
+		// save the unique Segments of this TriangleNet
+		Map<Segment3D, Integer> uniqueSegments = new HashMap<Segment3D, Integer>();
+
+		// first segID
+		int segID = net.getBoundaryElements1D(date).size();
+
+		Map<Integer, Element4D> triangleElements = net.getNetElements(date);
+
+		for (Integer triangleID : triangleElements.keySet()) {
+
+			Triangle4D tmpTriangle = (Triangle4D) triangleElements.get(triangleID);
+
+			int point4DIDs[] = { tmpTriangle.getIDzero(),
+					tmpTriangle.getIDone(), tmpTriangle.getIDtwo() };
+
+			Segment3D segZero = new Segment3D(pointTubes4D.get(point4DIDs[0]),
+					pointTubes4D.get(point4DIDs[1]), sop);
+			Segment3D segOne = new Segment3D(pointTubes4D.get(point4DIDs[1]),
+					pointTubes4D.get(point4DIDs[2]), sop);
+			Segment3D segTwo = new Segment3D(pointTubes4D.get(point4DIDs[2]),
+					pointTubes4D.get(point4DIDs[0]), sop);
+
+			Segment3D[] segs = { segZero, segOne, segTwo };
+
+			int[] segmentsForTriangles = new int[3];
+
+			for (int i = 0; i < 3; i++) {
+
+				// Boundary Elements
+				if (!uniqueSegments.keySet().contains(segs[i])) {
+					uniqueSegments.put(segs[i], segID);
+					segmentsForTriangles[i] = segID;
+					segID++;
+				} else {
+					segmentsForTriangles[i] = uniqueSegments.get(segs[i]);
+				}
+			}
+			tmpTriangle.setSegments(segmentsForTriangles);
+		}
+
+		// Die Boundary Elemente setzen
+		for (Segment3D seg : uniqueSegments.keySet()) {
+
+			Point3D[] tmpPoints = seg.getPoints();
+			int idStart = tmpPoints[0].id;
+			int idEnd = tmpPoints[1].id;
+
+			net.addBoundaryElement(new Segment4D(idStart, idEnd, uniqueSegments
+					.get(seg)));
 		}
 	}
 

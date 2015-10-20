@@ -45,6 +45,13 @@ public class TriangleNet4D implements Net4D {
 	// Die Elemente dieses Netzes mit ID. Fuer jeden Topologiewechsel eine Map:
 	List<Map<Integer, Element4D>> elements;
 
+	// indicates if Boundary elements should be handled explicitly
+	boolean boundaryElements;
+
+	// Die Boundary-Elemente dieses Netzes mit ID. Fuer jeden Topologiewechsel
+	// eine Map:
+	List<Map<Integer, Element4D>> boundaryElements1D;
+
 	/**
 	 * Constructor for a TriangleNet4D. The initial start date is set. Call
 	 * createEndOfExistenceInterval() function to set an end date.
@@ -58,6 +65,7 @@ public class TriangleNet4D implements Net4D {
 		timeIntervals = new HashMap<TimeInterval, List<Integer>>();
 		changeDates = new LinkedList<Date>();
 		elements = new LinkedList<Map<Integer, Element4D>>();
+		boundaryElements1D = new LinkedList<Map<Integer, Element4D>>();
 
 		this.start = start;
 		this.end = new Date(Long.MAX_VALUE);
@@ -65,6 +73,7 @@ public class TriangleNet4D implements Net4D {
 		currentInterval = new TimeInterval(start, null);
 
 		timeIntervals.put(currentInterval, new LinkedList<Integer>());
+		boundaryElements = false;
 	}
 
 	/**
@@ -120,11 +129,11 @@ public class TriangleNet4D implements Net4D {
 	public void addTriangle(Triangle4D triangle) {
 
 		// Immer an der aktuellen Stelle einfuegen:
-		if (elements.get(elements.size()-1).containsKey(triangle.getID())) {
+		if (elements.get(elements.size() - 1).containsKey(triangle.getID())) {
 			throw new IllegalArgumentException(
 					"You tried to add a triangle that already exists to the TriangleNet.");
 		}
-		elements.get(elements.size()-1).put(triangle.getID(), triangle);
+		elements.get(elements.size() - 1).put(triangle.getID(), triangle);
 	}
 
 	/**
@@ -151,7 +160,8 @@ public class TriangleNet4D implements Net4D {
 	public void addChangeTimestep(Date date) {
 		changeDates.add(date);
 		// Add new Post object:
-		elements.add(new TreeMap<Integer, Element4D>());	
+		elements.add(new TreeMap<Integer, Element4D>());
+		boundaryElements1D.add(new TreeMap<Integer, Element4D>());
 	}
 
 	public LinkedList<Date> getChangeDates() {
@@ -207,15 +217,16 @@ public class TriangleNet4D implements Net4D {
 
 	@Override
 	public List<Component4D> getValidComponents(Date date) {
-		
-		for(TimeInterval interval : timeIntervals.keySet()) {
-			if(interval.getStart().before(date) && interval.getEnd().after(date)) {
-				
+
+		for (TimeInterval interval : timeIntervals.keySet()) {
+			if (interval.getStart().before(date)
+					&& interval.getEnd().after(date)) {
+
 				List<Component4D> tmp = new LinkedList<Component4D>();
-				
-				for(Integer ID : timeIntervals.get(interval))
+
+				for (Integer ID : timeIntervals.get(interval))
 					tmp.add(components.get(ID));
-				
+
 				return tmp;
 			}
 		}
@@ -224,22 +235,52 @@ public class TriangleNet4D implements Net4D {
 
 	@Override
 	public Map<Integer, Element4D> getNetElements(Date date) {
-		
+
 		int index = 0;
-		
+
 		// is it invalid?
-		if(date.before(changeDates.get(0)))
+		if (date.before(changeDates.get(0)))
 			return null;
-		
-		for(Date check : changeDates) {
-			if(check.before(date) || check.equals(date)) index++;
+
+		for (Date check : changeDates) {
+			if (check.before(date) || check.equals(date))
+				index++;
 		}
-		
-		return elements.get(index-1);
+
+		return elements.get(index - 1);
 	}
-	
+
+	public boolean isBoundaryElements() {
+		return boundaryElements;
+	}
+
+	public void setBoundaryElements(boolean boundaryElements) {
+		this.boundaryElements = boundaryElements;
+	}
+
+	public Map<Integer, Element4D> getBoundaryElements1D(Date date) {
+		int index = 0;
+
+		// is it invalid?
+		if (date.before(changeDates.get(0)))
+			return null;
+
+		for (Date check : changeDates) {
+			if (check.before(date) || check.equals(date))
+				index++;
+		}
+
+		return boundaryElements1D.get(index - 1);
+	}
+
+	public void addBoundaryElement(Segment4D seg) {
+
+		boundaryElements1D.get(boundaryElements1D.size() - 1).put(seg.getID(),
+				seg);
+	}
+
 	@Override
-	public byte getType() {		
+	public byte getType() {
 		return ComplexGeoObj.TRIANGLE_NET_4D;
-	}	
+	}
 }
