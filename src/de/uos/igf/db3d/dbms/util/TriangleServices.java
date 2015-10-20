@@ -247,7 +247,7 @@ public class TriangleServices {
 		ScalarOperator sop = new ScalarOperator();
 
 		// save the unique Segments of this TriangleNet
-		Map<Segment3D, Integer> uniqueSegments = new HashMap<Segment3D, Integer>();
+		Map<Segment4D, Integer> uniqueSegments = new HashMap<Segment4D, Integer>();
 
 		// first segID
 		int segID = net.getBoundaryElements1D(date).size();
@@ -256,19 +256,17 @@ public class TriangleServices {
 
 		for (Integer triangleID : triangleElements.keySet()) {
 
-			Triangle4D tmpTriangle = (Triangle4D) triangleElements.get(triangleID);
+			Triangle4D tmpTriangle = (Triangle4D) triangleElements
+					.get(triangleID);
 
 			int point4DIDs[] = { tmpTriangle.getIDzero(),
 					tmpTriangle.getIDone(), tmpTriangle.getIDtwo() };
 
-			Segment3D segZero = new Segment3D(pointTubes4D.get(point4DIDs[0]),
-					pointTubes4D.get(point4DIDs[1]), sop);
-			Segment3D segOne = new Segment3D(pointTubes4D.get(point4DIDs[1]),
-					pointTubes4D.get(point4DIDs[2]), sop);
-			Segment3D segTwo = new Segment3D(pointTubes4D.get(point4DIDs[2]),
-					pointTubes4D.get(point4DIDs[0]), sop);
+			Segment4D segZero = new Segment4D(point4DIDs[0], point4DIDs[1], 0);
+			Segment4D segOne = new Segment4D(point4DIDs[1], point4DIDs[2], 0);
+			Segment4D segTwo = new Segment4D(point4DIDs[2], point4DIDs[0], 0);
 
-			Segment3D[] segs = { segZero, segOne, segTwo };
+			Segment4D[] segs = { segZero, segOne, segTwo };
 
 			int[] segmentsForTriangles = new int[3];
 
@@ -277,6 +275,7 @@ public class TriangleServices {
 				// Boundary Elements
 				if (!uniqueSegments.keySet().contains(segs[i])) {
 					uniqueSegments.put(segs[i], segID);
+					segs[i].setID(segID);
 					segmentsForTriangles[i] = segID;
 					segID++;
 				} else {
@@ -287,14 +286,8 @@ public class TriangleServices {
 		}
 
 		// Die Boundary Elemente setzen
-		for (Segment3D seg : uniqueSegments.keySet()) {
-
-			Point3D[] tmpPoints = seg.getPoints();
-			int idStart = tmpPoints[0].id;
-			int idEnd = tmpPoints[1].id;
-
-			net.addBoundaryElement(new Segment4D(idStart, idEnd, uniqueSegments
-					.get(seg)));
+		for (Segment4D seg : uniqueSegments.keySet()) {
+			net.addBoundaryElement(seg);
 		}
 	}
 
