@@ -142,7 +142,7 @@ public class TetrahedronNet4D implements Net4D {
 	}
 
 	@Override
-	public void TopologyChange(Date date) {
+	public void topologyChange(Date date) {
 		// TODO Auto-generated method stub
 
 	}

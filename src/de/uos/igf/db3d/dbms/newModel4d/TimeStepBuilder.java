@@ -73,7 +73,7 @@ public class TimeStepBuilder {
 
 				// Notify corresponding net
 				// TODO: vorher oder hier?
-				component.getNet().TopologyChange(date);
+				component.getNet().topologyChange(date);
 
 				// no Post-object, should be the same topology
 			} else {

@@ -8,7 +8,7 @@ import de.uos.igf.db3d.dbms.geom.Point3D;
 
 public interface Net4D {
 
-	public void TopologyChange(Date date);
+	public void topologyChange(Date date);
 
 	public void addChangeTimestep(Date date);
 
