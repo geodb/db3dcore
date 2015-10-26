@@ -219,8 +219,10 @@ public class TriangleNet4D implements Net4D {
 	public List<Component4D> getValidComponents(Date date) {
 
 		for (TimeInterval interval : timeIntervals.keySet()) {
-			if (interval.getStart().before(date)
-					&& interval.getEnd().after(date)) {
+			if ((interval.getStart().before(date) || interval.getStart()
+					.equals(date))
+					&& (interval.getEnd().after(date) || interval.getEnd()
+							.equals(date))) {
 
 				List<Component4D> tmp = new LinkedList<Component4D>();
 
