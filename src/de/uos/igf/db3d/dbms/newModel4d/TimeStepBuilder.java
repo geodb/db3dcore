@@ -98,7 +98,7 @@ public class TimeStepBuilder {
 		// step:
 		Iterator<Integer> it = newPoints.keySet().iterator();
 
-		Map<Integer, Map<Integer, Point3D>> pointTubes = component
+		Map<Integer, List<Point3D>> pointTubes = component
 				.getPointTubes();
 
 		LinkedList<Date> timesteps = component.getTimesteps();
@@ -136,14 +136,13 @@ public class TimeStepBuilder {
 			// Deltaspeicherung:
 			if (pointTubes.get(id).get(timesteps.size() - 2)
 					.isEqual(newPoints.get(id), sop)) {
-				pointTubes.get(id).put(timesteps.size() - 1,
-						pointTubes.get(id).get(timesteps.size() - 2));
+				pointTubes.get(id).add(pointTubes.get(id).get(timesteps.size() - 2));
 			} else {
 
 				// we know that we extend our pointTubes without
 				// building
 				// new one, so lets do so:
-				pointTubes.get(id).put(timesteps.size() - 1, newPoints.get(id));
+				pointTubes.get(id).add(newPoints.get(id));
 			}
 		}
 	}
@@ -160,7 +159,7 @@ public class TimeStepBuilder {
 	private static void polthierAndRumpf(Component4D component,
 			Map<Integer, Point3D> newPoints, Date date) {
 
-		Map<Integer, Map<Integer, Point3D>> pointTubes = component
+		Map<Integer, List<Point3D>> pointTubes = component
 				.getPointTubes();
 
 		LinkedList<Date> timesteps = component.getTimesteps();
@@ -223,13 +222,13 @@ public class TimeStepBuilder {
 			// Point.
 			if (!pointTubes.containsKey(id)) {
 
-				HashMap<Integer, Point3D> newTube = new HashMap<Integer, Point3D>();
+				List<Point3D> newTube = new LinkedList<Point3D>();
 
 				// Deltaspeicherung:
 				if (correlation.containsKey(id)) {
-					newTube.put(timesteps.size() - 1, correlation.get(id));
+					newTube.add(correlation.get(id));
 				} else {
-					newTube.put(timesteps.size() - 1, newPoints.get(id));
+					newTube.add(newPoints.get(id));
 				}
 
 				pointTubes.put(id, newTube);
@@ -239,11 +238,9 @@ public class TimeStepBuilder {
 
 				// Deltaspeicherung:
 				if (correlation.containsKey(id)) {
-					pointTubes.get(id).put(timesteps.size() - 1,
-							correlation.get(id));
+					pointTubes.get(id).add(correlation.get(id));
 				} else {
-					pointTubes.get(id).put(timesteps.size() - 1,
-							newPoints.get(id));
+					pointTubes.get(id).add(newPoints.get(id));
 				}
 			}
 		}
@@ -268,7 +265,7 @@ public class TimeStepBuilder {
 	private static void firstStep(Component4D component,
 			Map<Integer, Point3D> newPoints, Date date) {
 
-		Map<Integer, Map<Integer, Point3D>> pointTubes = component
+		Map<Integer, List<Point3D>> pointTubes = component
 				.getPointTubes();
 
 		LinkedList<Date> timesteps = component.getTimesteps();
@@ -285,8 +282,8 @@ public class TimeStepBuilder {
 
 			// It is the initial step, so we have to create a new HashMap
 			// for every Point.
-			Map<Integer, Point3D> newTube = new TreeMap<Integer, Point3D>();
-			newTube.put(0, newPoints.get(id));
+			List<Point3D> newTube = new LinkedList<Point3D>();
+			newTube.add(newPoints.get(id));
 
 			pointTubes.put(id, newTube);
 		}
@@ -313,7 +310,7 @@ public class TimeStepBuilder {
 	public static Map<Integer, Point3D> getPointTubesAtInstance(
 			Component4D component, Date date) {
 
-		Map<Integer, Map<Integer, Point3D>> pointTubes = component
+		Map<Integer, List<Point3D>> pointTubes = component
 				.getPointTubes();
 
 		LinkedList<Date> timesteps = component.getTimesteps();
@@ -331,7 +328,7 @@ public class TimeStepBuilder {
 			// for (int id = 1; id <= pointTubes.size(); id++) {
 			for (int id : pointTubes.keySet()) {
 
-				if (pointTubes.get(id).containsKey(timestep))
+				if (pointTubes.get(id).size() >= timestep)
 					points.put(id, pointTubes.get(id).get(timestep));
 			}
 			return points;
@@ -371,14 +368,14 @@ public class TimeStepBuilder {
 
 			for (int id : pointTubes.keySet()) {
 
-				if (pointTubes.get(id).containsKey(intervalStartStep + 1))
+				if (pointTubes.get(id).size() >= intervalStartStep + 1)
 					allIDs.add(id);
 			}
 
 			for (Integer id : allIDs) {
 
 				// check if this ID is active in this timeinterval
-				if (pointTubes.get(id).containsKey(intervalStartStep)) {
+				if (pointTubes.get(id).size() >= intervalStartStep) {
 
 					// get the Point of the start
 					Point3D intervalStartPoint = pointTubes.get(id).get(
