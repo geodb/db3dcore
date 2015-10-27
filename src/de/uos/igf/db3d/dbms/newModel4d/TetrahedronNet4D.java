@@ -67,49 +67,11 @@ public class TetrahedronNet4D implements Net4D {
 		timeIntervals.put(currentInterval, new LinkedList<Integer>());
 	}
 
-	/**
-	 * Add a single Component to the net.
-	 * 
-	 * @param TetrahedronComponent4D
-	 */
-	public void addTetrahedronComponent(TetrahedronComponent4D component) {
-
-		if (components.containsKey(component.getID())) {
-			throw new IllegalArgumentException(
-					"You tried to add a triangleComponent that already exists to the TriangleNet.");
-		}
-		components.put(component.getID(), component);
-
-		// update TimeInterval to Component Mapper
-		timeIntervals.get(currentInterval).add(component.getID());
-	}
-
-	/**
-	 * Creates the end of the time interval.
-	 * 
-	 * @param end
-	 */
-	public void createEndOfExistenceInterval(Date end) {
-		this.end = end;
-	}
-
-	/**
-	 * Returns the Components of this Net.
-	 * 
-	 * @return Map<Integer, Component4D> - All Components of
-	 *         this net.
-	 */
-	public Map<Integer, Component4D> getComponents() {
-		return components;
-	}
-
-	/**
-	 * Returns a specific Components of this Net.
-	 * 
-	 * @return Component4D
-	 */
-	public Component4D getComponent(int ID) {
-		return components.get(ID);
+	@Override
+	public void addChangeTimestep(Date date) {
+		changeDates.add(date);
+		// Add new Post object:
+		elements.add(new TreeMap<Integer, Element4D>());	
 	}
 
 	/**
@@ -128,12 +90,20 @@ public class TetrahedronNet4D implements Net4D {
 	}
 
 	/**
-	 * Returns elements of this Net.
+	 * Add a single Component to the net.
 	 * 
-	 * @return Map<Integer, Element4D> - All elements of this net.
+	 * @param TetrahedronComponent4D
 	 */
-	public List<Map<Integer, Element4D>> getElements() {
-		return elements;
+	public void addTetrahedronComponent(TetrahedronComponent4D component) {
+
+		if (components.containsKey(component.getID())) {
+			throw new IllegalArgumentException(
+					"You tried to add a triangleComponent that already exists to the TriangleNet.");
+		}
+		components.put(component.getID(), component);
+
+		// update TimeInterval to Component Mapper
+		timeIntervals.get(currentInterval).add(component.getID());
 	}
 
 	public void addTimestep(Component4D component,
@@ -141,30 +111,17 @@ public class TetrahedronNet4D implements Net4D {
 
 	}
 
-	@Override
-	public void topologyChange(Date date) {
-		// TODO Auto-generated method stub
+	/**
+	 * We need to close all TimeIntervals of all current components of this net
+	 * 
+	 * @param date
+	 */
+	private void closeAllComponents(Date date) {
 
-	}
-
-	@Override
-	public void addChangeTimestep(Date date) {
-		changeDates.add(date);
-		// Add new Post object:
-		elements.add(new TreeMap<Integer, Element4D>());	
-	}
-
-	public LinkedList<Date> getChangeDates() {
-		return changeDates;
-	}
-
-	public Date getLastChangeDate() {
-		return changeDates.getLast();
-	}
-
-	public void preparePostObject(Date date) {
-		closeAllComponents(date);
-		closeTimeInterval(date);
+		for (Integer ID : timeIntervals.get(currentInterval)) {
+			Component4D comp = components.get(ID);
+			comp.getTimeInterval().setEnd(date);
+		}
 	}
 
 	/**
@@ -185,24 +142,77 @@ public class TetrahedronNet4D implements Net4D {
 	}
 
 	/**
-	 * We need to close all TimeIntervals of all current components of this net
+	 * Creates the end of the time interval.
 	 * 
-	 * @param date
+	 * @param end
 	 */
-	private void closeAllComponents(Date date) {
+	public void createEndOfExistenceInterval(Date end) {
+		this.end = end;
+	}
 
-		for (Integer ID : timeIntervals.get(currentInterval)) {
-			Component4D comp = components.get(ID);
-			comp.getTimeInterval().setEnd(date);
+	public LinkedList<Date> getChangeDates() {
+		return changeDates;
+	}
+
+	/**
+	 * Returns a specific Components of this Net.
+	 * 
+	 * @return Component4D
+	 */
+	public Component4D getComponent(int ID) {
+		return components.get(ID);
+	}
+
+	/**
+	 * Returns the Components of this Net.
+	 * 
+	 * @return Map<Integer, Component4D> - All Components of
+	 *         this net.
+	 */
+	public Map<Integer, Component4D> getComponents() {
+		return components;
+	}
+
+	/**
+	 * Returns elements of this Net.
+	 * 
+	 * @return Map<Integer, Element4D> - All elements of this net.
+	 */
+	public List<Map<Integer, Element4D>> getElements() {
+		return elements;
+	}
+
+	public Date getEnd() {
+		return end;
+	}
+
+	public Date getLastChangeDate() {
+		return changeDates.getLast();
+	}
+
+	@Override
+	public Map<Integer, Element4D> getNetElements(Date date) {
+		
+		int index = 0;
+		
+		// is it invalid?
+		if(date.before(changeDates.get(0)))
+			return null;
+		
+		for(Date check : changeDates) {
+			if(check.before(date) || check.equals(date)) index++;
 		}
+		
+		return elements.get(index-1);
 	}
 
 	public Date getStart() {
 		return start;
 	}
 
-	public Date getEnd() {
-		return end;
+	@Override
+	public byte getType() {		
+		return ComplexGeoObj.TETRAHEDRON_NET_4D;
 	}
 
 	@Override
@@ -222,24 +232,14 @@ public class TetrahedronNet4D implements Net4D {
 		return null;
 	}
 
-	@Override
-	public Map<Integer, Element4D> getNetElements(Date date) {
-		
-		int index = 0;
-		
-		// is it invalid?
-		if(date.before(changeDates.get(0)))
-			return null;
-		
-		for(Date check : changeDates) {
-			if(check.before(date) || check.equals(date)) index++;
-		}
-		
-		return elements.get(index-1);
+	public void preparePostObject(Date date) {
+		closeAllComponents(date);
+		closeTimeInterval(date);
 	}
 	
 	@Override
-	public byte getType() {		
-		return ComplexGeoObj.TETRAHEDRON_NET_4D;
+	public void topologyChange(Date date) {
+		// TODO Auto-generated method stub
+
 	}	
 }

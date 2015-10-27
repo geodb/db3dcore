@@ -51,23 +51,23 @@ public class TetrahedronComponent4D implements Component4D {
 		return id;
 	}
 
-	public void setID(int id) {
-		this.id = id;
+	public Net4D getNet() {
+		return net;
 	}
 
 	public Map<Integer, List<Point3D>> getPointTubes() {
 		return pointTubes;
 	}
 
+	public TimeInterval getTimeInterval() {
+		return timeInterval;
+	}
+
 	public LinkedList<Date> getTimesteps() {
 		return timesteps;
 	}
 
-	public Net4D getNet() {
-		return net;
-	}
-
-	public TimeInterval getTimeInterval() {
-		return timeInterval;
+	public void setID(int id) {
+		this.id = id;
 	}
 }

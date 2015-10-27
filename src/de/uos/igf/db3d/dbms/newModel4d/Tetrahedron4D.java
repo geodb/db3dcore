@@ -19,22 +19,6 @@ public class Tetrahedron4D implements Element4D {
 	/**
 	 * Constructor. Constructs a Tetrahedron4D with given pointTube IDs.
 	 * 
-	 * @param IDs
-	 *            PointTube ID array.
-	 */
-	public Tetrahedron4D(int[] IDs, Integer ID) throws IllegalArgumentException {
-
-		this.IDzero = IDs[0];
-		this.IDone = IDs[1];
-		this.IDtwo = IDs[2];
-		this.IDthree = IDs[3];
-
-		this.id = ID;
-	}
-
-	/**
-	 * Constructor. Constructs a Tetrahedron4D with given pointTube IDs.
-	 * 
 	 * @param pointID1
 	 *            PointTube ID 1
 	 * @param pointID2
@@ -51,25 +35,41 @@ public class Tetrahedron4D implements Element4D {
 		this(new int[] { pointID1, pointID2, pointID3, pointID4 }, ID);
 	}
 
+	/**
+	 * Constructor. Constructs a Tetrahedron4D with given pointTube IDs.
+	 * 
+	 * @param IDs
+	 *            PointTube ID array.
+	 */
+	public Tetrahedron4D(int[] IDs, Integer ID) throws IllegalArgumentException {
+
+		this.IDzero = IDs[0];
+		this.IDone = IDs[1];
+		this.IDtwo = IDs[2];
+		this.IDthree = IDs[3];
+
+		this.id = ID;
+	}
+
 	// Getter methods for the fields:
 
 	public int getID() {
 		return id;
 	}
 
-	public int getIDzero() {
-		return IDzero;
-	}
-
 	public int getIDone() {
 		return IDone;
+	}
+
+	public int getIDthree() {
+		return IDthree;
 	}
 
 	public int getIDtwo() {
 		return IDtwo;
 	}
 	
-	public int getIDthree() {
-		return IDthree;
+	public int getIDzero() {
+		return IDzero;
 	}
 }
