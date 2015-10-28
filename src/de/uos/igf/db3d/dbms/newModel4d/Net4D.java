@@ -28,7 +28,5 @@ public interface Net4D {
 
 	List<Component4D> getValidComponents(Date date);
 
-	public void preparePostObject(Date date);
-	
-	public void topologyChange(Date date);
+	public void preparePostObject(Date date);	
 }

@@ -17,20 +17,20 @@ import de.uos.igf.db3d.dbms.geom.Point3D;
 public class TetrahedronComponent4D implements Component4D {
 	
 	// ID
-	int id;
+	private int id;
 	
 	// Back reference to the corresponding TetrahedronNet object
-	Net4D net;
+	private Net4D net;
 	
 	// TimeInterval of this component
-	TimeInterval timeInterval;
+	private TimeInterval timeInterval;
 	
 	// The pointTubes of this 4D Object
 	// <ID, <Zeitschritt, Point3D>>
 	private Map<Integer, List<Point3D>> pointTubes;
 
 	// List of timesteps with their effective date
-	protected LinkedList<Date> timesteps;
+	private LinkedList<Date> timesteps;
 
 	/**
 	 * Constructor for a TetrahedronComponent.

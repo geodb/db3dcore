@@ -70,13 +70,20 @@ public class TimeStepBuilder {
 			// check if this is an Post-object!
 			if (component.getTimesteps().getLast().equals(date)) {
 
+				// TODO Wird hier nicht funktionieren, da wir neue Componenten
+				// haben fuer die P+R Geschichte!
+				// Also: Dead Code!!! Wahrscheinlich
+				DB3DLogger.logger
+						.log(Level.INFO,
+								"Polthier und Rumpf! Should not be called (TimeStepBuilder.java)");
+
 				polthierAndRumpf(component, newPoints, date);
 
 				// Notify corresponding net
 				// TODO: vorher oder hier?
-				// Bei dem GOCAD Importer wird das quasi auch gemacht! Checken! 
-				component.getNet().topologyChange(date);
+				// Bei dem GOCAD Importer wird das quasi auch gemacht! Checken!
 
+				
 				// no Post-object, should be the same topology
 			} else {
 
@@ -100,8 +107,7 @@ public class TimeStepBuilder {
 		// step:
 		Iterator<Integer> it = newPoints.keySet().iterator();
 
-		Map<Integer, List<Point3D>> pointTubes = component
-				.getPointTubes();
+		Map<Integer, List<Point3D>> pointTubes = component.getPointTubes();
 
 		LinkedList<Date> timesteps = component.getTimesteps();
 
@@ -138,7 +144,8 @@ public class TimeStepBuilder {
 			// Deltaspeicherung:
 			if (pointTubes.get(id).get(timesteps.size() - 2)
 					.isEqual(newPoints.get(id), sop)) {
-				pointTubes.get(id).add(pointTubes.get(id).get(timesteps.size() - 2));
+				pointTubes.get(id).add(
+						pointTubes.get(id).get(timesteps.size() - 2));
 			} else {
 
 				// we know that we extend our pointTubes without
@@ -161,8 +168,7 @@ public class TimeStepBuilder {
 	private static void polthierAndRumpf(Component4D component,
 			Map<Integer, Point3D> newPoints, Date date) {
 
-		Map<Integer, List<Point3D>> pointTubes = component
-				.getPointTubes();
+		Map<Integer, List<Point3D>> pointTubes = component.getPointTubes();
 
 		LinkedList<Date> timesteps = component.getTimesteps();
 
@@ -256,7 +262,7 @@ public class TimeStepBuilder {
 				services.createBoundaryElements(net, newPoints, date);
 			}
 		}
-		
+
 		// Boundary Elements for Tetrahedrons
 		if (component.getNet().getType() == ComplexGeoObj.TETRAHEDRON_NET_4D) {
 			TetrahedronNet4D net = (TetrahedronNet4D) component.getNet();
@@ -277,8 +283,7 @@ public class TimeStepBuilder {
 	private static void firstStep(Component4D component,
 			Map<Integer, Point3D> newPoints, Date date) {
 
-		Map<Integer, List<Point3D>> pointTubes = component
-				.getPointTubes();
+		Map<Integer, List<Point3D>> pointTubes = component.getPointTubes();
 
 		LinkedList<Date> timesteps = component.getTimesteps();
 
@@ -309,7 +314,7 @@ public class TimeStepBuilder {
 				services.createBoundaryElements(net, newPoints, date);
 			}
 		}
-		
+
 		// Boundary Elements for Tetrahedrons
 		if (component.getNet().getType() == ComplexGeoObj.TETRAHEDRON_NET_4D) {
 			TetrahedronNet4D net = (TetrahedronNet4D) component.getNet();
@@ -318,7 +323,7 @@ public class TimeStepBuilder {
 				TetrahedronServices services = new TetrahedronServices();
 				services.createBoundaryElements(net, newPoints, date);
 			}
-		}		
+		}
 	}
 
 	/**
@@ -332,8 +337,7 @@ public class TimeStepBuilder {
 	public static Map<Integer, Point3D> getPointTubesAtInstance(
 			Component4D component, Date date) {
 
-		Map<Integer, List<Point3D>> pointTubes = component
-				.getPointTubes();
+		Map<Integer, List<Point3D>> pointTubes = component.getPointTubes();
 
 		LinkedList<Date> timesteps = component.getTimesteps();
 

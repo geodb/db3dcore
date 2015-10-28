@@ -151,12 +151,6 @@ public class TriangleNet4D implements Net4D {
 	}
 
 	@Override
-	public void topologyChange(Date date) {
-		// TODO Auto-generated method stub
-
-	}
-
-	@Override
 	public void addChangeTimestep(Date date) {
 		changeDates.add(date);
 		// Add new Post object:
@@ -175,6 +169,7 @@ public class TriangleNet4D implements Net4D {
 	public void preparePostObject(Date date) {
 		closeAllComponents(date);
 		closeTimeInterval(date);
+		addChangeTimestep(date);
 	}
 
 	/**

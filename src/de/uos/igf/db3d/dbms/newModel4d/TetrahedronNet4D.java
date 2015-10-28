@@ -25,36 +25,36 @@ public class TetrahedronNet4D implements Net4D {
 	// The Components of this Net
 	// Due to the Components we can handle different parts of the net
 	// with a different temporal discretisation.
-	Map<Integer, Component4D> components;
+	private Map<Integer, Component4D> components;
 
 	// Connects TimeIntervals to Component objects
-	Map<TimeInterval, List<Integer>> timeIntervals;
+	private Map<TimeInterval, List<Integer>> timeIntervals;
 
 	// Dates with a change of net topology
-	LinkedList<Date> changeDates;
+	private LinkedList<Date> changeDates;
 
 	// the start date of the existence interval for this Net4D object
-	Date start;
+	private Date start;
 
 	// the end date of the existence interval for this Net4D object
-	Date end;
+	private Date end;
 
 	// TimeInterval to Component Mapper
-	TimeInterval currentInterval;
+	private	TimeInterval currentInterval;
 
 	// Die Elemente dieses Netzes mit ID. Fuer jeden Topologiewechsel eine Map:
-	List<Map<Integer, Element4D>> elements;
+	private List<Map<Integer, Element4D>> elements;
 	
 	// indicates if Boundary elements should be handled explicitly
-	boolean boundaryElements;
+	private boolean boundaryElements;
 
 	// Die Boundary-Elemente dieses Netzes mit ID. Fuer jeden Topologiewechsel
 	// eine Map:
-	List<Map<Integer, Element4D>> boundaryElements1D;
+	private List<Map<Integer, Element4D>> boundaryElements1D;
 	
 	// Die Boundary-Elemente dieses Netzes mit ID. Fuer jeden Topologiewechsel
 	// eine Map:
-	List<Map<Integer, Element4D>> boundaryElements2D;
+	private List<Map<Integer, Element4D>> boundaryElements2D;
 
 	/**
 	 * Constructor for a TetrahedronNet4D. The initial start date is set. Call
@@ -293,15 +293,10 @@ public class TetrahedronNet4D implements Net4D {
 	public void preparePostObject(Date date) {
 		closeAllComponents(date);
 		closeTimeInterval(date);
+		addChangeTimestep(date);
 	}
 
 	public void setBoundaryElements(boolean boundaryElements) {
 		this.boundaryElements = boundaryElements;
-	}
-	
-	@Override
-	public void topologyChange(Date date) {
-		// TODO Auto-generated method stub
-
 	}
 }
