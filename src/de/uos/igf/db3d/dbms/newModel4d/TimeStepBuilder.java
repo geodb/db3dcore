@@ -15,6 +15,7 @@ import java.util.logging.Level;
 import de.uos.igf.db3d.dbms.geom.Point3D;
 import de.uos.igf.db3d.dbms.geom.ScalarOperator;
 import de.uos.igf.db3d.dbms.model3d.ComplexGeoObj;
+import de.uos.igf.db3d.dbms.util.TetrahedronServices;
 import de.uos.igf.db3d.dbms.util.TriangleServices;
 import de.uos.igf.db3d.resources.DB3DLogger;
 
@@ -73,6 +74,7 @@ public class TimeStepBuilder {
 
 				// Notify corresponding net
 				// TODO: vorher oder hier?
+				// Bei dem GOCAD Importer wird das quasi auch gemacht! Checken! 
 				component.getNet().topologyChange(date);
 
 				// no Post-object, should be the same topology
@@ -254,6 +256,16 @@ public class TimeStepBuilder {
 				services.createBoundaryElements(net, newPoints, date);
 			}
 		}
+		
+		// Boundary Elements for Tetrahedrons
+		if (component.getNet().getType() == ComplexGeoObj.TETRAHEDRON_NET_4D) {
+			TetrahedronNet4D net = (TetrahedronNet4D) component.getNet();
+
+			if (net.isBoundaryElements()) {
+				TetrahedronServices services = new TetrahedronServices();
+				services.createBoundaryElements(net, newPoints, date);
+			}
+		}
 	}
 
 	/**
@@ -297,6 +309,16 @@ public class TimeStepBuilder {
 				services.createBoundaryElements(net, newPoints, date);
 			}
 		}
+		
+		// Boundary Elements for Tetrahedrons
+		if (component.getNet().getType() == ComplexGeoObj.TETRAHEDRON_NET_4D) {
+			TetrahedronNet4D net = (TetrahedronNet4D) component.getNet();
+
+			if (net.isBoundaryElements()) {
+				TetrahedronServices services = new TetrahedronServices();
+				services.createBoundaryElements(net, newPoints, date);
+			}
+		}		
 	}
 
 	/**

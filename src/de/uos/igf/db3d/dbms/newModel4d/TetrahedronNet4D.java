@@ -44,6 +44,17 @@ public class TetrahedronNet4D implements Net4D {
 
 	// Die Elemente dieses Netzes mit ID. Fuer jeden Topologiewechsel eine Map:
 	List<Map<Integer, Element4D>> elements;
+	
+	// indicates if Boundary elements should be handled explicitly
+	boolean boundaryElements;
+
+	// Die Boundary-Elemente dieses Netzes mit ID. Fuer jeden Topologiewechsel
+	// eine Map:
+	List<Map<Integer, Element4D>> boundaryElements1D;
+	
+	// Die Boundary-Elemente dieses Netzes mit ID. Fuer jeden Topologiewechsel
+	// eine Map:
+	List<Map<Integer, Element4D>> boundaryElements2D;
 
 	/**
 	 * Constructor for a TetrahedronNet4D. The initial start date is set. Call
@@ -65,6 +76,19 @@ public class TetrahedronNet4D implements Net4D {
 		currentInterval = new TimeInterval(start, null);
 
 		timeIntervals.put(currentInterval, new LinkedList<Integer>());
+		boundaryElements = false;
+	}
+
+	public void addBoundaryElement(Segment4D seg) {
+
+		boundaryElements1D.get(boundaryElements1D.size() - 1).put(seg.getID(),
+				seg);
+	}
+
+	public void addBoundaryElement(Triangle4D tri) {
+
+		boundaryElements2D.get(boundaryElements2D.size() - 1).put(tri.getID(),
+				tri);
 	}
 
 	@Override
@@ -150,6 +174,36 @@ public class TetrahedronNet4D implements Net4D {
 		this.end = end;
 	}
 
+	public Map<Integer, Element4D> getBoundaryElements1D(Date date) {
+		int index = 0;
+
+		// is it invalid?
+		if (date.before(changeDates.get(0)))
+			return null;
+
+		for (Date check : changeDates) {
+			if (check.before(date) || check.equals(date))
+				index++;
+		}
+
+		return boundaryElements1D.get(index - 1);
+	}
+
+	public Map<Integer, Element4D> getBoundaryElements2D(Date date) {
+		int index = 0;
+
+		// is it invalid?
+		if (date.before(changeDates.get(0)))
+			return null;
+
+		for (Date check : changeDates) {
+			if (check.before(date) || check.equals(date))
+				index++;
+		}
+
+		return boundaryElements2D.get(index - 1);
+	}
+
 	public LinkedList<Date> getChangeDates() {
 		return changeDates;
 	}
@@ -205,11 +259,11 @@ public class TetrahedronNet4D implements Net4D {
 		
 		return elements.get(index-1);
 	}
-
+	
 	public Date getStart() {
 		return start;
-	}
-
+	}	
+	
 	@Override
 	public byte getType() {		
 		return ComplexGeoObj.TETRAHEDRON_NET_4D;
@@ -231,15 +285,23 @@ public class TetrahedronNet4D implements Net4D {
 		}
 		return null;
 	}
-
+	
+	public boolean isBoundaryElements() {
+		return boundaryElements;
+	}
+	
 	public void preparePostObject(Date date) {
 		closeAllComponents(date);
 		closeTimeInterval(date);
+	}
+
+	public void setBoundaryElements(boolean boundaryElements) {
+		this.boundaryElements = boundaryElements;
 	}
 	
 	@Override
 	public void topologyChange(Date date) {
 		// TODO Auto-generated method stub
 
-	}	
+	}
 }

@@ -244,8 +244,6 @@ public class TriangleServices {
 	public void createBoundaryElements(TriangleNet4D net,
 			Map<Integer, Point3D> pointTubes4D, Date date) {
 
-		ScalarOperator sop = new ScalarOperator();
-
 		// save the unique Segments of this TriangleNet
 		Map<Segment4D, Integer> uniqueSegments = new HashMap<Segment4D, Integer>();
 

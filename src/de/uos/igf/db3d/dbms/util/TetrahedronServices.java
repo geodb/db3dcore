@@ -1,5 +1,6 @@
 package de.uos.igf.db3d.dbms.util;
 
+import java.util.Date;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
@@ -8,6 +9,7 @@ import java.util.Set;
 
 import de.uos.igf.db3d.dbms.geom.Equivalentable;
 import de.uos.igf.db3d.dbms.geom.Point3D;
+import de.uos.igf.db3d.dbms.geom.ScalarOperator;
 import de.uos.igf.db3d.dbms.model3d.TetrahedronElt3D;
 import de.uos.igf.db3d.dbms.model3d.TetrahedronNet3D;
 import de.uos.igf.db3d.dbms.model3d.TetrahedronNet3DComp;
@@ -15,7 +17,9 @@ import de.uos.igf.db3d.dbms.model3d.TriangleElt3D;
 import de.uos.igf.db3d.dbms.model3d.TriangleNet3D;
 import de.uos.igf.db3d.dbms.model3d.TriangleNet3DComp;
 import de.uos.igf.db3d.dbms.newModel4d.Element4D;
+import de.uos.igf.db3d.dbms.newModel4d.Segment4D;
 import de.uos.igf.db3d.dbms.newModel4d.Tetrahedron4D;
+import de.uos.igf.db3d.dbms.newModel4d.TetrahedronNet4D;
 import de.uos.igf.db3d.dbms.newModel4d.Triangle4D;
 
 /**
@@ -257,5 +261,94 @@ public class TetrahedronServices {
 		String bHex = Integer.toHexString(Integer.parseInt(b));
 
 		return ("0xff" + rHex + gHex + bHex);
+	}
+
+	public void createBoundaryElements(TetrahedronNet4D net,
+			Map<Integer, Point3D> pointTubes4D, Date date) {		
+
+		// save the unique Segments of this TetrahedronNet
+		Map<Segment4D, Integer> uniqueSegments = new HashMap<Segment4D, Integer>();
+		
+		// save the unique Triangles of this TetrahedronNet
+		Map<Triangle4D, Integer> uniqueTriangles = new HashMap<Triangle4D, Integer>();
+		
+		// first segID
+		int segID = net.getBoundaryElements1D(date).size();
+
+		// first triID
+		int triID = net.getBoundaryElements2D(date).size();
+		
+		Map<Integer, Element4D> tetrahedronElements = net.getNetElements(date);
+
+		for (Integer tetrahedronID : tetrahedronElements.keySet()) {
+
+			Tetrahedron4D tmpTetrahedron = (Tetrahedron4D) tetrahedronElements
+					.get(tetrahedronID);
+
+			int point4DIDs[] = { tmpTetrahedron.getIDzero(),
+					tmpTetrahedron.getIDone(), tmpTetrahedron.getIDtwo(), tmpTetrahedron.getIDthree() };
+
+			/** BUILD SEGMENTS **/ 
+			Segment4D segZero = new Segment4D(point4DIDs[0], point4DIDs[1], 0);
+			Segment4D segOne = new Segment4D(point4DIDs[0], point4DIDs[2], 0);
+			Segment4D segTwo = new Segment4D(point4DIDs[0], point4DIDs[3], 0);
+			Segment4D segThree = new Segment4D(point4DIDs[1], point4DIDs[2], 0);
+			Segment4D segFour = new Segment4D(point4DIDs[1], point4DIDs[3], 0);
+			Segment4D segFive = new Segment4D(point4DIDs[2], point4DIDs[3], 0);
+
+			Segment4D[] segs = { segZero, segOne, segTwo, segThree, segFour, segFive };
+
+			int[] segmentsForTetrahedrons = new int[6];
+
+			for (int i = 0; i < 6; i++) {
+
+				// Boundary Elements
+				if (!uniqueSegments.keySet().contains(segs[i])) {
+					uniqueSegments.put(segs[i], segID);
+					segs[i].setID(segID);
+					segmentsForTetrahedrons[i] = segID;
+					segID++;
+				} else {
+					segmentsForTetrahedrons[i] = uniqueSegments.get(segs[i]);
+				}
+			}
+			tmpTetrahedron.setSegments(segmentsForTetrahedrons);
+			
+			/** BUILD TRIANGLES **/ 
+			
+			//TODO EQUALS METHODE FUER DIE TRIANGELS!!!
+			Triangle4D triZero = new Triangle4D(point4DIDs[0], point4DIDs[1], point4DIDs[2], 0);
+			Triangle4D triOne = new Triangle4D(point4DIDs[0], point4DIDs[1], point4DIDs[3], 0);
+			Triangle4D triTwo = new Triangle4D(point4DIDs[0], point4DIDs[2], point4DIDs[3], 0);
+			Triangle4D triThree = new Triangle4D(point4DIDs[1], point4DIDs[2], point4DIDs[3], 0);
+
+			Triangle4D[] tris = { triZero, triOne, triTwo, triThree };
+
+			int[] trianglesForTetrahedrons = new int[4];
+
+			for (int i = 0; i < 4; i++) {
+
+				// Boundary Elements
+				if (!uniqueTriangles.keySet().contains(tris[i])) {
+					uniqueTriangles.put(tris[i], triID);
+					tris[i].setID(triID);
+					trianglesForTetrahedrons[i] = triID;
+					triID++;
+				} else {
+					trianglesForTetrahedrons[i] = uniqueTriangles.get(tris[i]);
+				}
+			}
+			tmpTetrahedron.setTriangles(trianglesForTetrahedrons);
+		}
+
+		// Die Boundary Elemente setzen
+		for (Segment4D seg : uniqueSegments.keySet()) {
+			net.addBoundaryElement(seg);
+		}
+		
+		// Die Boundary Elemente setzen
+		for (Triangle4D tri : uniqueTriangles.keySet()) {
+			net.addBoundaryElement(tri);
+		}
 	}
 }

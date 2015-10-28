@@ -13,6 +13,20 @@ public class Tetrahedron4D implements Element4D {
 	private int IDtwo;
 	private int IDthree;
 
+	/* ID of segments */
+	private int IDseg1;
+	private int IDseg2;
+	private int IDseg3;
+	private int IDseg4;
+	private int IDseg5;
+	private int IDseg6;
+
+	/* ID of triangles */
+	private int IDtri1;
+	private int IDtri2;
+	private int IDtri3;
+	private int IDtri4;
+
 	/* id of this - unique in whole net */
 	private int id;
 
@@ -68,8 +82,32 @@ public class Tetrahedron4D implements Element4D {
 	public int getIDtwo() {
 		return IDtwo;
 	}
-	
+
 	public int getIDzero() {
 		return IDzero;
+	}
+
+	public int[] getSegments() {
+		return new int[] { IDseg1, IDseg2, IDseg3, IDseg4, IDseg5, IDseg6 };
+	}
+
+	public int[] getTriangles() {
+		return new int[] { IDtri1, IDtri2, IDtri3, IDtri4 };
+	}
+
+	public void setSegments(int[] segmentIDs) {
+		this.IDseg1 = segmentIDs[0];
+		this.IDseg2 = segmentIDs[1];
+		this.IDseg3 = segmentIDs[2];
+		this.IDseg4 = segmentIDs[3];
+		this.IDseg5 = segmentIDs[4];
+		this.IDseg6 = segmentIDs[5];
+	}
+
+	public void setTriangles(int[] triangleIDs) {
+		this.IDtri1 = triangleIDs[0];
+		this.IDtri2 = triangleIDs[1];
+		this.IDtri3 = triangleIDs[2];
+		this.IDtri3 = triangleIDs[3];
 	}
 }
