@@ -1,5 +1,6 @@
 package de.uos.igf.db3d.dbms.spatials.standard3d;
 
+import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Set;
 import java.util.TreeMap;
@@ -10,6 +11,7 @@ import de.uos.igf.db3d.dbms.collections.SAM;
 import de.uos.igf.db3d.dbms.spatials.api.Component3D;
 import de.uos.igf.db3d.dbms.spatials.api.Element3D;
 import de.uos.igf.db3d.dbms.spatials.api.Net3D;
+import de.uos.igf.db3d.dbms.spatials.geometries3d.MBB3D;
 import de.uos.igf.db3d.dbms.spatials.geometries3d.Point3D;
 import de.uos.igf.db3d.dbms.spatials.standard.GeoEpsilon;
 import de.uos.igf.db3d.resources.DB3DLogger;
@@ -64,6 +66,10 @@ public abstract class Component3DAbst extends Spatial3DAbst implements
 		this.faceID = 0;
 		this.solidID = 0;
 		this.sam = new RStar(MAX_SAM, epsilon);
+		this.vertices = new TreeMap<Integer, Point3DElement>();
+		this.edges = new TreeMap<Integer, Segment3DElement>();
+		this.faces = new TreeMap<Integer, Triangle3DElement>();
+		this.solids = new TreeMap<Integer, Tetrahedron3DElement>();
 	}
 
 	@Override
@@ -92,7 +98,7 @@ public abstract class Component3DAbst extends Spatial3DAbst implements
 	}
 
 	@Override
-	public Set<?> getElementsViaSAM() {
+	public Set<? extends Element3D> getElementsViaSAM() {
 		return this.sam.getEntries();
 	}
 
@@ -192,11 +198,10 @@ public abstract class Component3DAbst extends Spatial3DAbst implements
 	public void buildVertices() {
 
 		this.vertices = new TreeMap<Integer, Point3DElement>();
-		this.verticeID = 0;
 
-		TreeMap<Point3D, TreeMap<Point3D, Element3D>> treemap = new TreeMap<Point3D, TreeMap<Point3D, Element3D>>();
+		HashMap<Point3D, HashMap<Point3D, Element3D>> hashmap = new HashMap<Point3D, HashMap<Point3D, Element3D>>();
 
-		Set<Element3D> set = (Set<Element3D>) this.sam.getEntries();
+		Set<Element3D> set = (Set<Element3D>) this.getElementsViaSAM();
 
 		Iterator<Element3D> it = set.iterator();
 		int cnt = 0;
@@ -213,36 +218,36 @@ public abstract class Component3DAbst extends Spatial3DAbst implements
 
 				time = System.currentTimeMillis();
 			}
-			Element3D element = it.next();
+			Element3D element = (Element3D) it.next();
 			Point3D[] points = element.getPoints();
 			for (Point3D point : points) {
 				boolean contained = false;
-				for (Point3D key_point : treemap.keySet()) {
+				for (Point3D key_point : hashmap.keySet()) {
 					if (key_point.isGeometryEquivalent(point, this.epsilon)) {
-						treemap.get(key_point).put(point, element);
+						hashmap.get(key_point).put(point, element);
 						contained = true;
 					} else {
-						TreeMap<Point3D, Element3D> key_point_treemap = treemap
+						HashMap<Point3D, Element3D> key_point_hashmap = hashmap
 								.get(key_point);
-						for (Point3D key_point_treemap_key_point : key_point_treemap
+						for (Point3D key_point_hashmap_key_point : key_point_hashmap
 								.keySet()) {
-							if (key_point_treemap_key_point
+							if (key_point_hashmap_key_point
 									.isGeometryEquivalent(point, this.epsilon)) {
-								treemap.get(key_point).put(point, element);
+								hashmap.get(key_point).put(point, element);
 								contained = true;
 							}
 						}
 					}
 				}
 				if (!contained) {
-					TreeMap<Point3D, Element3D> sub_treemap = new TreeMap<Point3D, Element3D>();
-					sub_treemap.put(point, element);
-					treemap.put(point, sub_treemap);
+					HashMap<Point3D, Element3D> sub_hashmap = new HashMap<Point3D, Element3D>();
+					sub_hashmap.put(point, element);
+					hashmap.put(point, sub_hashmap);
 				}
 			}
 		}
 
-		for (TreeMap<Point3D, Element3D> subtreemap : treemap.values()) {
+		for (HashMap<Point3D, Element3D> subtreemap : hashmap.values()) {
 			Point3DElement vertex_element = new Point3DElement();
 			Point3D vertex_point = vertex_element.getPoints()[0];
 			for (Point3D point : subtreemap.keySet()) {
@@ -252,13 +257,6 @@ public abstract class Component3DAbst extends Spatial3DAbst implements
 						vertex_point.getCoord(1) + point.getCoord(1));
 				vertex_point.setCoord(2,
 						vertex_point.getCoord(2) + point.getCoord(2));
-				Element3D element = subtreemap.get(point);
-				Point3D[] element_points = element.getPoints();
-				for (int id = 0; id < element_points.length; id++) {
-					if (element_points[id] == point) {
-						element.getPoints()[id] = vertex_point;
-					}
-				}
 			}
 			int anz = subtreemap.size();
 			vertex_point.setCoord(0, vertex_point.getCoord(0) / anz);
@@ -268,6 +266,65 @@ public abstract class Component3DAbst extends Spatial3DAbst implements
 			this.vertices.put(vertex_element.getID(), vertex_element);
 		}
 
+	}
+
+	@Override
+	public String toString() {
+
+		String string = "\nComponent " + this.id;
+		string += "\nNumberOfElements: " + this.countElements();
+		string += "\nelements:";
+		Set<Element3D> set = (Set<Element3D>) this.getElementsViaSAM();
+		Iterator<Element3D> it = set.iterator();
+		while (it.hasNext()) {
+			Element3D element = (Element3D) it.next();
+			string += "\n";
+			string += element.toString();
+		}
+		string += "\n\nvertices:";
+		for (Point3DElement vertex : this.vertices.values()) {
+			string += "\n";
+			string += vertex.toString();
+		}
+		string += "\n\nedges:";
+		for (Segment3DElement edge : this.edges.values()) {
+			string += "\n";
+			string += edge.toString();
+		}
+		string += "\n\nfaces:";
+		for (Triangle3DElement face : this.faces.values()) {
+			string += "\n";
+			string += face.toString();
+		}
+		string += "\n\nsolids:";
+		for (Tetrahedron3DElement solid : this.solids.values()) {
+			string += "\n";
+			string += solid.toString();
+		}
+
+		return string;
+	}
+
+	@Override
+	public MBB3D getMBB() {
+
+		if (this.getElementsViaSAM().isEmpty()) {
+			return null;
+		}
+
+		Set<Element3D> elements = (Set<Element3D>) this.getElementsViaSAM();
+
+		MBB3D neu = null;
+
+		for (Element3D element : elements) {
+			if (neu == null) {
+				neu = element.getMBB().copy();
+			} else {
+				neu = neu.union(element.getMBB(), this.getGeoEpsilon());
+			}
+		}
+
+		return neu;
 	}
 
 }

@@ -4,7 +4,6 @@
 
 package de.uos.igf.db3d.dbms.spatials.geometries3d;
 
-import java.io.Externalizable;
 import java.io.IOException;
 import java.io.ObjectInput;
 import java.io.ObjectOutput;
@@ -27,7 +26,7 @@ import de.uos.igf.db3d.dbms.systems.Db3dSimpleResourceBundle;
  * 
  * @author Wolfgang Baer / University of Osnabrueck
  */
-public class MBB3D implements Geometry3D, Externalizable {
+public class MBB3D implements Geometry3D {
 
 	/* minimum and maximum point */
 	private Point3D pMin;
@@ -727,17 +726,24 @@ public class MBB3D implements Geometry3D, Externalizable {
 		double[] min = new double[3];
 		double[] max = new double[3];
 
-		for (int i = 0; i < 3; i++) {
-			if (sop.lessOrEqual(this.getPMin().getCoord(i), mbb.getPMin()
-					.getCoord(i)))
+		if (mbb != null) {
+			for (int i = 0; i < 3; i++) {
+				if (sop.lessOrEqual(this.getPMin().getCoord(i), mbb.getPMin()
+						.getCoord(i)))
+					min[i] = this.getPMin().getCoord(i);
+				else
+					min[i] = mbb.getPMin().getCoord(i);
+				if (sop.greaterOrEqual(this.getPMax().getCoord(i), mbb
+						.getPMax().getCoord(i)))
+					max[i] = this.getPMax().getCoord(i);
+				else
+					max[i] = mbb.getPMax().getCoord(i);
+			}
+		} else {
+			for (int i = 0; i < 3; i++) {
 				min[i] = this.getPMin().getCoord(i);
-			else
-				min[i] = mbb.getPMin().getCoord(i);
-			if (sop.greaterOrEqual(this.getPMax().getCoord(i), mbb.getPMax()
-					.getCoord(i)))
 				max[i] = this.getPMax().getCoord(i);
-			else
-				max[i] = mbb.getPMax().getCoord(i);
+			}
 		}
 		return new MBB3D(new Point3D(min[0], min[1], min[2]), new Point3D(
 				max[0], max[1], max[2]));

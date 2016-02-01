@@ -72,8 +72,8 @@ public class Wireframe3DElement extends WireframeGeometry3D implements
 	 *             - signals Problems with the dimension of the wireframe.
 	 * @throws ArithmeticException
 	 *             - if norm equals zero in epsilon range. This exception
-	 *             originates in the method normalize(GeoEpsilon) of the
-	 *             class Vector3D.
+	 *             originates in the method normalize(GeoEpsilon) of the class
+	 *             Vector3D.
 	 */
 	public Wireframe3DElement copy() {
 		Wireframe3DElement newwf = new Wireframe3DElement(this.epsilon);
@@ -90,6 +90,14 @@ public class Wireframe3DElement extends WireframeGeometry3D implements
 	@Override
 	public GeoEpsilon getGeoEpsilon() {
 		return this.component.getGeoEpsilon();
+	}
+	
+	@Override
+	public String toString() {
+
+		String string = "ID " + this.id + " " + super.toString();
+
+		return string;
 	}
 
 }

@@ -49,10 +49,9 @@ public class Tetrahedron3DNet extends Net3DAbst implements Solid3D {
 	 */
 	public Tetrahedron3DNet(Tetrahedron3DComponent[] components,
 			GeoEpsilon epsilon) {
-		super(epsilon);
+		this(epsilon);
 		for (Tetrahedron3DComponent component : components)
 			this.addComponent(component);
-		this.updateMBB();
 	}
 
 	/**
@@ -72,7 +71,6 @@ public class Tetrahedron3DNet extends Net3DAbst implements Solid3D {
 		super(net.epsilon);
 		for (int i = 0; i < net.components.length; i++)
 			this.addComponent(net.components[i]);
-		this.updateMBB();
 	}
 
 	/**
@@ -134,7 +132,6 @@ public class Tetrahedron3DNet extends Net3DAbst implements Solid3D {
 		temp[this.components.length] = component;
 		component.net = this;
 		this.components = temp;
-		this.updateMBB();
 	}
 
 	/**
@@ -652,23 +649,6 @@ public class Tetrahedron3DNet extends Net3DAbst implements Solid3D {
 	 */
 	public SPATIALTYPES getSpatialType() {
 		return SPATIALTYPES.SOLID_NET_C_E3D;
-	}
-
-	/**
-	 * Updates the MBB of this net.<br>
-	 * Iterates over all components updating and union their mbbs.<br>
-	 * Sets the updated MBB in the abstract SpatialObject.<br>
-	 * Updates the index in which the net is.
-	 * 
-	 * @throws IllegalArgumentException
-	 *             if an attempt is made to construct a MBB3D whose maximum
-	 *             point is not greater than its minimum point.
-	 */
-	protected void updateMBB() {
-		MBB3D neu = this.components[0].mbb;
-		for (int i = 1; i < this.components.length; i++)
-			neu = neu.union(this.components[i].mbb, this.epsilon);
-		this.mbb = neu;
 	}
 
 	/**

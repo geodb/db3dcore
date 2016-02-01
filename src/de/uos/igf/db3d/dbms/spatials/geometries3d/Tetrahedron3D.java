@@ -2344,8 +2344,9 @@ public class Tetrahedron3D extends Geometry3DAbst {
 	 * @return String with the information of this.
 	 */
 	public String toString() {
-		return "Tetrahedron3D [one=" + points[1] + ", three=" + points[3]
-				+ ", two=" + points[2] + ", zero=" + points[0] + "]";
+		return "Tetrahedron3D [zero=" + points[0].toString() + ", one="
+				+ points[1].toString() + ", two=" + points[2].toString()
+				+ ", three=" + points[3].toString() + "]";
 	}
 
 	@Override

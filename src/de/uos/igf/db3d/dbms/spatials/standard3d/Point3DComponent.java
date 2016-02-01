@@ -101,7 +101,7 @@ public class Point3DComponent extends Component3DAbst {
 	 * @return boolean - true if intersects, false otherwise.
 	 */
 	public boolean intersects(MBB3D mbb) {
-		if (!mbb.intersects(this.mbb, this.epsilon))
+		if (!mbb.intersects(this.getMBB(), this.epsilon))
 			return false;
 
 		Set<Point3DElement> set = (Set<Point3DElement>) this.sam
@@ -140,9 +140,10 @@ public class Point3DComponent extends Component3DAbst {
 		if (this.containsElement(element))
 			throw new ContainmentException("Element already contained !");
 
+		element.id = this.verticeID++;
+
 		this.sam.insert(element);
 		// Here an IllegalArgumentException can be thrown.
-		element.id = this.verticeID++;
 		return element;
 	}
 
@@ -181,6 +182,7 @@ public class Point3DComponent extends Component3DAbst {
 			 */
 			this.sam.remove(removable);
 			// Here an IllegalArgumentException can be thrown.
+
 			return removable;
 		}
 		// else
@@ -237,7 +239,7 @@ public class Point3DComponent extends Component3DAbst {
 	public Point3DElement getElement(int id) {
 		Set<Point3DElement> set = (Set<Point3DElement>) this
 				.getElementsViaSAM();
-		Iterator<Point3DElement> it = (Iterator<Point3DElement>) set.iterator();
+		Iterator<Point3DElement> it = set.iterator();
 		while (it.hasNext()) {
 			Point3DElement p = it.next();
 			if (p.id == id)

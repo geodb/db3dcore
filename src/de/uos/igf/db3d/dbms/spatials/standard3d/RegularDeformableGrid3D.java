@@ -3,7 +3,6 @@ package de.uos.igf.db3d.dbms.spatials.standard3d;
 import de.uos.igf.db3d.dbms.exceptions.DB3DException;
 import de.uos.igf.db3d.dbms.exceptions.NotYetImplementedException;
 import de.uos.igf.db3d.dbms.spatials.api.Component3D;
-import de.uos.igf.db3d.dbms.spatials.api.Element3D;
 import de.uos.igf.db3d.dbms.spatials.api.Net3D;
 import de.uos.igf.db3d.dbms.spatials.geometries3d.Line3D;
 import de.uos.igf.db3d.dbms.spatials.geometries3d.MBB3D;
@@ -125,7 +124,6 @@ public class RegularDeformableGrid3D extends Net3DAbst implements Net3D {
 			this.properties = new float[points.length - 1][points[0].length - 1][points[0][0].length - 1];
 		}
 		this.isThematicDataAtPoints = isThematicDataAtPoints;
-		updateMBB();
 	}
 
 	/**
@@ -139,7 +137,6 @@ public class RegularDeformableGrid3D extends Net3DAbst implements Net3D {
 	 */
 	public void addGridPoint(Point3D point, int x, int y, int z) {
 		points[x][y][z] = point;
-		updateMBB();
 	}
 
 	/**
@@ -235,12 +232,6 @@ public class RegularDeformableGrid3D extends Net3DAbst implements Net3D {
 	@Override
 	public SPATIALTYPES getSpatialType() {
 		return SPATIALTYPES.GRID_NET_C_E3D;
-	}
-
-	protected void updateMBB() {
-		this.mbb = new MBB3D(
-				points[0][0][0],
-				points[points.length - 1][points[0].length - 1][points[0][0].length - 1]);
 	}
 
 }

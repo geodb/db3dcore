@@ -1,7 +1,5 @@
 package de.uos.igf.db3d.dbms.spatials.standard3d;
 
-import java.util.Iterator;
-
 import de.uos.igf.db3d.dbms.exceptions.UpdateException;
 import de.uos.igf.db3d.dbms.spatials.api.Hull3D;
 import de.uos.igf.db3d.dbms.spatials.geometries3d.Point3D;
@@ -109,7 +107,6 @@ public class ClosedHull3DNet extends Triangle3DNet implements Hull3D {
 		temp[this.components.length] = component;
 		component.net = this;
 		this.components = temp;
-		this.updateMBB();
 	}
 
 	/**

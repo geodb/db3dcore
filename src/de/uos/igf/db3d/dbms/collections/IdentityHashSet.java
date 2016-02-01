@@ -16,7 +16,7 @@ import java.util.Collection;
  * 
  * @author Wolfgang Baer / University of Osnabrueck
  */
-public final class IdentityHashSet extends AbstractHashSet {
+public final class IdentityHashSet<E> extends AbstractHashSet {
 
 	/**
 	 * Constructs a new, empty set; the backing <code>AbstractHashMap</code>
@@ -32,13 +32,13 @@ public final class IdentityHashSet extends AbstractHashSet {
 	 * (0.75) and an initial capacity sufficient to contain the elements in the
 	 * specified collection.
 	 * 
-	 * @param c
+	 * @param collection
 	 *            the collection whose elements are to be placed into this set
 	 * @throws NullPointerException
 	 *             if the specified collection is null.
 	 */
-	public IdentityHashSet(Collection<?> c) {
-		super(c);
+	public IdentityHashSet(Collection<E> collection) {
+		super(collection);
 	}
 
 	/**

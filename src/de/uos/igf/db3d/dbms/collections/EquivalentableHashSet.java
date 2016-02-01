@@ -22,7 +22,7 @@ import de.uos.igf.db3d.dbms.spatials.standard.GeoEpsilon;
  * Equivalentable indicating which equality/equivalence test in this Set
  * implementation should be used !
  */
-public final class EquivalentableHashSet extends AbstractHashSet {
+public final class EquivalentableHashSet<E> extends AbstractHashSet {
 
 	/* scalar operator or equality/equivalence tests */
 	private final GeoEpsilon sop;
@@ -110,7 +110,7 @@ public final class EquivalentableHashSet extends AbstractHashSet {
 		this.sop = _sop;
 		this.equConst = (byte) equivalConstant;
 		this.factor = computeFactor(this.sop);
-		addAll(c);
+		this.addAll(c);
 	}
 
 	/**

@@ -184,7 +184,7 @@ public class Triangle3DElement extends Triangle3D implements Element3D {
 	public Triangle3DElement[] getNeighbours() {
 		return neighbours;
 	}
-	
+
 	@Override
 	public Triangle3DElement getNeighbour(int index) {
 		return neighbours[index];
@@ -300,6 +300,18 @@ public class Triangle3DElement extends Triangle3D implements Element3D {
 	@Override
 	public GeoEpsilon getGeoEpsilon() {
 		return component.getGeoEpsilon();
+	}
+
+	@Override
+	public String toString() {
+
+		String string = "ID " + this.id + " " + super.toString();
+
+		return string;
+	}
+	
+	public void setID(int id) {
+		this.id = id;
 	}
 
 }

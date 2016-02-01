@@ -1,7 +1,9 @@
 package de.uos.igf.db3d.dbms.spatials.standard3d;
 
+import de.uos.igf.db3d.dbms.spatials.api.Component3D;
 import de.uos.igf.db3d.dbms.spatials.api.Element3D;
 import de.uos.igf.db3d.dbms.spatials.api.Net3D;
+import de.uos.igf.db3d.dbms.spatials.geometries3d.MBB3D;
 import de.uos.igf.db3d.dbms.spatials.standard.GeoEpsilon;
 
 /**
@@ -77,4 +79,33 @@ public abstract class Net3DAbst extends Spatial3DAbst implements Net3D {
 		}
 	}
 
+	@Override
+	public MBB3D getMBB() {
+
+		if (this.getComponents() == null) {
+			return null;
+		}
+
+		MBB3D neu = this.getComponents()[0].getMBB().copy();
+
+		for (Component3D comp : this.getComponents()) {
+			neu = neu.union(comp.getMBB(), this.getGeoEpsilon());
+		}
+
+		return neu;
+	}
+
+	@Override
+	public String toString() {
+
+		String string = "\n" + this.getClass().getSimpleName()
+				+ "\nNumberOfComponents: " + this.countComponents();
+		string += "\ncomponents:";
+		for (Component3D component : this.getComponents()) {
+			string += "\n";
+			string += component.toString();
+		}
+
+		return string;
+	}
 }

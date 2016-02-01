@@ -6,7 +6,6 @@ package de.uos.igf.db3d.dbms.spatials.api;
 
 import de.uos.igf.db3d.dbms.spatials.standard.GeoEpsilon;
 
-
 /**
  * Interface for geometry classes based on the reference to one or more Point3D
  * objects. There are different ways to test for equality to equivalence.
@@ -70,6 +69,5 @@ public interface Equivalentable {
 	 * @return int - hash code value.
 	 */
 	public int isGeometryEquivalentHC(int factor);
-
 
 }

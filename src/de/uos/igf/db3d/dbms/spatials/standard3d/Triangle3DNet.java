@@ -47,7 +47,7 @@ public class Triangle3DNet extends Net3DAbst implements Surface3D {
 	 *             point is not greater than its minimum point.
 	 */
 	public Triangle3DNet(Triangle3DComponent[] components, GeoEpsilon epsilon) {
-		super(epsilon);
+		this(epsilon);
 		for (Triangle3DComponent component : components)
 			this.addComponent(component);
 	}
@@ -119,7 +119,6 @@ public class Triangle3DNet extends Net3DAbst implements Surface3D {
 		temp[this.components.length] = component;
 		component.net = this;
 		this.components = temp;
-		this.updateMBB();
 	}
 
 	/**
@@ -142,7 +141,6 @@ public class Triangle3DNet extends Net3DAbst implements Surface3D {
 			}
 		}
 		this.components = temp;
-		this.updateMBB();
 	}
 
 	/**
@@ -556,23 +554,6 @@ public class Triangle3DNet extends Net3DAbst implements Surface3D {
 	 */
 	public SPATIALTYPES getSpatialType() {
 		return SPATIALTYPES.SURFACE_NET_C_E3D;
-	}
-
-	/**
-	 * Updates the MBB of this net.<br>
-	 * Iterates over all components updating and union their mbbs.<br>
-	 * Sets the updated MBB in the abstract SpatialObject.<br>
-	 * Updates the index in which the net is.
-	 * 
-	 * @throws IllegalArgumentException
-	 *             if an attempt is made to construct a MBB3D whose maximum
-	 *             point is not greater than its minimum point.
-	 */
-	protected void updateMBB() {
-		MBB3D neu = this.components[0].mbb;
-		for (int i = 1; i < this.components.length; i++)
-			neu = neu.union(this.components[i].mbb, this.epsilon);
-		this.mbb = neu;
 	}
 
 }

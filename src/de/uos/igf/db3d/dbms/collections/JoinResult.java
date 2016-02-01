@@ -7,26 +7,25 @@ package de.uos.igf.db3d.dbms.collections;
 /**
  * The class JoinResult models a value object for holding the result pairs of a
  * spatial join query. The first part of the pair always comes from the <code>
- * this</code>
- * object as given through the performed method call.<br>
+ * this</code> object as given through the performed method call.<br>
  * <br>
  * Transient result value class ! <br>
  * <br>
  * 
  * @author Wolfgang Baer / University of Osnabrueck
  */
-public final class JoinResult {
+public final class JoinResult<E> {
 
 	/** object of <code>this</code> in join query */
-	private final Object thisObject;
+	private final E thisObject;
 
 	/** object of the argument RStar tree in query */
-	private final Object argObject;
+	private final E argObject;
 
 	/**
 	 * Constructor.
 	 */
-	public JoinResult(Object thisObject, Object argObject) {
+	public JoinResult(E thisObject, E argObject) {
 		this.thisObject = thisObject;
 		this.argObject = argObject;
 	}

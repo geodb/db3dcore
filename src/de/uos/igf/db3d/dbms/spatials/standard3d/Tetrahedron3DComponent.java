@@ -150,8 +150,8 @@ public class Tetrahedron3DComponent extends Component3DAbst {
 
 		// check first if component is empty
 		if (this.isEmpty()) {
+			element.id=this.solidID++;
 			this.entry = element;
-			this.mbb = element.getMBB();
 			this.sam.insert(element);
 			// Here an IllegalArgumentException can be thrown.
 			return element;
@@ -164,7 +164,7 @@ public class Tetrahedron3DComponent extends Component3DAbst {
 
 		// check if tetra fits in - get set of spatially close elements and
 		// iterate over them
-		Set<Tetrahedron3DElement> tetras = (Set<Tetrahedron3DElement>) this.sam
+		Set<Tetrahedron3DElement> tetras = this.sam
 				.intersects(element.getMBB());
 		Iterator<Tetrahedron3DElement> it = tetras.iterator();
 
@@ -258,6 +258,7 @@ public class Tetrahedron3DComponent extends Component3DAbst {
 						.getObject(0);
 			}
 			// add element to SAM
+			element.id=this.solidID++;
 			this.sam.insert(element);
 			return element;
 		} else
@@ -285,8 +286,7 @@ public class Tetrahedron3DComponent extends Component3DAbst {
 
 		// look for geometrically equivalent element in this component
 		Tetrahedron3DElement removable = null;
-		Set<Tetrahedron3DElement> set = (Set<Tetrahedron3DElement>) this.sam
-				.intersects(element.getMBB());
+		Set<Tetrahedron3DElement> set = this.sam.intersects(element.getMBB());
 		Iterator<Tetrahedron3DElement> it = set.iterator();
 		while (it.hasNext()) {
 			Tetrahedron3DElement current = it.next();
@@ -446,8 +446,8 @@ public class Tetrahedron3DComponent extends Component3DAbst {
 	 */
 	public boolean containsElement(Tetrahedron3D tetrahedron) { // Dag
 		GeoEpsilon epsilon = this.getGeoEpsilon();
-		Set<Tetrahedron3DElement> tetras = (Set<Tetrahedron3DElement>) this.sam
-				.intersects(tetrahedron.getMBB());
+		Set<Tetrahedron3DElement> tetras = this.sam.intersects(tetrahedron
+				.getMBB());
 
 		Iterator<Tetrahedron3DElement> it = tetras.iterator();
 		while (it.hasNext()) {
@@ -472,8 +472,8 @@ public class Tetrahedron3DComponent extends Component3DAbst {
 	 *             Vector3D.
 	 */
 	public boolean containsElt(Triangle3D triangle) { // Dag
-		Set<Tetrahedron3DElement> tetset = (Set<Tetrahedron3DElement>) this.sam
-				.intersects(triangle.getMBB());
+		Set<Tetrahedron3DElement> tetset = this.sam.intersects(triangle
+				.getMBB());
 		Set<Triangle3D> triset = this.getTriangles(tetset);
 
 		Iterator<Triangle3D> it = triset.iterator();
@@ -499,7 +499,7 @@ public class Tetrahedron3DComponent extends Component3DAbst {
 	 *             Vector3D.
 	 */
 	public boolean containsElt(Segment3D segment) { // Dag
-		Set<Tetrahedron3DElement> tetset = (Set<Tetrahedron3DElement>) this.sam
+		Set<Tetrahedron3DElement> tetset = this.sam
 				.intersects(segment.getMBB());
 		Set<Segment3D> segset = this.getSegments(tetset);
 
@@ -527,8 +527,7 @@ public class Tetrahedron3DComponent extends Component3DAbst {
 	 *             getPoint(int) of the class Tetrahedron3D.
 	 */
 	public boolean containsElt(Point3D point) { // Dag
-		Set<Tetrahedron3DElement> tetset = (Set<Tetrahedron3DElement>) this.sam
-				.intersects(point.getMBB());
+		Set<Tetrahedron3DElement> tetset = this.sam.intersects(point.getMBB());
 		Set<Point3D> poiset = this.getPoints(tetset);
 
 		Iterator<Point3D> it = poiset.iterator();
@@ -999,8 +998,7 @@ public class Tetrahedron3DComponent extends Component3DAbst {
 	public boolean isBorderVertex(Point3D point) { // Dag
 
 		MBB3D mbb = point.getMBB();
-		Set<Tetrahedron3DElement> tetras = (Set<Tetrahedron3DElement>) this
-				.getSAM().intersects(mbb);
+		Set<Tetrahedron3DElement> tetras = this.sam.intersects(mbb);
 		Iterator<Tetrahedron3DElement> it = tetras.iterator();
 		while (it.hasNext()) {
 			Tetrahedron3DElement tet = it.next();
@@ -1036,8 +1034,7 @@ public class Tetrahedron3DComponent extends Component3DAbst {
 	public boolean isBorderEdge(Segment3D segment) { // Dag
 
 		MBB3D mbb = segment.getMBB();
-		Set<Tetrahedron3DElement> tetras = (Set<Tetrahedron3DElement>) this.sam
-				.intersects(mbb);
+		Set<Tetrahedron3DElement> tetras = this.sam.intersects(mbb);
 		Iterator<Tetrahedron3DElement> it = tetras.iterator();
 		while (it.hasNext()) {
 			Tetrahedron3DElement tet = it.next();
@@ -1072,8 +1069,7 @@ public class Tetrahedron3DComponent extends Component3DAbst {
 	public boolean isBorderFace(Triangle3D triangle) { // Dag
 
 		MBB3D mbb = triangle.getMBB();
-		Set<Tetrahedron3DElement> tetras = (Set<Tetrahedron3DElement>) this.sam
-				.intersects(mbb);
+		Set<Tetrahedron3DElement> tetras = this.sam.intersects(mbb);
 		Iterator<Tetrahedron3DElement> it = tetras.iterator();
 		while (it.hasNext()) {
 			Tetrahedron3DElement tet = it.next();
@@ -1101,8 +1097,7 @@ public class Tetrahedron3DComponent extends Component3DAbst {
 	public boolean isBorderElement(Tetrahedron3D tetrahedron) { // Dag
 
 		MBB3D mbb = tetrahedron.getMBB();
-		Set<Tetrahedron3DElement> tetras = (Set<Tetrahedron3DElement>) this.sam
-				.intersects(mbb);
+		Set<Tetrahedron3DElement> tetras = this.sam.intersects(mbb);
 		Iterator<Tetrahedron3DElement> it = tetras.iterator();
 		while (it.hasNext()) {
 			Tetrahedron3DElement tet = it.next();
@@ -1156,11 +1151,10 @@ public class Tetrahedron3DComponent extends Component3DAbst {
 	 */
 	public boolean intersects(Plane3D plane) {
 
-		Geometry3D sgo = this.mbb.intersection(plane, this.epsilon);
+		Geometry3D sgo = this.getMBB().intersection(plane, this.epsilon);
 		if (sgo == null)
 			return false;
-		Set<Tetrahedron3DElement> set = (Set<Tetrahedron3DElement>) this.sam
-				.intersects(sgo.getMBB());
+		Set<Tetrahedron3DElement> set = this.sam.intersects(sgo.getMBB());
 		Iterator<Tetrahedron3DElement> it = set.iterator();
 		while (it.hasNext()) {
 			Tetrahedron3DElement tetra = it.next();
@@ -1202,11 +1196,10 @@ public class Tetrahedron3DComponent extends Component3DAbst {
 	 */
 	public boolean intersects(Line3D line) {
 
-		Geometry3D sgo = this.mbb.intersection(line, this.epsilon);
+		Geometry3D sgo = this.getMBB().intersection(line, this.epsilon);
 		if (sgo == null)
 			return false;
-		Set<Tetrahedron3DElement> set = (Set<Tetrahedron3DElement>) this.sam
-				.intersects(sgo.getMBB());
+		Set<Tetrahedron3DElement> set = this.sam.intersects(sgo.getMBB());
 		Iterator<Tetrahedron3DElement> it = set.iterator();
 		while (it.hasNext()) {
 			Tetrahedron3DElement tetra = it.next();
@@ -1261,11 +1254,10 @@ public class Tetrahedron3DComponent extends Component3DAbst {
 	 */
 	public boolean intersects(MBB3D mbb) { // Dag
 
-		if (!this.mbb.intersects(mbb, this.epsilon))
+		if (!this.getMBB().intersects(mbb, this.epsilon))
 			return false;
 
-		Set<Tetrahedron3DElement> set = (Set<Tetrahedron3DElement>) this.sam
-				.intersects(mbb);
+		Set<Tetrahedron3DElement> set = this.sam.intersects(mbb);
 		Iterator<Tetrahedron3DElement> it = set.iterator();
 		while (it.hasNext()) {
 			Tetrahedron3DElement tetra = it.next();
@@ -1325,8 +1317,7 @@ public class Tetrahedron3DComponent extends Component3DAbst {
 	 */
 	private Tetrahedron3DElement getTetraContainingPoint(Point3D point) { // Dag
 
-		Set<Tetrahedron3DElement> tetras = (Set<Tetrahedron3DElement>) this.sam
-				.contains(point);
+		Set<Tetrahedron3DElement> tetras = this.sam.contains(point);
 
 		Iterator<Tetrahedron3DElement> it = tetras.iterator();
 		while (it.hasNext()) {
@@ -1370,7 +1361,7 @@ public class Tetrahedron3DComponent extends Component3DAbst {
 	 */
 	public boolean containsInside(Segment3D segment) {
 
-		if (!(segment.getMBB().inside(this.mbb, this.epsilon)))
+		if (!(segment.getMBB().inside(this.getMBB(), this.epsilon)))
 			return false;
 
 		if (!(this.containsInside(segment.getPoints()[0]) && this
@@ -1448,8 +1439,8 @@ public class Tetrahedron3DComponent extends Component3DAbst {
 
 		// check if the border faces of all triangle intersecting tetrahedrons
 		// intersects with triangle. return false in this case, true if not
-		Set<Tetrahedron3DElement> tetras = (Set<Tetrahedron3DElement>) this.sam
-				.intersects(triangle.getMBB());
+		Set<Tetrahedron3DElement> tetras = this.sam.intersects(triangle
+				.getMBB());
 		HashSet<Triangle3D> hull = new HashSet<Triangle3D>();
 
 		Iterator<Tetrahedron3DElement> it = tetras.iterator();
@@ -1516,7 +1507,7 @@ public class Tetrahedron3DComponent extends Component3DAbst {
 	 */
 	public boolean containsInside(Tetrahedron3D tetrahedron) {
 
-		if (!(tetrahedron.getMBB().inside(this.mbb, this.epsilon)))
+		if (!(tetrahedron.getMBB().inside(this.getMBB(), this.epsilon)))
 			return false;
 		if (!(this.containsInside(tetrahedron.getPoints()[0])
 				&& this.containsInside(tetrahedron.getPoints()[1])
@@ -1526,8 +1517,8 @@ public class Tetrahedron3DComponent extends Component3DAbst {
 
 		// check if the border faces of all tetra intersecting tetrahedrons
 		// intersects with triangle. return false in this case, true if not
-		Set<Tetrahedron3DElement> tetras = (Set<Tetrahedron3DElement>) this.sam
-				.intersects(tetrahedron.getMBB());
+		Set<Tetrahedron3DElement> tetras = this.sam.intersects(tetrahedron
+				.getMBB());
 		HashSet<Triangle3D> hull = new HashSet<Triangle3D>();
 
 		Iterator<Tetrahedron3DElement> tetit = tetras.iterator();
@@ -1591,7 +1582,7 @@ public class Tetrahedron3DComponent extends Component3DAbst {
 
 		for (int i = 0; i < elements.length; i++) {
 			if (elements[i].isInterior() != true) {
-				Set<Tetrahedron3DElement> query = (Set<Tetrahedron3DElement>) this.sam
+				Set<Tetrahedron3DElement> query = this.sam
 						.intersects(elements[i].getMBB());
 				query.remove(elements[i]);
 
@@ -1825,8 +1816,7 @@ public class Tetrahedron3DComponent extends Component3DAbst {
 	 * Updates the Entry elements after changes in the net component.
 	 */
 	protected void updateEntryElement() {
-		Set<Tetrahedron3DElement> set = (Set<Tetrahedron3DElement>) this.sam
-				.getEntries();
+		Set<Tetrahedron3DElement> set = this.sam.getEntries();
 		Iterator<Tetrahedron3DElement> it = set.iterator();
 		while (it.hasNext()) {
 			Tetrahedron3DElement tetelt = it.next();
@@ -2118,9 +2108,9 @@ public class Tetrahedron3DComponent extends Component3DAbst {
 	 * @return SimpleGeoObj - element with the given id.
 	 */
 	public Tetrahedron3DElement getElement(int id) {
-
-		Iterator<Tetrahedron3DElement> it = getElementsViaRecursion()
-				.iterator();
+		Set<Tetrahedron3DElement> set = (Set<Tetrahedron3DElement>) this
+				.getElementsViaSAM();
+		Iterator<Tetrahedron3DElement> it = set.iterator();
 		while (it.hasNext()) {
 			Tetrahedron3DElement tet = it.next();
 			if (tet.id == id)

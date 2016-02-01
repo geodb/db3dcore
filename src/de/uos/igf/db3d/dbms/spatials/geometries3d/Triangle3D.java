@@ -2605,8 +2605,8 @@ public class Triangle3D extends Geometry3DAbst {
 	 * @return String with the information of this.
 	 */
 	public String toString() {
-		return "Triangle3D [normvec=" + normvec + ", one=" + points[1]
-				+ ", two=" + points[2] + ", zero=" + points[0] + "]";
+		return "Triangle3D [normvec=" + normvec + ", zero=" + points[0].toString()
+				+ ", one=" + points[1].toString() + ", two=" + points[2].toString() + "]";
 	}
 
 	@Override

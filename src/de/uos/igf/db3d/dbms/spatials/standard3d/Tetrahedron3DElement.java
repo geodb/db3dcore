@@ -298,4 +298,16 @@ public class Tetrahedron3DElement extends Tetrahedron3D implements Element3D {
 		return component.getGeoEpsilon();
 	}
 
+	@Override
+	public String toString() {
+
+		String string = "ID " + this.id + " " + super.toString();
+
+		return string;
+	}
+
+	public void setID(int id) {
+		this.id = id;
+	}
+
 }

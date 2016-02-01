@@ -83,10 +83,11 @@ public class Triangle3DComponent extends Component3DAbst {
 			throws UpdateException {
 		super(epsilon);
 		for (Triangle3DElement element : elements) {
-			this.addElementWithoutTopologyCheck(element);
+			this.addElement(element);
 		}
-		buildNetTopology((Triangle3DElement[]) this.getElementsViaRecursion()
-				.toArray());
+
+		buildNetTopology(this.getElementsViaSAM().toArray(
+				new Triangle3DElement[this.getElementsViaSAM().size()]));
 		this.connected = true;
 		updateEntryElement();
 		makeOrientationConsistent(epsilon);
@@ -131,7 +132,6 @@ public class Triangle3DComponent extends Component3DAbst {
 		if (this.isEmpty()) { // simplest case
 			element.id = this.faceID++;
 			this.entry = element;
-			this.mbb = element.getMBB();
 			this.oriented = true;
 			this.connected = true;
 			this.sam.insert(element);
@@ -144,7 +144,7 @@ public class Triangle3DComponent extends Component3DAbst {
 			// with the dimensions of the wireframe.
 			throw new ContainmentException("Element already contained !");
 
-		Set<Triangle3DElement> triangles = (Set<Triangle3DElement>) this.sam
+		Set<Triangle3DElement> triangles = this.sam
 				.intersects(element.getMBB());
 		Iterator<Triangle3DElement> it = triangles.iterator();
 
@@ -234,8 +234,7 @@ public class Triangle3DComponent extends Component3DAbst {
 
 		// find element and set removable
 		Triangle3DElement removable = null;
-		Set<Triangle3DElement> set = (Set<Triangle3DElement>) this.sam
-				.intersects(element.getMBB());
+		Set<Triangle3DElement> set = this.sam.intersects(element.getMBB());
 		Iterator<Triangle3DElement> it = set.iterator();
 		while (it.hasNext()) {
 			Triangle3DElement current = it.next();
@@ -329,8 +328,7 @@ public class Triangle3DComponent extends Component3DAbst {
 
 		// find element and set removable
 		Triangle3DElement removable = null;
-		Set<Triangle3DElement> set = (Set<Triangle3DElement>) this.sam
-				.intersects(element.getMBB());
+		Set<Triangle3DElement> set = this.sam.intersects(element.getMBB());
 		Iterator<Triangle3DElement> it = set.iterator();
 		while (it.hasNext()) {
 			Triangle3DElement current = it.next();
@@ -422,7 +420,6 @@ public class Triangle3DComponent extends Component3DAbst {
 		if (this.isEmpty()) { // simplest case
 			element.id = this.faceID++;
 			this.entry = element;
-			this.mbb = element.getMBB();
 			this.oriented = true;
 			this.connected = true;
 			this.sam.insert(element);
@@ -439,7 +436,7 @@ public class Triangle3DComponent extends Component3DAbst {
 		// this.getSAM().insert(element);
 		// return element;
 
-		Set<Triangle3DElement> triangles = (Set<Triangle3DElement>) this.sam
+		Set<Triangle3DElement> triangles = this.sam
 				.intersects(element.getMBB());
 
 		Iterator<Triangle3DElement> it = triangles.iterator();
@@ -577,8 +574,8 @@ public class Triangle3DComponent extends Component3DAbst {
 	 * @return boolean - true if contained, false otherwise.
 	 */
 	public boolean containsElement(Triangle3D triangle) { // Dag
-		Set<Triangle3DElement> triangles = (Set<Triangle3DElement>) this.sam
-				.intersects(triangle.getMBB());
+		Set<Triangle3DElement> triangles = this.sam.intersects(triangle
+				.getMBB());
 
 		Iterator<Triangle3DElement> it = triangles.iterator();
 		while (it.hasNext()) {
@@ -599,8 +596,7 @@ public class Triangle3DComponent extends Component3DAbst {
 	 * @return boolean - true if contained, false otherwise.
 	 */
 	public boolean containsElement(Segment3D segment) { // Dag
-		Set<Triangle3DElement> triset = (Set<Triangle3DElement>) this.sam
-				.intersects(segment.getMBB());
+		Set<Triangle3DElement> triset = this.sam.intersects(segment.getMBB());
 
 		Set<Segment3D> segset = this.getSegments(triset);
 
@@ -627,8 +623,7 @@ public class Triangle3DComponent extends Component3DAbst {
 	 *             Triangle3D.
 	 */
 	public boolean containsElement(Point3D point) { // Dag
-		Set<Triangle3DElement> triset = (Set<Triangle3DElement>) this.sam
-				.intersects(point.getMBB());
+		Set<Triangle3DElement> triset = this.sam.intersects(point.getMBB());
 		Set<Point3D> poiset = this.getPoints(triset);
 
 		Iterator<Point3D> it = poiset.iterator();
@@ -778,7 +773,7 @@ public class Triangle3DComponent extends Component3DAbst {
 
 		Triangle3DElement[] triangles = triangleSet
 				.toArray(new Triangle3DElement[triangleSet.size()]);
-		Set<Segment3D> segmentHS = new EquivalentableHashSet(
+		Set<Segment3D> segmentHS = new EquivalentableHashSet<Segment3D>(
 				(triangles.length * 2), this.epsilon,
 				Equivalentable.STRICT_EQUAL);
 
@@ -855,8 +850,7 @@ public class Triangle3DComponent extends Component3DAbst {
 		Geometry3D sgo = this.getMBB().intersection(plane, this.epsilon);
 		if (sgo == null)
 			return false;
-		Set<Triangle3DElement> set = (Set<Triangle3DElement>) this.sam
-				.intersects(sgo.getMBB());
+		Set<Triangle3DElement> set = this.sam.intersects(sgo.getMBB());
 		Iterator<Triangle3DElement> it = set.iterator();
 		while (it.hasNext()) {
 			Triangle3DElement tri = it.next();
@@ -898,11 +892,10 @@ public class Triangle3DComponent extends Component3DAbst {
 	 */
 	public boolean intersects(Line3D line) { // Dag
 
-		Geometry3D sgo = this.mbb.intersection(line, this.epsilon);
+		Geometry3D sgo = this.getMBB().intersection(line, this.epsilon);
 		if (sgo == null)
 			return false;
-		Set<Triangle3DElement> set = (Set<Triangle3DElement>) this.sam
-				.intersects(sgo.getMBB());
+		Set<Triangle3DElement> set = this.sam.intersects(sgo.getMBB());
 		// Here an IllegalArgumentException can be thrown.
 		Iterator<Triangle3DElement> it = set.iterator();
 		while (it.hasNext()) {
@@ -945,12 +938,11 @@ public class Triangle3DComponent extends Component3DAbst {
 	 */
 	public boolean intersects(Segment3D segment) { // Dag
 
-		Geometry3D sgo = this.mbb.intersection(segment.getLine(epsilon),
+		Geometry3D sgo = this.getMBB().intersection(segment.getLine(epsilon),
 				this.epsilon);
 		if (sgo == null)
 			return false;
-		Set<Triangle3DElement> set = (Set<Triangle3DElement>) this.sam
-				.intersects(sgo.getMBB());
+		Set<Triangle3DElement> set = this.sam.intersects(sgo.getMBB());
 		// Here an IllegalArgumentException can be thrown.
 		Iterator<Triangle3DElement> it = set.iterator();
 		while (it.hasNext()) {
@@ -1003,11 +995,10 @@ public class Triangle3DComponent extends Component3DAbst {
 	 */
 	public boolean intersects(MBB3D mbb) { // Dag
 
-		if (!this.mbb.intersects(mbb, this.epsilon))
+		if (!this.getMBB().intersects(mbb, this.epsilon))
 			return false;
 
-		Set<Triangle3DElement> set = (Set<Triangle3DElement>) this.sam
-				.intersects(mbb);
+		Set<Triangle3DElement> set = this.sam.intersects(mbb);
 		Iterator<Triangle3DElement> it = set.iterator();
 		while (it.hasNext()) {
 			Triangle3DElement triElt = it.next();
@@ -1039,8 +1030,7 @@ public class Triangle3DComponent extends Component3DAbst {
 		// tests whether a triangle of this contains point until one is found
 		// (or all if not)
 		// get spatial objects from SAM which contain point
-		Set<Triangle3DElement> triangles = (Set<Triangle3DElement>) this.sam
-				.contains(point);
+		Set<Triangle3DElement> triangles = this.sam.contains(point);
 
 		Iterator<Triangle3DElement> it = triangles.iterator();
 		while (it.hasNext()) {
@@ -1088,8 +1078,7 @@ public class Triangle3DComponent extends Component3DAbst {
 		 */
 
 		MBB3D mbb = segment.getMBB();
-		Set<Triangle3DElement> triangles = (Set<Triangle3DElement>) this.sam
-				.intersects(mbb);
+		Set<Triangle3DElement> triangles = this.sam.intersects(mbb);
 
 		Iterator<Triangle3DElement> it = triangles.iterator();
 		while (it.hasNext()) {
@@ -1142,8 +1131,7 @@ public class Triangle3DComponent extends Component3DAbst {
 		 */
 
 		MBB3D mbb = triangle.getMBB();
-		Set<Triangle3DElement> triangles = (Set<Triangle3DElement>) this.sam
-				.intersects(mbb);
+		Set<Triangle3DElement> triangles = this.sam.intersects(mbb);
 
 		Iterator<Triangle3DElement> it = triangles.iterator();
 		while (it.hasNext()) {
@@ -1224,8 +1212,7 @@ public class Triangle3DComponent extends Component3DAbst {
 	 */
 	public boolean isBorderVertex(Point3D point) { // Dag
 		// find all segments containing point
-		Set<Triangle3DElement> triset = (Set<Triangle3DElement>) this.sam
-				.intersects(point.getMBB());
+		Set<Triangle3DElement> triset = this.sam.intersects(point.getMBB());
 
 		Set<Segment3D> segset = this.getSegments(triset);
 		// find out if one of those segments is a borderSegment -> point is a
@@ -1259,8 +1246,7 @@ public class Triangle3DComponent extends Component3DAbst {
 	public boolean isBorderEdge(Segment3D segment) { // Dag
 
 		// find (one) triangle tri containing seg
-		Set<Triangle3DElement> set = (Set<Triangle3DElement>) this.sam
-				.intersects(segment.getMBB());
+		Set<Triangle3DElement> set = this.sam.intersects(segment.getMBB());
 		Triangle3DElement tri = null;
 		// set = this.getSegments(set);
 		// find out if one of those segments is a borderSegment -> point is a
@@ -1297,8 +1283,7 @@ public class Triangle3DComponent extends Component3DAbst {
 	public boolean isBorderFace(Triangle3D triangle) { // Dag
 		// find triangle which fits geomerically the given one
 		Triangle3DElement reference = null;
-		Set<Triangle3DElement> set = (Set<Triangle3DElement>) this.sam
-				.intersects(triangle.getMBB());
+		Set<Triangle3DElement> set = this.sam.intersects(triangle.getMBB());
 		Iterator<Triangle3DElement> it = set.iterator();
 		while (it.hasNext()) {
 			Triangle3DElement current = it.next();
@@ -1354,8 +1339,8 @@ public class Triangle3DComponent extends Component3DAbst {
 
 		for (int i = 0; i < elements.length; i++) {
 			if (elements[i].isInterior() != true) {
-				Set<Triangle3DElement> query = (Set<Triangle3DElement>) this.sam
-						.intersects(elements[i].getMBB());
+				Set<Triangle3DElement> query = this.sam.intersects(elements[i]
+						.getMBB());
 				query.remove(elements[i]);
 
 				Point3D po = null;
@@ -1476,8 +1461,8 @@ public class Triangle3DComponent extends Component3DAbst {
 
 		for (int i = 0; i < elements.length; i++) {
 			if (this.isElementInterior(elements[i], flags) != true) {
-				Set<Triangle3DElement> query = (Set<Triangle3DElement>) sam
-						.intersects(elements[i].getMBB());
+				Set<Triangle3DElement> query = sam.intersects(elements[i]
+						.getMBB());
 				query.remove(elements[i]);
 				if (flags.checkFlag(elements[i], FlagMap.F1) == true) { // neighbour
 					// 0
@@ -1640,8 +1625,7 @@ public class Triangle3DComponent extends Component3DAbst {
 	 */
 	protected void updateEntryElement() {
 		boolean closed = true;
-		Set<Triangle3DElement> set = (Set<Triangle3DElement>) this.sam
-				.getEntries();
+		Set<Triangle3DElement> set = this.sam.getEntries();
 		Iterator<Triangle3DElement> it = set.iterator();
 		while (it.hasNext()) {
 			Triangle3DElement trielt = it.next();
@@ -1981,12 +1965,11 @@ public class Triangle3DComponent extends Component3DAbst {
 
 		LinkedList<Triangle3D> result = new LinkedList<Triangle3D>();
 
-		Set<Triangle3DElement> set = (Set<Triangle3DElement>) this.sam
-				.intersects(point.getMBB());
+		Set<Triangle3DElement> set = this.sam.intersects(point.getMBB());
 
 		for (Triangle3DElement tri : set) {
 			if (tri.hasCorner(point, epsilon)) {
-				result.add(tri);
+				result.add((Triangle3D) tri);
 			}
 		}
 
@@ -2051,7 +2034,7 @@ public class Triangle3DComponent extends Component3DAbst {
 	 * @return Set - a Set object containing the result
 	 */
 	public Set<Triangle3DElement> inside(MBB3D mbb) {
-		return (Set<Triangle3DElement>) this.sam.inside(mbb);
+		return this.sam.inside(mbb);
 	}
 
 	/**
@@ -2063,9 +2046,9 @@ public class Triangle3DComponent extends Component3DAbst {
 	 */
 	@Override
 	public Triangle3DElement getElement(int id) {
-
-		Iterator<Triangle3DElement> it = this.getElementsViaRecursion()
-				.iterator();
+		Set<Triangle3DElement> set = (Set<Triangle3DElement>) this
+				.getElementsViaSAM();
+		Iterator<Triangle3DElement> it = set.iterator();
 		while (it.hasNext()) {
 			Triangle3DElement t = it.next();
 			if (t.getID() == id)

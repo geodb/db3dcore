@@ -76,6 +76,7 @@ public class Point3D extends Geometry3DAbst {
 	 *             if an attempt is made to construct a MBB3D whose maximum
 	 *             point is not greater than its minimum point.
 	 */
+	@Override
 	public MBB3D getMBB() {
 		return new MBB3D(this, this);
 	}
@@ -393,7 +394,7 @@ public class Point3D extends Geometry3DAbst {
 	 * @return String with the information of this.
 	 */
 	public String toString() {
-		return "Point [x=" + x + ", y=" + y + ", z=" + z + "]";
+		return "Point3D [x=" + x + ", y=" + y + ", z=" + z + "]";
 	}
 
 	@Override

@@ -69,7 +69,7 @@ public class ClosedHull3DComponent extends Triangle3DComponent {
 		if (!this.isOrientationConsistent())
 			this.makeOrientationConsistent(this.epsilon);
 
-		if (!(point.getMBB().inside(this.mbb, this.epsilon)))
+		if (!(point.getMBB().inside(this.getMBB(), this.epsilon)))
 			return false;
 
 		// point in border
@@ -116,7 +116,7 @@ public class ClosedHull3DComponent extends Triangle3DComponent {
 		if (!this.isOrientationConsistent())
 			this.makeOrientationConsistent(this.epsilon);
 
-		if (!(point.getMBB().inside(this.mbb, this.epsilon)))
+		if (!(point.getMBB().inside(this.getMBB(), this.epsilon)))
 			return false;
 
 		// point in border
@@ -166,8 +166,8 @@ public class ClosedHull3DComponent extends Triangle3DComponent {
 	private boolean isInside(Point3D point) {
 
 		// x-distances to mbb border
-		double dMin = point.getCoord(0) - this.mbb.getPMin().getCoord(0);
-		double dMax = this.mbb.getPMax().getCoord(0) - point.getCoord(0);
+		double dMin = point.getCoord(0) - this.getMBB().getPMin().getCoord(0);
+		double dMax = this.getMBB().getPMax().getCoord(0) - point.getCoord(0);
 
 		if (this.epsilon.equal(0, dMax) || this.epsilon.equal(0, dMin)) {
 			Set<Triangle3DElement> set = (Set<Triangle3DElement>) this.sam
@@ -245,7 +245,7 @@ public class ClosedHull3DComponent extends Triangle3DComponent {
 	 *             method of the class Line3D (which computes the intersection
 	 *             of two lines) called by this method returns a value that is
 	 *             not -2, -1, 0 or 1.
-	 * 
+	 * F
 	 * @throws IllegalArgumentException
 	 *             if the index of the point of the tetrahedron is not in the
 	 *             interval [0;3]. The exception originates in the method

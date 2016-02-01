@@ -180,7 +180,7 @@ public class GeoEpsilon implements Externalizable {
 	 * @return String with the information of this.
 	 */
 	public String toString() {
-		return "GeoEpsilon [epsilon=" + epsilon + "]";
+		return "\nGeoEpsilon: " + epsilon;
 	}
 
 	@Override

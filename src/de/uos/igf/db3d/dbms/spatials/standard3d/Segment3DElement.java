@@ -149,4 +149,16 @@ public class Segment3DElement extends Segment3D implements Element3D {
 		return null;
 	}
 
+	@Override
+	public String toString() {
+
+		String string = "ID " + this.id + " " + super.toString();
+
+		return string;
+	}
+
+	public void setID(int id) {
+		this.id = id;
+	}
+
 }

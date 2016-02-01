@@ -154,8 +154,7 @@ public class Segment3DComponent extends Component3DAbst {
 					Db3dSimpleResourceBundle.getString("db3d.geom.defrmethod"));
 		}
 
-		Set<Segment3DElement> segments = (Set<Segment3DElement>) this.sam
-				.intersects(intMbb);
+		Set<Segment3DElement> segments = this.sam.intersects(intMbb);
 
 		Iterator<Segment3DElement> it = segments.iterator();
 		while (it.hasNext()) {
@@ -187,7 +186,7 @@ public class Segment3DComponent extends Component3DAbst {
 	 */
 	public boolean intersects(Line3D line) { // Dag
 
-		Geometry3D obj = this.mbb.intersection(line, this.epsilon);
+		Geometry3D obj = this.getMBB().intersection(line, this.epsilon);
 		MBB3D intMbb = new MBB3D();
 		if (obj == null)
 			return false;
@@ -196,8 +195,7 @@ public class Segment3DComponent extends Component3DAbst {
 		if (obj.getGeometryType() == GEOMETRYTYPES.SEGMENT)
 			intMbb = ((Segment3D) obj).getMBB();
 
-		Set<Segment3DElement> segments = (Set<Segment3DElement>) this.sam
-				.intersects(intMbb);
+		Set<Segment3DElement> segments = this.sam.intersects(intMbb);
 
 		Iterator<Segment3DElement> it = segments.iterator();
 		while (it.hasNext()) {
@@ -229,11 +227,10 @@ public class Segment3DComponent extends Component3DAbst {
 	 */
 	public boolean intersects(MBB3D mbb) { // Dag
 
-		if (!mbb.intersects(this.mbb, this.epsilon))
+		if (!mbb.intersects(this.getMBB(), this.epsilon))
 			return false;
 
-		Set<Segment3DElement> set = (Set<Segment3DElement>) this.sam
-				.intersects(mbb);
+		Set<Segment3DElement> set = this.sam.intersects(mbb);
 		Iterator<Segment3DElement> it = set.iterator();
 		while (it.hasNext()) {
 			Segment3DElement segelt = it.next();
@@ -258,8 +255,7 @@ public class Segment3DComponent extends Component3DAbst {
 	 *             Vector3D.
 	 */
 	public boolean contains(Point3D point) {
-		Set<Segment3DElement> set = (Set<Segment3DElement>) this.sam
-				.contains(point);
+		Set<Segment3DElement> set = this.sam.contains(point);
 		Iterator<Segment3DElement> it = set.iterator();
 		while (it.hasNext()) {
 			Segment3DElement segelt = it.next();
@@ -281,8 +277,7 @@ public class Segment3DComponent extends Component3DAbst {
 	 *             Vector3D.
 	 */
 	public boolean contains(Segment3D segment) {
-		Set<Segment3DElement> set = (Set<Segment3DElement>) this.sam
-				.intersects(segment.getMBB());
+		Set<Segment3DElement> set = this.sam.intersects(segment.getMBB());
 		Iterator<Segment3DElement> it = set.iterator();
 		while (it.hasNext()) {
 			Segment3DElement segelt = it.next();
@@ -300,11 +295,15 @@ public class Segment3DComponent extends Component3DAbst {
 	 */
 	public Segment3DElement getEndElement() {// Dag
 		if (this.isClosed())
-			return (this.entry.neighbours[1]);
-		while (this.entry.neighbours[0] != null) {
-			this.entry = this.entry.getNeighbour(0);
+			return (this.entry.neighbours[0]);
+		if (this.entry.getNeighbour(1) == null) {
+			return this.entry;
 		}
-		return this.entry;
+		Segment3DElement element = this.entry.getNeighbour(1);
+		while (element.neighbours[1] != null) {
+			element = element.neighbours[1];
+		}
+		return element;
 	}
 
 	/**
@@ -351,99 +350,67 @@ public class Segment3DComponent extends Component3DAbst {
 		if (this.isClosed())
 			throw new TopologyException("Net component is already closed !");
 
-		Point3D p_ref = null; // point from the entry or end segment
-		Point3D p_nonref = null; // new point
 		boolean addAtEntry = false;
+		boolean addAtEnd = false;
 		Segment3DElement end = this.getEndElement();
 
 		// check where to add
 		if (element.getPoints()[0].isEqual(this.entry.getPoints()[0],
 				this.epsilon)) {
-			p_ref = this.entry.getPoints()[0];
-			p_nonref = element.getPoints()[1];
 			addAtEntry = true;
-		} else {
-			if (element.getPoints()[1].isEqual(this.entry.getPoints()[0],
-					this.epsilon)) {
-				p_ref = this.entry.getPoints()[0];
-				p_nonref = element.getPoints()[0];
-				addAtEntry = true;
-			} else { // here the test for end element
-				if (element.getPoints()[0].isEqual(end.getPoints()[1],
-						this.epsilon)) {
-					p_ref = end.getPoints()[1];
-					p_nonref = element.getPoints()[1];
-					addAtEntry = false;
-				} else {
-					if (element.getPoints()[1].isEqual(end.getPoints()[1],
-							this.epsilon)) {
-						p_ref = end.getPoints()[1];
-						p_nonref = element.getPoints()[0];
-						addAtEntry = false;
-					} else { // not at entry or end point
-						throw new GeometryException(
-								"New Element is disjunct to net component !");
-					}
-				}
-			}
+			element.invertOrientation();
+		}
+		if (element.getPoints()[1].isEqual(this.entry.getPoints()[0],
+				this.epsilon)) {
+			addAtEntry = true;
+		}
+		if (element.getPoints()[0].isEqual(end.getPoints()[1], this.epsilon)) {
+			addAtEnd = true;
+		}
+		if (element.getPoints()[1].isEqual(end.getPoints()[1], this.epsilon)) {
+			addAtEnd = true;
+			element.invertOrientation();
+		}
+		if (!addAtEntry && !addAtEnd) { // not at entry or end point
+			throw new GeometryException(
+					"New Element is disjunct to net component !");
 		}
 
-		Segment3DElement newSeg = null;
-		if (addAtEntry)
-			newSeg = new Segment3DElement(p_nonref, p_ref, this.epsilon);
-		else
-			newSeg = new Segment3DElement(p_ref, p_nonref, this.epsilon);
-
 		// test for potential illegal intersections
-		Iterator<Segment3DElement> it = (Iterator<Segment3DElement>) this.sam
-				.intersects(newSeg.getMBB()).iterator();
+		Iterator<Segment3DElement> it = this.sam.intersects(element.getMBB())
+				.iterator();
 		while (it.hasNext()) {
 			Segment3DElement segment = it.next();
 
 			if (!segment.isEqual(this.entry, this.epsilon)
 					&& !segment.isEqual(end, this.epsilon)) {
 
-				Geometry3D intersection = segment.intersection(newSeg,
+				Geometry3D intersection = segment.intersection(element,
 						this.epsilon);
 
-				if (!(intersection instanceof Point3D)) {
+				if (intersection != null) {
 					throw new GeometryException(
 							"New Element intersects net component !");
-				} else {
-					boolean closes = false;
-					// intersection has to be of type point
-					if (addAtEntry) {
-						if (p_nonref.isEqual(end.getPoints()[1], this.epsilon)) {
-							closes = true;// closes the segment net comp
-						}
-					} else {// add at end
-						if (p_nonref.isEqual(this.entry.getPoints()[0],
-								this.epsilon)) {
-							closes = true; // closes the segment net comp
-						}
-					}
-					if (!closes)
-						throw new GeometryException(
-								"New Element intersects net component !");
 				}
 			}
 		}
 
+		element.id = this.edgeID++;
+		this.sam.insert(element);
+		this.edges.put(element.id, element);
+
 		// add newSeg
 		if (addAtEntry) {
-			this.sam.insert(newSeg); // insert
-			this.entry.neighbours[1] = newSeg; // set neighbours
-			newSeg.neighbours[0] = this.entry;// set neighbours
-			newSeg.id = this.edgeID++; // set id
-			this.entry = newSeg; // update entry element
-			return newSeg;
-		} else { // addAt end element
-			this.sam.insert(newSeg); // insert
-			end.neighbours[0] = newSeg; // set neighbours
-			newSeg.neighbours[1] = end; // set neighbours
-			newSeg.id = this.edgeID++; // set id
-			return newSeg;
+			this.entry.neighbours[0] = element; // set neighbours
+			element.neighbours[1] = this.entry;// set neighbours
+			this.entry = element; // update entry element
 		}
+		if (addAtEnd) {
+			end.neighbours[1] = element; // set neighbours
+			element.neighbours[0] = end; // set neighbours
+		}
+
+		return element;
 	}
 
 	/**
@@ -464,8 +431,7 @@ public class Segment3DComponent extends Component3DAbst {
 
 		if (this.isClosed()) { // find element, set entry and remove it
 			Segment3DElement removable = null;
-			Set<Segment3DElement> set = (Set<Segment3DElement>) this.sam
-					.intersects(element.getMBB());
+			Set<Segment3DElement> set = this.sam.intersects(element.getMBB());
 			Iterator<Segment3DElement> it = set.iterator();
 			while (it.hasNext()) {
 				Segment3DElement current = it.next();
@@ -526,8 +492,7 @@ public class Segment3DComponent extends Component3DAbst {
 	 * @return boolean - true if contained, false otherwise.
 	 */
 	public boolean containsElement(Segment3D segment) {
-		Set<Segment3DElement> set = (Set<Segment3DElement>) this.sam
-				.intersects(segment.getMBB());
+		Set<Segment3DElement> set = this.sam.intersects(segment.getMBB());
 		Iterator<Segment3DElement> it = set.iterator();
 		while (it.hasNext()) {
 			Segment3DElement segelt = it.next();
@@ -547,8 +512,7 @@ public class Segment3DComponent extends Component3DAbst {
 	 * @return boolean - true if contained, false otherwise.
 	 */
 	public boolean containsElement(Point3D point) {
-		Set<Segment3DElement> set = (Set<Segment3DElement>) this.sam
-				.intersects(point.getMBB());
+		Set<Segment3DElement> set = this.sam.intersects(point.getMBB());
 		Iterator<Segment3DElement> it = set.iterator();
 		while (it.hasNext()) {
 			Segment3DElement segelt = it.next();
@@ -633,8 +597,7 @@ public class Segment3DComponent extends Component3DAbst {
 			do {
 				set.add(this.entry);
 				this.entry = this.entry.neighbours[0];
-			} while (this.entry.neighbours[0] != null
-					&& this.entry.neighbours[0] != begin);
+			} while (this.entry.neighbours[0] != begin);
 		} else {
 			do {
 				set.add(this.entry);
@@ -756,7 +719,7 @@ public class Segment3DComponent extends Component3DAbst {
 		if (this.entry == null)
 			return false;
 
-		if (!(this.entry.neighbours[1] == null))
+		if (this.entry.neighbours[0] != null)
 			return true;
 		else
 			return false;
@@ -787,8 +750,8 @@ public class Segment3DComponent extends Component3DAbst {
 
 		for (int i = 0; i < elts.length; i++) {
 			if (elts[i].isInterior() != true) {
-				Set<Segment3DElement> query = (Set<Segment3DElement>) this.sam
-						.intersects(elts[i].getMBB());
+				Set<Segment3DElement> query = this.sam.intersects(elts[i]
+						.getMBB());
 				query.remove(elts[i]);
 
 				Point3D po = null;
@@ -861,8 +824,7 @@ public class Segment3DComponent extends Component3DAbst {
 	 * Updates the Entry elements after changes in the net component.
 	 */
 	protected void updateEntryElement() {
-		Set<Segment3DElement> set = (Set<Segment3DElement>) this.sam
-				.getEntries();
+		Set<Segment3DElement> set = this.sam.getEntries();
 		Iterator<Segment3DElement> it = set.iterator();
 		while (it.hasNext()) {
 			Segment3DElement segelt = it.next();
@@ -881,7 +843,8 @@ public class Segment3DComponent extends Component3DAbst {
 
 		if (this.entry == null) { // every element was interior so
 			// its a closed comp
-			SAM.NNResult[] result = this.sam.nearest(1, this.mbb.getPMin());
+			SAM.NNResult[] result = this.sam
+					.nearest(1, this.getMBB().getPMin());
 			this.entry = (Segment3DElement) result[0].getObjectRef();
 		}
 	}
@@ -893,8 +856,9 @@ public class Segment3DComponent extends Component3DAbst {
 	 * @return Segment3DElement - element with the given id.
 	 */
 	public Segment3DElement getElement(int id) {
-
-		Iterator<Segment3DElement> it = getElementsViaRecursion().iterator();
+		Set<Segment3DElement> set = (Set<Segment3DElement>) this
+				.getElementsViaSAM();
+		Iterator<Segment3DElement> it = set.iterator();
 		while (it.hasNext()) {
 			Segment3DElement seg = it.next();
 			if (seg.id == id)

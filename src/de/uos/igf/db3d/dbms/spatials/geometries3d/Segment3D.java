@@ -901,7 +901,7 @@ public class Segment3D extends Geometry3DAbst {
 	 * @return String with the information of this.
 	 */
 	public String toString() {
-		return "Segment3D [end=" + points[1] + ", start=" + points[0] + "]";
+		return "Segment3D [start=" + points[0].toString() + ", end=" + points[1].toString() + "]";
 	}
 
 	@Override

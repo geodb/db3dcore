@@ -1,9 +1,6 @@
 package de.uos.igf.db3d.dbms.spatials.standard3d;
 
-import java.util.Iterator;
-
 import de.uos.igf.db3d.dbms.exceptions.DB3DException;
-import de.uos.igf.db3d.dbms.spatials.api.Component3D;
 import de.uos.igf.db3d.dbms.spatials.api.Curve3D;
 import de.uos.igf.db3d.dbms.spatials.geometries3d.Line3D;
 import de.uos.igf.db3d.dbms.spatials.geometries3d.MBB3D;
@@ -50,10 +47,9 @@ public class Segment3DNet extends Net3DAbst implements Curve3D {
 	 *             point is not greater than its minimum point.
 	 */
 	public Segment3DNet(Segment3DComponent[] components, GeoEpsilon epsilon) {
-		super(epsilon);
+		this(epsilon);
 		for (Segment3DComponent component : components)
 			this.addComponent(component);
-		this.updateMBB();
 	}
 
 	/**
@@ -73,7 +69,6 @@ public class Segment3DNet extends Net3DAbst implements Curve3D {
 		super(net.epsilon);
 		for (int i = 0; i < net.components.length; i++)
 			this.addComponent(net.components[i]);
-		this.updateMBB();
 	}
 
 	/**
@@ -123,7 +118,6 @@ public class Segment3DNet extends Net3DAbst implements Curve3D {
 		temp[this.components.length] = component;
 		component.net = this;
 		this.components = temp;
-		this.updateMBB();
 	}
 
 	/**
@@ -407,23 +401,6 @@ public class Segment3DNet extends Net3DAbst implements Curve3D {
 	 */
 	public SPATIALTYPES getSpatialType() {
 		return SPATIALTYPES.CURVE_NET_C_E3D;
-	}
-
-	/**
-	 * Updates the MBB of this net.<br>
-	 * Iterates over all components updating and union their mbbs.<br>
-	 * Sets the updated MBB in the abstract SpatialObject.<br>
-	 * Updates the index in which the net is.
-	 * 
-	 * @throws IllegalArgumentException
-	 *             if an attempt is made to construct a MBB3D whose maximum
-	 *             point is not greater than its minimum point.
-	 */
-	protected void updateMBB() {
-		MBB3D neu = this.components[0].mbb;
-		for (int i = 1; i < this.components.length; i++)
-			neu = neu.union(this.components[i].mbb, this.epsilon);
-		this.mbb = neu;
 	}
 
 	/**

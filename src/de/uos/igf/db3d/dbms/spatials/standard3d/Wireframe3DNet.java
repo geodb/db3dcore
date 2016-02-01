@@ -45,7 +45,6 @@ public class Wireframe3DNet extends Net3DAbst implements Wireframe3D {
 		super(epsilon);
 		for (Wireframe3DComponent component : components)
 			this.addComponent(component);
-		this.updateMBB();
 	}
 
 	@Override
@@ -100,7 +99,6 @@ public class Wireframe3DNet extends Net3DAbst implements Wireframe3D {
 		temp[this.components.length] = component;
 		component.net = this;
 		this.components = temp;
-		this.updateMBB();
 
 	}
 
@@ -157,17 +155,6 @@ public class Wireframe3DNet extends Net3DAbst implements Wireframe3D {
 	@Override
 	public SPATIALTYPES getSpatialType() {
 		return SPATIALTYPES.WIREFRAME_NET_C_E3D;
-	}
-
-	protected void updateMBB() {
-		MBB3D neu = null;
-		GeoEpsilon epsilon = getGeoEpsilon();
-		if (components[0] != null) {
-			neu = components[0].getMBB();
-			for (int i = 1; i < components.length; i++)
-				neu = neu.union(components[i].getMBB(), epsilon);
-		}
-		this.mbb = neu;
 	}
 
 	/**
