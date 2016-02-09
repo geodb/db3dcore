@@ -12,6 +12,7 @@ import java.util.Vector;
 
 import de.uos.igf.db3d.dbms.geom.Point3D;
 import de.uos.igf.db3d.dbms.geom.ScalarOperator;
+import de.uos.igf.db3d.dbms.structure.OID;
 
 /**
  * This class represents an 4D object. The user has to call the function
@@ -33,6 +34,10 @@ public class Object4D {
 
 	private ScalarOperator sop;
 
+	private OID ID;
+	
+	private String name;
+
 	/**
 	 * Constructor
 	 * 
@@ -48,5 +53,18 @@ public class Object4D {
 
 	public void setSpatial(SpatialObject4D spatial) {
 		this.spatial = spatial;
+	}
+
+	public void setID(OID oid) {
+		
+		this.ID = oid;
+	}
+
+	public String getName() {
+		return name;
+	}
+
+	public void setName(String name) {
+		this.name = name;
 	}
 }
