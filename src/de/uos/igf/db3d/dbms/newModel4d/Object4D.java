@@ -45,6 +45,7 @@ public class Object4D {
 	public Object4D() {
 		super();
 		sop = new ScalarOperator();
+		name = "N/A";
 	}
 
 	public SpatialObject4D getSpatial() {

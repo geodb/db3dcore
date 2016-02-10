@@ -25,7 +25,7 @@ public class SpatialObject4D {
 	 */
 	public SpatialObject4D() {
 		this.object = null;
-		sop = new ScalarOperator();
+		sop = new ScalarOperator(0.0000000001);
 	}
 
 	/**

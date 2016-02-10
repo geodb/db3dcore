@@ -132,7 +132,7 @@ public class TimeStepBuilder {
 
 		if (cnt != newPoints.size())
 			throw new IllegalArgumentException(
-					"New Object is neither a Postobject nor it fits the size of the last object");
+					"New Object is neither a Postobject nor it fits the size of the last object. Number of points: OLD: " + newPoints.size() + " New: " + cnt);
 
 		// everything is alright? Add the new Points!
 		timesteps.add(date);

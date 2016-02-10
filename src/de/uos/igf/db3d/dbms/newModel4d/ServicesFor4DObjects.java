@@ -43,7 +43,7 @@ public class ServicesFor4DObjects {
 
 		ScalarOperator sop = spatial.getScalarOperator();
 
-		Net4D net = spatial.getNet();
+		Net4D net = spatial.getNet();		
 
 		// check if the specified date is not in the timeinterval:
 		if (!checkIfDateIsValid(date, spatial))
@@ -247,7 +247,7 @@ public class ServicesFor4DObjects {
 		boolean valid = false;
 
 		Net4D net = spatial.getNet();
-
+		
 		if (net != null) {
 			if (((net.getStart().before(date) && net.getEnd().after(date))
 					|| net.getEnd().equals((date)) || net.getStart().equals(
