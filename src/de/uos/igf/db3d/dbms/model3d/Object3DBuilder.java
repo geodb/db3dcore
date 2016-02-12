@@ -68,6 +68,20 @@ public class Object3DBuilder {
 		this.spatial = null;
 		this.oid = null;
 	}
+	
+	/**
+	 * Constructor.
+	 * 
+	 * @param workspace
+	 *            - Workspace
+	 */
+	public Object3DBuilder(ScalarOperator sop, Space3D space) {
+		this.space = space;
+		this.wsSOP = sop;
+		this.time = 0;
+		this.spatial = null;
+		this.oid = null;
+	}
 
 	/**
 	 * Returns a ScalarOperator as copy.<br>

@@ -20,6 +20,7 @@ import de.uos.igf.db3d.dbms.model3d.TetrahedronElt3D;
 import de.uos.igf.db3d.dbms.model3d.TetrahedronNetBuilder;
 import de.uos.igf.db3d.dbms.model3d.TriangleElt3D;
 import de.uos.igf.db3d.dbms.model3d.TriangleNetBuilder;
+import de.uos.igf.db3d.dbms.structure.Space3D;
 
 public class ServicesFor4DObjects {
 
@@ -43,7 +44,7 @@ public class ServicesFor4DObjects {
 
 		ScalarOperator sop = spatial.getScalarOperator();
 
-		Net4D net = spatial.getNet();		
+		Net4D net = spatial.getNet();
 
 		// check if the specified date is not in the timeinterval:
 		if (!checkIfDateIsValid(date, spatial))
@@ -247,7 +248,7 @@ public class ServicesFor4DObjects {
 		boolean valid = false;
 
 		Net4D net = spatial.getNet();
-		
+
 		if (net != null) {
 			if (((net.getStart().before(date) && net.getEnd().after(date))
 					|| net.getEnd().equals((date)) || net.getStart().equals(
@@ -257,5 +258,37 @@ public class ServicesFor4DObjects {
 		}
 
 		return valid;
+	}
+
+	public static double getAverageSpeed(Object4D object, Date date) {
+
+		Net4D net = object.getSpatial().getNet();
+
+		List<Component4D> comps = net.getValidComponents(date);
+		double speedSum = 0;
+		int timesteps = 1;
+
+		for (Component4D comp : comps) {
+
+			Map<Integer, List<Point3D>> pts = comp.getPointTubes();
+			
+			for(List<Point3D> l : pts.values()) {
+
+				for(int i = 0; i < l.size()-1; i++) {
+					
+					Point3D p1 = l.get(i);
+					Point3D p2 = l.get(i+1);
+
+					speedSum +=  p1.euclideanDistance(p2);
+				}
+			}			
+
+			timesteps = pts.values().iterator().next().size();
+			
+			speedSum = speedSum / pts.size();
+			speedSum = speedSum / timesteps;
+		}
+
+		return speedSum;
 	}
 }
